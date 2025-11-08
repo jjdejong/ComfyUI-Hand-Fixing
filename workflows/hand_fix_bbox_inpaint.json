@@ -1,0 +1,212 @@
+{
+  "last_node_id": 18,
+  "last_link_id": 30,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [50, 100],
+      "size": {"0": 315, "1": 314},
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [1], "slot_index": 0},
+        {"name": "MASK", "type": "MASK", "links": null}
+      ],
+      "properties": {"Node name for S&R": "LoadImage"},
+      "widgets_values": ["example.png", "image"]
+    },
+    {
+      "id": 2,
+      "type": "UltralyticsDetectorProvider",
+      "pos": [50, 450],
+      "size": {"0": 315, "1": 78},
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {"name": "BBOX_DETECTOR", "type": "BBOX_DETECTOR", "links": [2], "slot_index": 0},
+        {"name": "SEGM_DETECTOR", "type": "SEGM_DETECTOR", "links": null}
+      ],
+      "properties": {"Node name for S&R": "UltralyticsDetectorProvider"},
+      "widgets_values": ["bbox/hand_yolov8s.pt"]
+    },
+    {
+      "id": 3,
+      "type": "FaceDetailer",
+      "pos": [400, 100],
+      "size": {"0": 400, "1": 900},
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {"name": "image", "type": "IMAGE", "link": 1},
+        {"name": "model", "type": "MODEL", "link": 3},
+        {"name": "clip", "type": "CLIP", "link": 4},
+        {"name": "vae", "type": "VAE", "link": 5},
+        {"name": "positive", "type": "CONDITIONING", "link": 6},
+        {"name": "negative", "type": "CONDITIONING", "link": 7},
+        {"name": "bbox_detector", "type": "BBOX_DETECTOR", "link": 2},
+        {"name": "sam_model_opt", "type": "SAM_MODEL", "link": null},
+        {"name": "segm_detector_opt", "type": "SEGM_DETECTOR", "link": null},
+        {"name": "detailer_hook", "type": "DETAILER_HOOK", "link": null}
+      ],
+      "outputs": [
+        {"name": "image", "type": "IMAGE", "links": [8], "slot_index": 0},
+        {"name": "cropped_refined", "type": "IMAGE", "links": null},
+        {"name": "cropped_enhanced_alpha", "type": "IMAGE", "links": null},
+        {"name": "mask", "type": "MASK", "links": null},
+        {"name": "detailer_pipe", "type": "DETAILER_PIPE", "links": null},
+        {"name": "cnet_images", "type": "IMAGE", "links": null}
+      ],
+      "properties": {"Node name for S&R": "FaceDetailer"},
+      "widgets_values": [
+        512,
+        true,
+        1024,
+        123456,
+        "randomize",
+        40,
+        7.0,
+        "dpmpp_2m",
+        "karras",
+        0.95,
+        5,
+        true,
+        false,
+        0.5,
+        10,
+        3.0,
+        10,
+        1.0,
+        0,
+        0.93,
+        0,
+        0.7,
+        "False",
+        10,
+        ""
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [50, 600],
+      "size": {"0": 315, "1": 98},
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {"name": "MODEL", "type": "MODEL", "links": [3], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [4, 9, 10], "slot_index": 1},
+        {"name": "VAE", "type": "VAE", "links": [5], "slot_index": 2}
+      ],
+      "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
+      "widgets_values": ["cyberrealisticXL_v70_fp32.safetensors"]
+    },
+    {
+      "id": 5,
+      "type": "CLIPTextEncode",
+      "pos": [50, 750],
+      "size": {"0": 400, "1": 200},
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 9}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [6], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["masterpiece, best quality, detailed human hand, (five fingers:1.4), (correct hand anatomy:1.3), proper thumb placement, natural hand pose, realistic skin texture, well-defined knuckles, natural proportions"]
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [50, 1000],
+      "size": {"0": 400, "1": 200},
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {"name": "clip", "type": "CLIP", "link": 10}
+      ],
+      "outputs": [
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [7], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["(deformed hand:1.6), (extra fingers:1.6), (missing fingers:1.5), (6 fingers:1.7), (7 fingers:1.6), (4 fingers:1.5), (3 fingers:1.5), fused fingers, merged digits, mutated hand, bad hand anatomy, extra limbs, poorly drawn hand, malformed hand, wrong number of fingers, incorrect finger count, (extra digit:1.5), (fewer digits:1.5), floating fingers, disconnected fingers, broken hand, impossible hand pose"]
+    },
+    {
+      "id": 7,
+      "type": "SaveImage",
+      "pos": [850, 100],
+      "size": {"0": 315, "1": 270},
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 8}
+      ],
+      "properties": {},
+      "widgets_values": ["hand_fixed_bbox"]
+    },
+    {
+      "id": 8,
+      "type": "Note",
+      "pos": [50, 1250],
+      "size": {"0": 400, "1": 250},
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "properties": {"text": ""},
+      "widgets_values": ["BBox-Based Hand Fix Workflow (SDXL)\n\nThis workflow uses RECTANGULAR BOUNDING BOXES for proper hand recreation:\n\n1. YOLO detects hands → bounding boxes\n2. FaceDetailer crops RECTANGULAR regions (not tight masks)\n3. Very high denoise (0.95) forces complete hand regeneration\n4. Large crop_factor (3.0) gives context for natural blending\n5. Bbox dilation (10) expands detection area\n\nKey Settings:\n- guide_size: 512 (processing resolution)\n- max_size: 1024 (max dimension)\n- denoise: 0.95 (very aggressive - recreates hand from scratch)\n- crop_factor: 3.0 (lots of surrounding context)\n- bbox_dilation: 10 (expand detection box)\n- steps: 40\n- CFG: 7.0\n\nBest for: Severe deformities (6+ fingers, fused digits, impossible poses)\nThe rectangular crop gives the model ROOM to recreate proper anatomy.\n\nNo depth guidance - lets the model use its training to create correct hands."],
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 3, 0, "IMAGE"],
+    [2, 2, 0, 3, 6, "BBOX_DETECTOR"],
+    [3, 4, 0, 3, 1, "MODEL"],
+    [4, 4, 1, 3, 2, "CLIP"],
+    [5, 4, 2, 3, 3, "VAE"],
+    [6, 5, 0, 3, 4, "CONDITIONING"],
+    [7, 6, 0, 3, 5, "CONDITIONING"],
+    [8, 3, 0, 7, 0, "IMAGE"],
+    [9, 4, 1, 5, 0, "CLIP"],
+    [10, 4, 1, 6, 0, "CLIP"]
+  ],
+  "groups": [
+    {
+      "title": "Input & Detection",
+      "bounding": [40, 30, 380, 550],
+      "color": "#3f789e"
+    },
+    {
+      "title": "Hand Processing (BBox-based)",
+      "bounding": [390, 30, 430, 1050],
+      "color": "#88AA88"
+    },
+    {
+      "title": "Output",
+      "bounding": [840, 30, 340, 400],
+      "color": "#A87A3A"
+    },
+    {
+      "title": "Models & Prompts",
+      "bounding": [40, 590, 430, 650],
+      "color": "#8A8A00"
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8,
+      "offset": [0, 0]
+    }
+  },
+  "version": 0.4
+}
