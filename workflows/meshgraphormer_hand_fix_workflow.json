@@ -85,7 +85,7 @@
         {"name": "VAE", "type": "VAE", "links": [12, 13], "slot_index": 2}
       ],
       "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
-      "widgets_values": ["realisticVisionV60B1_v51VAE.safetensors"]
+      "widgets_values": ["cyberrealisticXL_v70_fp32.safetensors"]
     },
     {
       "id": 6,
@@ -99,7 +99,7 @@
         {"name": "CONTROL_NET", "type": "CONTROL_NET", "links": [14], "slot_index": 0}
       ],
       "properties": {"Node name for S&R": "ControlNetLoader"},
-      "widgets_values": ["control_v11f1p_sd15_depth.pth"]
+      "widgets_values": ["SDXL/t2i-adapter-depth-zoe-sdxl-1.0.safetensors"]
     },
     {
       "id": 7,
@@ -193,7 +193,7 @@
         {"name": "LATENT", "type": "LATENT", "links": [20], "slot_index": 0}
       ],
       "properties": {"Node name for S&R": "KSampler"},
-      "widgets_values": [12345, "randomize", 40, 8.5, "dpmpp_2m", "karras", 0.9]
+      "widgets_values": [12345, "randomize", 40, 6.5, "dpmpp_2m", "karras", 0.9]
     },
     {
       "id": 12,
@@ -269,7 +269,7 @@
       "order": 15,
       "mode": 0,
       "properties": {"text": ""},
-      "widgets_values": ["MeshGraphormer Hand Fix Workflow\n\nThis workflow uses:\n1. Hand YOLO detection to find hands\n2. MeshGraphormer to generate anatomically correct depth maps\n3. ControlNet Depth to guide hand reconstruction\n4. High denoise (0.9) for structural changes\n5. High CFG (8.5) to follow prompts strictly\n\nCritical Settings:\n- ControlNet strength: 0.9 (force correct anatomy)\n- Denoise: 0.9 (major structural changes)\n- CFG: 8.5 (follow guidance strictly)\n- Steps: 40 (thorough reconstruction)"]
+      "widgets_values": ["MeshGraphormer Hand Fix Workflow (SDXL)\n\nThis workflow uses:\n1. Hand YOLO detection to find hands\n2. Separate BBoxDetectorForEach for precise hand cropping\n3. MeshGraphormer to generate anatomically correct depth maps\n4. SDXL T2I-Adapter Depth to guide hand reconstruction\n5. High denoise (0.9) for structural changes\n6. ImageCompositeMasked to blend fixed hands back into full image\n\nCritical Settings:\n- ControlNet strength: 0.9 (force correct anatomy)\n- Denoise: 0.9 (major structural changes)\n- CFG: 6.5 (optimized for SDXL)\n- Steps: 40 (thorough reconstruction)\n- Enhanced prompts with weighting for anatomical accuracy\n\nBest for: Severe distortions, multiple hands, professional work"]
     }
   ],
   "links": [
