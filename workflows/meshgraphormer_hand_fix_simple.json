@@ -1,1 +1,365 @@
-{"id":"70377b6f-28f6-417c-8fac-f6c8f079fb16","revision":0,"last_node_id":21,"last_link_id":43,"nodes":[{"id":11,"type":"VAEDecode","pos":[1550,100],"size":[210,46],"flags":{},"order":13,"mode":0,"inputs":[{"localized_name":"échantillons","name":"samples","type":"LATENT","link":15},{"localized_name":"vae","name":"vae","type":"VAE","link":9}],"outputs":[{"localized_name":"IMAGE","name":"IMAGE","type":"IMAGE","slot_index":0,"links":[16]}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"VAEDecode"},"widgets_values":[]},{"id":2,"type":"UltralyticsDetectorProvider","pos":[50,450],"size":[315,78],"flags":{},"order":0,"mode":0,"inputs":[{"localized_name":"model_name","name":"model_name","type":"COMBO","widget":{"name":"model_name"},"link":null}],"outputs":[{"localized_name":"BBOX_DETECTOR","name":"BBOX_DETECTOR","type":"BBOX_DETECTOR","slot_index":0,"links":[30]},{"localized_name":"SEGM_DETECTOR","name":"SEGM_DETECTOR","type":"SEGM_DETECTOR","links":null}],"properties":{"cnr_id":"comfyui-impact-subpack","ver":"1.3.5","Node name for S&R":"UltralyticsDetectorProvider"},"widgets_values":["bbox/hand_yolov8s.pt"]},{"id":13,"type":"PreviewImage","pos":[851.8582974385245,451.1516687964533],"size":[315,246],"flags":{},"order":9,"mode":0,"inputs":[{"localized_name":"images","name":"images","type":"IMAGE","link":33}],"outputs":[],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"PreviewImage"},"widgets_values":[]},{"id":6,"type":"CLIPTextEncode","pos":[400,300],"size":[400,150],"flags":{},"order":6,"mode":0,"inputs":[{"localized_name":"clip","name":"clip","type":"CLIP","link":6},{"localized_name":"text","name":"text","type":"STRING","widget":{"name":"text"},"link":null}],"outputs":[{"localized_name":"CONDITIONNEMENT","name":"CONDITIONING","type":"CONDITIONING","slot_index":0,"links":[36]}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"CLIPTextEncode"},"widgets_values":["detailed hand, five fingers, proper thumb, natural anatomy"]},{"id":7,"type":"CLIPTextEncode","pos":[400,500],"size":[400,150],"flags":{},"order":7,"mode":0,"inputs":[{"localized_name":"clip","name":"clip","type":"CLIP","link":7},{"localized_name":"text","name":"text","type":"STRING","widget":{"name":"text"},"link":null}],"outputs":[{"localized_name":"CONDITIONNEMENT","name":"CONDITIONING","type":"CONDITIONING","slot_index":0,"links":[37]}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"CLIPTextEncode"},"widgets_values":["extra fingers, missing fingers, deformed hand, bad anatomy"]},{"id":5,"type":"ControlNetLoader","pos":[50,720],"size":[315,58],"flags":{},"order":1,"mode":0,"inputs":[{"localized_name":"control_net_name","name":"control_net_name","type":"COMBO","widget":{"name":"control_net_name"},"link":null}],"outputs":[{"localized_name":"RESEAU_DE_CONTROLE","name":"CONTROL_NET","type":"CONTROL_NET","slot_index":0,"links":[38]}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"ControlNetLoader"},"widgets_values":["SDXL/t2i-adapter-depth-zoe-sdxl-1.0.safetensors"]},{"id":4,"type":"CheckpointLoaderSimple","pos":[50,580],"size":[315,98],"flags":{},"order":2,"mode":0,"inputs":[{"localized_name":"nom_ckpt","name":"ckpt_name","type":"COMBO","widget":{"name":"ckpt_name"},"link":null}],"outputs":[{"localized_name":"MODÈLE","name":"MODEL","type":"MODEL","slot_index":0,"links":[5]},{"localized_name":"CLIP","name":"CLIP","type":"CLIP","slot_index":1,"links":[6,7]},{"localized_name":"VAE","name":"VAE","type":"VAE","slot_index":2,"links":[8,9,40]}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"CheckpointLoaderSimple"},"widgets_values":["cyberrealisticXL_v70_fp32.safetensors"]},{"id":1,"type":"LoadImage","pos":[50,100],"size":[315,314],"flags":{},"order":3,"mode":0,"inputs":[{"localized_name":"image","name":"image","type":"COMBO","widget":{"name":"image"},"link":null},{"localized_name":"choisissez le fichier à télécharger","name":"upload","type":"IMAGEUPLOAD","widget":{"name":"upload"},"link":null}],"outputs":[{"localized_name":"IMAGE","name":"IMAGE","type":"IMAGE","slot_index":0,"links":[29]},{"localized_name":"MASQUE","name":"MASK","type":"MASK","links":null}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"LoadImage"},"widgets_values":["clothing-1_05.png","image"]},{"id":10,"type":"KSampler","pos":[1200,100],"size":[315,474],"flags":{},"order":12,"mode":0,"inputs":[{"localized_name":"model","name":"model","type":"MODEL","link":5},{"localized_name":"positive","name":"positive","type":"CONDITIONING","link":42},{"localized_name":"negative","name":"negative","type":"CONDITIONING","link":43},{"localized_name":"latent_image","name":"latent_image","type":"LATENT","link":14},{"localized_name":"seed","name":"seed","type":"INT","widget":{"name":"seed"},"link":null},{"localized_name":"steps","name":"steps","type":"INT","widget":{"name":"steps"},"link":null},{"localized_name":"cfg","name":"cfg","type":"FLOAT","widget":{"name":"cfg"},"link":null},{"localized_name":"sampler_name","name":"sampler_name","type":"COMBO","widget":{"name":"sampler_name"},"link":null},{"localized_name":"scheduler","name":"scheduler","type":"COMBO","widget":{"name":"scheduler"},"link":null},{"localized_name":"denoise","name":"denoise","type":"FLOAT","widget":{"name":"denoise"},"link":null}],"outputs":[{"localized_name":"LATENT","name":"LATENT","type":"LATENT","slot_index":0,"links":[15]}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"KSampler"},"widgets_values":[41558378016803,"randomize",35,6,"dpmpp_sde","karras",0.85]},{"id":21,"type":"MeshGraphormer-DepthMapPreprocessor","pos":[1299.4982379548728,653.6191535801964],"size":[295.98203125,222],"flags":{},"order":4,"mode":0,"inputs":[{"localized_name":"image","name":"image","type":"IMAGE","link":null},{"localized_name":"mask_bbox_padding","name":"mask_bbox_padding","shape":7,"type":"INT","widget":{"name":"mask_bbox_padding"},"link":null},{"localized_name":"resolution","name":"resolution","shape":7,"type":"INT","widget":{"name":"resolution"},"link":null},{"localized_name":"mask_type","name":"mask_type","shape":7,"type":"COMBO","widget":{"name":"mask_type"},"link":null},{"localized_name":"mask_expand","name":"mask_expand","shape":7,"type":"INT","widget":{"name":"mask_expand"},"link":null},{"localized_name":"rand_seed","name":"rand_seed","shape":7,"type":"INT","widget":{"name":"rand_seed"},"link":null},{"localized_name":"detect_thr","name":"detect_thr","shape":7,"type":"FLOAT","widget":{"name":"detect_thr"},"link":null},{"localized_name":"presence_thr","name":"presence_thr","shape":7,"type":"FLOAT","widget":{"name":"presence_thr"},"link":null}],"outputs":[{"localized_name":"IMAGE","name":"IMAGE","type":"IMAGE","links":null},{"localized_name":"INPAINTING_MASK","name":"INPAINTING_MASK","type":"MASK","links":null}],"properties":{"cnr_id":"comfyui_controlnet_aux","ver":"12f35647f0d510e03b45a47fb420fe1245a575df","Node name for S&R":"MeshGraphormer-DepthMapPreprocessor"},"widgets_values":[30,512,"based_on_depth",5,88,0.6,0.6]},{"id":12,"type":"SaveImage","pos":[1826.264163614691,74.53419086072597],"size":[844.6453452573874,786.3824692061974],"flags":{},"order":14,"mode":0,"inputs":[{"localized_name":"images","name":"images","type":"IMAGE","link":16},{"localized_name":"préfixe_du_nom_de_fichier","name":"filename_prefix","type":"STRING","widget":{"name":"filename_prefix"},"link":null}],"outputs":[],"properties":{"cnr_id":"comfy-core","ver":"0.3.67"},"widgets_values":["hand_fixed_simple"]},{"id":19,"type":"MeshGraphormer+ImpactDetector-DepthMapPreprocessor","pos":[383.5616533987703,-53.46415915609294],"size":[439.91953125,270],"flags":{},"order":8,"mode":0,"inputs":[{"localized_name":"image","name":"image","type":"IMAGE","link":29},{"localized_name":"bbox_detector","name":"bbox_detector","type":"BBOX_DETECTOR","link":30},{"localized_name":"bbox_threshold","name":"bbox_threshold","shape":7,"type":"FLOAT","widget":{"name":"bbox_threshold"},"link":null},{"localized_name":"bbox_dilation","name":"bbox_dilation","shape":7,"type":"INT","widget":{"name":"bbox_dilation"},"link":null},{"localized_name":"bbox_crop_factor","name":"bbox_crop_factor","shape":7,"type":"FLOAT","widget":{"name":"bbox_crop_factor"},"link":null},{"localized_name":"drop_size","name":"drop_size","shape":7,"type":"INT","widget":{"name":"drop_size"},"link":null},{"localized_name":"mask_bbox_padding","name":"mask_bbox_padding","shape":7,"type":"INT","widget":{"name":"mask_bbox_padding"},"link":null},{"localized_name":"mask_type","name":"mask_type","shape":7,"type":"COMBO","widget":{"name":"mask_type"},"link":null},{"localized_name":"mask_expand","name":"mask_expand","shape":7,"type":"INT","widget":{"name":"mask_expand"},"link":null},{"localized_name":"rand_seed","name":"rand_seed","shape":7,"type":"INT","widget":{"name":"rand_seed"},"link":null},{"localized_name":"resolution","name":"resolution","shape":7,"type":"INT","widget":{"name":"resolution"},"link":null}],"outputs":[{"localized_name":"IMAGE","name":"IMAGE","type":"IMAGE","links":[31,33,39]},{"localized_name":"INPAINTING_MASK","name":"INPAINTING_MASK","type":"MASK","links":[32]}],"properties":{"cnr_id":"comfyui_controlnet_aux","ver":"12f35647f0d510e03b45a47fb420fe1245a575df","Node name for S&R":"MeshGraphormer+ImpactDetector-DepthMapPreprocessor"},"widgets_values":[0.5,10,3,10,30,"based_on_depth",5,88,512]},{"id":20,"type":"ControlNetApplyAdvanced","pos":[888.1894094728759,174.92581011987795],"size":[270,186],"flags":{},"order":10,"mode":0,"inputs":[{"localized_name":"positive","name":"positive","type":"CONDITIONING","link":36},{"localized_name":"negative","name":"negative","type":"CONDITIONING","link":37},{"localized_name":"control_net","name":"control_net","type":"CONTROL_NET","link":38},{"localized_name":"image","name":"image","type":"IMAGE","link":39},{"localized_name":"vae","name":"vae","shape":7,"type":"VAE","link":40},{"localized_name":"strength","name":"strength","type":"FLOAT","widget":{"name":"strength"},"link":null},{"localized_name":"start_percent","name":"start_percent","type":"FLOAT","widget":{"name":"start_percent"},"link":null},{"localized_name":"end_percent","name":"end_percent","type":"FLOAT","widget":{"name":"end_percent"},"link":null}],"outputs":[{"localized_name":"positive","name":"positive","type":"CONDITIONING","links":[42]},{"localized_name":"negative","name":"negative","type":"CONDITIONING","links":[43]}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"ControlNetApplyAdvanced"},"widgets_values":[0.9,0,1]},{"id":14,"type":"Note","pos":[50,820],"size":[400,120],"flags":{},"order":5,"mode":0,"inputs":[],"outputs":[],"properties":{"text":""},"widgets_values":["SIMPLIFIED MeshGraphormer Workflow\n\nThis uses MeshGraphormer-ImpactDetector which combines:\n- Hand detection (YOLO)\n- Depth map generation (MeshGraphormer)\n- All in one convenient node!\n\nKey Settings:\n- Detection threshold: 0.5\n- Dilation: 10 (mask expansion)\n- Resolution: 512\n- ControlNet strength: 0.9\n- Denoise: 0.85\n- Steps: 35"],"color":"#432","bgcolor":"#653"},{"id":9,"type":"VAEEncodeForInpaint","pos":[851.8375687573367,-51.782043588483894],"size":[315,98],"flags":{},"order":11,"mode":0,"inputs":[{"localized_name":"pixels","name":"pixels","type":"IMAGE","link":31},{"localized_name":"vae","name":"vae","type":"VAE","link":8},{"localized_name":"masque","name":"mask","type":"MASK","link":32},{"localized_name":"agrandir_masque_par","name":"grow_mask_by","type":"INT","widget":{"name":"grow_mask_by"},"link":null}],"outputs":[{"localized_name":"LATENT","name":"LATENT","type":"LATENT","slot_index":0,"links":[14]}],"properties":{"cnr_id":"comfy-core","ver":"0.3.67","Node name for S&R":"VAEEncodeForInpaint"},"widgets_values":[6]}],"links":[[5,4,0,10,0,"MODEL"],[6,4,1,6,0,"CLIP"],[7,4,1,7,0,"CLIP"],[8,4,2,9,1,"VAE"],[9,4,2,11,1,"VAE"],[14,9,0,10,3,"LATENT"],[15,10,0,11,0,"LATENT"],[16,11,0,12,0,"IMAGE"],[29,1,0,19,0,"IMAGE"],[30,2,0,19,1,"BBOX_DETECTOR"],[31,19,0,9,0,"IMAGE"],[32,19,1,9,2,"MASK"],[33,19,0,13,0,"IMAGE"],[36,6,0,20,0,"CONDITIONING"],[37,7,0,20,1,"CONDITIONING"],[38,5,0,20,2,"CONTROL_NET"],[39,19,0,20,3,"IMAGE"],[40,4,2,20,4,"VAE"],[42,20,0,10,1,"CONDITIONING"],[43,20,1,10,2,"CONDITIONING"]],"groups":[{"id":1,"title":"Input & Detection","bounding":[40,30,780,510],"color":"#3f789e","font_size":24,"flags":{}},{"id":2,"title":"Models","bounding":[40,540,330,260],"color":"#8A8A00","font_size":24,"flags":{}},{"id":3,"title":"Conditioning & ControlNet","bounding":[390,240,810,480],"color":"#88AA88","font_size":24,"flags":{}},{"id":4,"title":"Sampling & Output","bounding":[1190,30,940,560],"color":"#A87A3A","font_size":24,"flags":{}}],"config":{},"extra":{"ds":{"scale":1.2312926772202086,"offset":[1068.588707587401,162.74012615096808]}},"version":0.4}
+{
+  "id": "70377b6f-28f6-417c-8fac-f6c8f079fb16",
+  "revision": 0,
+  "last_node_id": 22,
+  "last_link_id": 48,
+  "nodes": [
+    {
+      "id": 11,
+      "type": "VAEDecode",
+      "pos": [1550, 100],
+      "size": [210, 46],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "échantillons", "name": "samples", "type": "LATENT", "link": 15},
+        {"localized_name": "vae", "name": "vae", "type": "VAE", "link": 9}
+      ],
+      "outputs": [
+        {"localized_name": "IMAGE", "name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [46]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "VAEDecode"},
+      "widgets_values": []
+    },
+    {
+      "id": 2,
+      "type": "UltralyticsDetectorProvider",
+      "pos": [50, 450],
+      "size": [315, 78],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "model_name", "name": "model_name", "type": "COMBO", "widget": {"name": "model_name"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "BBOX_DETECTOR", "name": "BBOX_DETECTOR", "type": "BBOX_DETECTOR", "slot_index": 0, "links": [30]},
+        {"localized_name": "SEGM_DETECTOR", "name": "SEGM_DETECTOR", "type": "SEGM_DETECTOR", "links": null}
+      ],
+      "properties": {"cnr_id": "comfyui-impact-subpack", "ver": "1.3.5", "Node name for S&R": "UltralyticsDetectorProvider"},
+      "widgets_values": ["bbox/hand_yolov8s.pt"]
+    },
+    {
+      "id": 13,
+      "type": "PreviewImage",
+      "pos": [851.8582974385245, 451.1516687964533],
+      "size": [315, 246],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "images", "name": "images", "type": "IMAGE", "link": 33}
+      ],
+      "outputs": [],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "PreviewImage"},
+      "widgets_values": []
+    },
+    {
+      "id": 6,
+      "type": "CLIPTextEncode",
+      "pos": [400, 300],
+      "size": [400, 150],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "clip", "name": "clip", "type": "CLIP", "link": 6},
+        {"localized_name": "text", "name": "text", "type": "STRING", "widget": {"name": "text"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "CONDITIONNEMENT", "name": "CONDITIONING", "type": "CONDITIONING", "slot_index": 0, "links": [36]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["detailed hand, five fingers, proper thumb, natural anatomy"]
+    },
+    {
+      "id": 7,
+      "type": "CLIPTextEncode",
+      "pos": [400, 500],
+      "size": [400, 150],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "clip", "name": "clip", "type": "CLIP", "link": 7},
+        {"localized_name": "text", "name": "text", "type": "STRING", "widget": {"name": "text"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "CONDITIONNEMENT", "name": "CONDITIONING", "type": "CONDITIONING", "slot_index": 0, "links": [37]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "CLIPTextEncode"},
+      "widgets_values": ["extra fingers, missing fingers, deformed hand, bad anatomy"]
+    },
+    {
+      "id": 5,
+      "type": "ControlNetLoader",
+      "pos": [50, 720],
+      "size": [315, 58],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "control_net_name", "name": "control_net_name", "type": "COMBO", "widget": {"name": "control_net_name"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "RESEAU_DE_CONTROLE", "name": "CONTROL_NET", "type": "CONTROL_NET", "slot_index": 0, "links": [38]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "ControlNetLoader"},
+      "widgets_values": ["SDXL/t2i-adapter-depth-zoe-sdxl-1.0.safetensors"]
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [50, 580],
+      "size": [315, 98],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "nom_ckpt", "name": "ckpt_name", "type": "COMBO", "widget": {"name": "ckpt_name"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "MODÈLE", "name": "MODEL", "type": "MODEL", "slot_index": 0, "links": [5]},
+        {"localized_name": "CLIP", "name": "CLIP", "type": "CLIP", "slot_index": 1, "links": [6, 7]},
+        {"localized_name": "VAE", "name": "VAE", "type": "VAE", "slot_index": 2, "links": [8, 9, 40]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "CheckpointLoaderSimple"},
+      "widgets_values": ["cyberrealisticXL_v70_fp32.safetensors"]
+    },
+    {
+      "id": 1,
+      "type": "LoadImage",
+      "pos": [50, 100],
+      "size": [315, 314],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "image", "name": "image", "type": "COMBO", "widget": {"name": "image"}, "link": null},
+        {"localized_name": "choisissez le fichier à télécharger", "name": "upload", "type": "IMAGEUPLOAD", "widget": {"name": "upload"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "IMAGE", "name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [29, 44, 45]},
+        {"localized_name": "MASQUE", "name": "MASK", "type": "MASK", "links": null}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "LoadImage"},
+      "widgets_values": ["clothing-1_05.png", "image"]
+    },
+    {
+      "id": 10,
+      "type": "KSampler",
+      "pos": [1200, 100],
+      "size": [315, 474],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "model", "name": "model", "type": "MODEL", "link": 5},
+        {"localized_name": "positive", "name": "positive", "type": "CONDITIONING", "link": 42},
+        {"localized_name": "negative", "name": "negative", "type": "CONDITIONING", "link": 43},
+        {"localized_name": "latent_image", "name": "latent_image", "type": "LATENT", "link": 14},
+        {"localized_name": "seed", "name": "seed", "type": "INT", "widget": {"name": "seed"}, "link": null},
+        {"localized_name": "steps", "name": "steps", "type": "INT", "widget": {"name": "steps"}, "link": null},
+        {"localized_name": "cfg", "name": "cfg", "type": "FLOAT", "widget": {"name": "cfg"}, "link": null},
+        {"localized_name": "sampler_name", "name": "sampler_name", "type": "COMBO", "widget": {"name": "sampler_name"}, "link": null},
+        {"localized_name": "scheduler", "name": "scheduler", "type": "COMBO", "widget": {"name": "scheduler"}, "link": null},
+        {"localized_name": "denoise", "name": "denoise", "type": "FLOAT", "widget": {"name": "denoise"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "LATENT", "name": "LATENT", "type": "LATENT", "slot_index": 0, "links": [15]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "KSampler"},
+      "widgets_values": [41558378016803, "randomize", 35, 6, "dpmpp_sde", "karras", 0.85]
+    },
+    {
+      "id": 21,
+      "type": "MeshGraphormer-DepthMapPreprocessor",
+      "pos": [1299.4982379548728, 653.6191535801964],
+      "size": [295.98203125, 222],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "image", "name": "image", "type": "IMAGE", "link": null},
+        {"localized_name": "mask_bbox_padding", "name": "mask_bbox_padding", "shape": 7, "type": "INT", "widget": {"name": "mask_bbox_padding"}, "link": null},
+        {"localized_name": "resolution", "name": "resolution", "shape": 7, "type": "INT", "widget": {"name": "resolution"}, "link": null},
+        {"localized_name": "mask_type", "name": "mask_type", "shape": 7, "type": "COMBO", "widget": {"name": "mask_type"}, "link": null},
+        {"localized_name": "mask_expand", "name": "mask_expand", "shape": 7, "type": "INT", "widget": {"name": "mask_expand"}, "link": null},
+        {"localized_name": "rand_seed", "name": "rand_seed", "shape": 7, "type": "INT", "widget": {"name": "rand_seed"}, "link": null},
+        {"localized_name": "detect_thr", "name": "detect_thr", "shape": 7, "type": "FLOAT", "widget": {"name": "detect_thr"}, "link": null},
+        {"localized_name": "presence_thr", "name": "presence_thr", "shape": 7, "type": "FLOAT", "widget": {"name": "presence_thr"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "IMAGE", "name": "IMAGE", "type": "IMAGE", "links": null},
+        {"localized_name": "INPAINTING_MASK", "name": "INPAINTING_MASK", "type": "MASK", "links": null}
+      ],
+      "properties": {"cnr_id": "comfyui_controlnet_aux", "ver": "12f35647f0d510e03b45a47fb420fe1245a575df", "Node name for S&R": "MeshGraphormer-DepthMapPreprocessor"},
+      "widgets_values": [30, 512, "based_on_depth", 5, 88, 0.6, 0.6]
+    },
+    {
+      "id": 22,
+      "type": "ImageCompositeMasked",
+      "pos": [1800, 100],
+      "size": [315, 146],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "destination", "name": "destination", "type": "IMAGE", "link": 45},
+        {"localized_name": "source", "name": "source", "type": "IMAGE", "link": 46},
+        {"localized_name": "mask", "name": "mask", "type": "MASK", "link": 47},
+        {"localized_name": "x", "name": "x", "type": "INT", "widget": {"name": "x"}, "link": null},
+        {"localized_name": "y", "name": "y", "type": "INT", "widget": {"name": "y"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "IMAGE", "name": "IMAGE", "type": "IMAGE", "slot_index": 0, "links": [48]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "ImageCompositeMasked"},
+      "widgets_values": [0, 0, false]
+    },
+    {
+      "id": 12,
+      "type": "SaveImage",
+      "pos": [2150, 100],
+      "size": [315, 270],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "images", "name": "images", "type": "IMAGE", "link": 48},
+        {"localized_name": "préfixe_du_nom_de_fichier", "name": "filename_prefix", "type": "STRING", "widget": {"name": "filename_prefix"}, "link": null}
+      ],
+      "outputs": [],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67"},
+      "widgets_values": ["hand_fixed_simple"]
+    },
+    {
+      "id": 19,
+      "type": "MeshGraphormer+ImpactDetector-DepthMapPreprocessor",
+      "pos": [383.5616533987703, -53.46415915609294],
+      "size": [439.91953125, 270],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "image", "name": "image", "type": "IMAGE", "link": 29},
+        {"localized_name": "bbox_detector", "name": "bbox_detector", "type": "BBOX_DETECTOR", "link": 30},
+        {"localized_name": "bbox_threshold", "name": "bbox_threshold", "shape": 7, "type": "FLOAT", "widget": {"name": "bbox_threshold"}, "link": null},
+        {"localized_name": "bbox_dilation", "name": "bbox_dilation", "shape": 7, "type": "INT", "widget": {"name": "bbox_dilation"}, "link": null},
+        {"localized_name": "bbox_crop_factor", "name": "bbox_crop_factor", "shape": 7, "type": "FLOAT", "widget": {"name": "bbox_crop_factor"}, "link": null},
+        {"localized_name": "drop_size", "name": "drop_size", "shape": 7, "type": "INT", "widget": {"name": "drop_size"}, "link": null},
+        {"localized_name": "mask_bbox_padding", "name": "mask_bbox_padding", "shape": 7, "type": "INT", "widget": {"name": "mask_bbox_padding"}, "link": null},
+        {"localized_name": "mask_type", "name": "mask_type", "shape": 7, "type": "COMBO", "widget": {"name": "mask_type"}, "link": null},
+        {"localized_name": "mask_expand", "name": "mask_expand", "shape": 7, "type": "INT", "widget": {"name": "mask_expand"}, "link": null},
+        {"localized_name": "rand_seed", "name": "rand_seed", "shape": 7, "type": "INT", "widget": {"name": "rand_seed"}, "link": null},
+        {"localized_name": "resolution", "name": "resolution", "shape": 7, "type": "INT", "widget": {"name": "resolution"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "IMAGE", "name": "IMAGE", "type": "IMAGE", "links": [33, 39]},
+        {"localized_name": "INPAINTING_MASK", "name": "INPAINTING_MASK", "type": "MASK", "links": [32, 47]}
+      ],
+      "properties": {"cnr_id": "comfyui_controlnet_aux", "ver": "12f35647f0d510e03b45a47fb420fe1245a575df", "Node name for S&R": "MeshGraphormer+ImpactDetector-DepthMapPreprocessor"},
+      "widgets_values": [0.5, 10, 3, 10, 30, "based_on_depth", 5, 88, 512]
+    },
+    {
+      "id": 20,
+      "type": "ControlNetApplyAdvanced",
+      "pos": [888.1894094728759, 174.92581011987795],
+      "size": [270, 186],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "positive", "name": "positive", "type": "CONDITIONING", "link": 36},
+        {"localized_name": "negative", "name": "negative", "type": "CONDITIONING", "link": 37},
+        {"localized_name": "control_net", "name": "control_net", "type": "CONTROL_NET", "link": 38},
+        {"localized_name": "image", "name": "image", "type": "IMAGE", "link": 39},
+        {"localized_name": "vae", "name": "vae", "shape": 7, "type": "VAE", "link": 40},
+        {"localized_name": "strength", "name": "strength", "type": "FLOAT", "widget": {"name": "strength"}, "link": null},
+        {"localized_name": "start_percent", "name": "start_percent", "type": "FLOAT", "widget": {"name": "start_percent"}, "link": null},
+        {"localized_name": "end_percent", "name": "end_percent", "type": "FLOAT", "widget": {"name": "end_percent"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "positive", "name": "positive", "type": "CONDITIONING", "links": [42]},
+        {"localized_name": "negative", "name": "negative", "type": "CONDITIONING", "links": [43]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "ControlNetApplyAdvanced"},
+      "widgets_values": [0.9, 0, 1]
+    },
+    {
+      "id": 14,
+      "type": "Note",
+      "pos": [50, 820],
+      "size": [400, 160],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {"text": ""},
+      "widgets_values": ["SIMPLIFIED MeshGraphormer Workflow\n\nThis uses MeshGraphormer+ImpactDetector which combines:\n- Hand detection (YOLO)\n- Depth map generation (MeshGraphormer)\n- All in one convenient node!\n\nKey Settings:\n- Detection threshold: 0.5\n- Dilation: 10 (mask expansion)\n- Resolution: 512\n- ControlNet strength: 0.9\n- Denoise: 0.85\n- Steps: 35\n\nFIXED: Now outputs full image with fixed hands composited back!"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 9,
+      "type": "VAEEncodeForInpaint",
+      "pos": [851.8375687573367, -51.782043588483894],
+      "size": [315, 98],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"localized_name": "pixels", "name": "pixels", "type": "IMAGE", "link": 44},
+        {"localized_name": "vae", "name": "vae", "type": "VAE", "link": 8},
+        {"localized_name": "masque", "name": "mask", "type": "MASK", "link": 32},
+        {"localized_name": "agrandir_masque_par", "name": "grow_mask_by", "type": "INT", "widget": {"name": "grow_mask_by"}, "link": null}
+      ],
+      "outputs": [
+        {"localized_name": "LATENT", "name": "LATENT", "type": "LATENT", "slot_index": 0, "links": [14]}
+      ],
+      "properties": {"cnr_id": "comfy-core", "ver": "0.3.67", "Node name for S&R": "VAEEncodeForInpaint"},
+      "widgets_values": [6]
+    }
+  ],
+  "links": [
+    [5, 4, 0, 10, 0, "MODEL"],
+    [6, 4, 1, 6, 0, "CLIP"],
+    [7, 4, 1, 7, 0, "CLIP"],
+    [8, 4, 2, 9, 1, "VAE"],
+    [9, 4, 2, 11, 1, "VAE"],
+    [14, 9, 0, 10, 3, "LATENT"],
+    [15, 10, 0, 11, 0, "LATENT"],
+    [29, 1, 0, 19, 0, "IMAGE"],
+    [30, 2, 0, 19, 1, "BBOX_DETECTOR"],
+    [32, 19, 1, 9, 2, "MASK"],
+    [33, 19, 0, 13, 0, "IMAGE"],
+    [36, 6, 0, 20, 0, "CONDITIONING"],
+    [37, 7, 0, 20, 1, "CONDITIONING"],
+    [38, 5, 0, 20, 2, "CONTROL_NET"],
+    [39, 19, 0, 20, 3, "IMAGE"],
+    [40, 4, 2, 20, 4, "VAE"],
+    [42, 20, 0, 10, 1, "CONDITIONING"],
+    [43, 20, 1, 10, 2, "CONDITIONING"],
+    [44, 1, 0, 9, 0, "IMAGE"],
+    [45, 1, 0, 22, 0, "IMAGE"],
+    [46, 11, 0, 22, 1, "IMAGE"],
+    [47, 19, 1, 22, 2, "MASK"],
+    [48, 22, 0, 12, 0, "IMAGE"]
+  ],
+  "groups": [
+    {"id": 1, "title": "Input & Detection", "bounding": [40, 30, 780, 510], "color": "#3f789e", "font_size": 24, "flags": {}},
+    {"id": 2, "title": "Models", "bounding": [40, 540, 330, 260], "color": "#8A8A00", "font_size": 24, "flags": {}},
+    {"id": 3, "title": "Conditioning & ControlNet", "bounding": [390, 240, 810, 480], "color": "#88AA88", "font_size": 24, "flags": {}},
+    {"id": 4, "title": "Sampling & Output", "bounding": [1190, 30, 1300, 560], "color": "#A87A3A", "font_size": 24, "flags": {}}
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 1.2312926772202086,
+      "offset": [1068.588707587401, 162.74012615096808]
+    }
+  },
+  "version": 0.4
+}
