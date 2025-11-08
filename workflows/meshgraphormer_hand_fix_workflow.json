@@ -1,6 +1,6 @@
 {
-  "last_node_id": 25,
-  "last_link_id": 40,
+  "last_node_id": 16,
+  "last_link_id": 22,
   "nodes": [
     {
       "id": 1,
@@ -34,9 +34,9 @@
     },
     {
       "id": 3,
-      "type": "BBoxDetectorForEach",
+      "type": "MeshGraphormer+ImpactDetector-DepthMapPreprocessor",
       "pos": [400, 100],
-      "size": {"0": 320, "1": 250},
+      "size": {"0": 440, "1": 270},
       "flags": {},
       "order": 2,
       "mode": 0,
@@ -45,31 +45,11 @@
         {"name": "bbox_detector", "type": "BBOX_DETECTOR", "link": 3}
       ],
       "outputs": [
-        {"name": "IMAGE", "type": "IMAGE", "links": [4], "slot_index": 0},
-        {"name": "cropped_image", "type": "IMAGE", "links": [5], "slot_index": 1},
-        {"name": "cropped_refined", "type": "IMAGE", "links": null},
-        {"name": "mask", "type": "MASK", "links": [6], "slot_index": 3},
-        {"name": "bbox", "type": "BBOX", "links": [7], "slot_index": 4}
+        {"name": "IMAGE", "type": "IMAGE", "links": [4, 8], "slot_index": 0},
+        {"name": "INPAINTING_MASK", "type": "MASK", "links": [5, 6], "slot_index": 1}
       ],
-      "properties": {"Node name for S&R": "BBoxDetectorForEach"},
-      "widgets_values": [0.5, 20, 1.5, 10, "false", "false"]
-    },
-    {
-      "id": 4,
-      "type": "MeshGraphormer-DepthMapPreprocessor",
-      "pos": [750, 100],
-      "size": {"0": 315, "1": 106},
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "inputs": [
-        {"name": "image", "type": "IMAGE", "link": 5}
-      ],
-      "outputs": [
-        {"name": "IMAGE", "type": "IMAGE", "links": [8], "slot_index": 0}
-      ],
-      "properties": {"Node name for S&R": "MeshGraphormer-DepthMapPreprocessor"},
-      "widgets_values": ["enable", 512]
+      "properties": {"Node name for S&R": "MeshGraphormer+ImpactDetector-DepthMapPreprocessor"},
+      "widgets_values": [0.5, 20, 1.5, 10, 30, "based_on_depth", 5, 88, 512]
     },
     {
       "id": 5,
@@ -77,7 +57,7 @@
       "pos": [50, 600],
       "size": {"0": 315, "1": 98},
       "flags": {},
-      "order": 4,
+      "order": 3,
       "mode": 0,
       "outputs": [
         {"name": "MODEL", "type": "MODEL", "links": [9], "slot_index": 0},
@@ -93,7 +73,7 @@
       "pos": [50, 750],
       "size": {"0": 315, "1": 58},
       "flags": {},
-      "order": 5,
+      "order": 4,
       "mode": 0,
       "outputs": [
         {"name": "CONTROL_NET", "type": "CONTROL_NET", "links": [14], "slot_index": 0}
@@ -104,10 +84,10 @@
     {
       "id": 7,
       "type": "CLIPTextEncode",
-      "pos": [400, 400],
+      "pos": [400, 450],
       "size": {"0": 400, "1": 200},
       "flags": {},
-      "order": 6,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {"name": "clip", "type": "CLIP", "link": 10}
@@ -121,10 +101,10 @@
     {
       "id": 8,
       "type": "CLIPTextEncode",
-      "pos": [400, 650],
+      "pos": [400, 700],
       "size": {"0": 400, "1": 200},
       "flags": {},
-      "order": 7,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {"name": "clip", "type": "CLIP", "link": 11}
@@ -138,16 +118,16 @@
     {
       "id": 9,
       "type": "ControlNetApplyAdvanced",
-      "pos": [850, 400],
+      "pos": [900, 450],
       "size": {"0": 315, "1": 186},
       "flags": {},
-      "order": 8,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {"name": "positive", "type": "CONDITIONING", "link": 15},
         {"name": "negative", "type": "CONDITIONING", "link": 16},
         {"name": "control_net", "type": "CONTROL_NET", "link": 14},
-        {"name": "image", "type": "IMAGE", "link": 8}
+        {"name": "image", "type": "IMAGE", "link": 4}
       ],
       "outputs": [
         {"name": "positive", "type": "CONDITIONING", "links": [17], "slot_index": 0},
@@ -159,15 +139,15 @@
     {
       "id": 10,
       "type": "VAEEncodeForInpaint",
-      "pos": [750, 250],
+      "pos": [900, 100],
       "size": {"0": 315, "1": 98},
       "flags": {},
-      "order": 9,
+      "order": 8,
       "mode": 0,
       "inputs": [
-        {"name": "pixels", "type": "IMAGE", "link": 4},
+        {"name": "pixels", "type": "IMAGE", "link": 2},
         {"name": "vae", "type": "VAE", "link": 12},
-        {"name": "mask", "type": "MASK", "link": 6}
+        {"name": "mask", "type": "MASK", "link": 5}
       ],
       "outputs": [
         {"name": "LATENT", "type": "LATENT", "links": [19], "slot_index": 0}
@@ -178,10 +158,10 @@
     {
       "id": 11,
       "type": "KSampler",
-      "pos": [1200, 100],
+      "pos": [1250, 100],
       "size": {"0": 315, "1": 474},
       "flags": {},
-      "order": 10,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {"name": "model", "type": "MODEL", "link": 9},
@@ -198,10 +178,10 @@
     {
       "id": 12,
       "type": "VAEDecode",
-      "pos": [1550, 100],
+      "pos": [1600, 100],
       "size": {"0": 210, "1": 46},
       "flags": {},
-      "order": 11,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {"name": "samples", "type": "LATENT", "link": 20},
@@ -215,10 +195,10 @@
     {
       "id": 13,
       "type": "ImageCompositeMasked",
-      "pos": [1550, 200],
+      "pos": [1600, 200],
       "size": {"0": 315, "1": 146},
       "flags": {},
-      "order": 12,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {"name": "destination", "type": "IMAGE", "link": 2},
@@ -236,10 +216,10 @@
     {
       "id": 14,
       "type": "SaveImage",
-      "pos": [1900, 100],
+      "pos": [1950, 100],
       "size": {"0": 315, "1": 270},
       "flags": {},
-      "order": 13,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {"name": "images", "type": "IMAGE", "link": 22}
@@ -250,10 +230,10 @@
     {
       "id": 15,
       "type": "PreviewImage",
-      "pos": [1100, 250],
+      "pos": [900, 250],
       "size": {"0": 315, "1": 246},
       "flags": {},
-      "order": 14,
+      "order": 13,
       "mode": 0,
       "inputs": [
         {"name": "images", "type": "IMAGE", "link": 8}
@@ -264,23 +244,22 @@
       "id": 16,
       "type": "Note",
       "pos": [50, 850],
-      "size": {"0": 400, "1": 150},
+      "size": {"0": 400, "1": 190},
       "flags": {},
-      "order": 15,
+      "order": 14,
       "mode": 0,
       "properties": {"text": ""},
-      "widgets_values": ["MeshGraphormer Hand Fix Workflow (SDXL)\n\nThis workflow uses:\n1. Hand YOLO detection to find hands\n2. Separate BBoxDetectorForEach for precise hand cropping\n3. MeshGraphormer to generate anatomically correct depth maps\n4. SDXL T2I-Adapter Depth to guide hand reconstruction\n5. High denoise (0.9) for structural changes\n6. ImageCompositeMasked to blend fixed hands back into full image\n\nCritical Settings:\n- ControlNet strength: 0.9 (force correct anatomy)\n- Denoise: 0.9 (major structural changes)\n- CFG: 6.5 (optimized for SDXL)\n- Steps: 40 (thorough reconstruction)\n- Enhanced prompts with weighting for anatomical accuracy\n\nBest for: Severe distortions, multiple hands, professional work"]
+      "widgets_values": ["MeshGraphormer Hand Fix Workflow (SDXL) - Advanced\n\nThis workflow uses:\n1. Hand YOLO detection to find hands\n2. MeshGraphormer+ImpactDetector for combined detection & depth generation\n3. SDXL T2I-Adapter Depth to guide hand reconstruction\n4. High denoise (0.9) for aggressive structural changes\n5. ImageCompositeMasked to blend fixed hands back into full image\n\nCritical Settings:\n- ControlNet strength: 0.9 (force correct anatomy)\n- Denoise: 0.9 (major structural changes)\n- CFG: 6.5 (optimized for SDXL)\n- Steps: 40 (thorough reconstruction)\n- Enhanced prompts with weighting (1.3x, 1.5x) for anatomical accuracy\n\nBest for: Severe distortions (6+ fingers, fused digits), professional work\n\nNote: BBoxDetectorForEach was replaced with MeshGraphormer+ImpactDetector (more modern approach)"]
     }
   ],
   "links": [
     [1, 1, 0, 3, 0, "IMAGE"],
-    [2, 1, 0, 13, 0, "IMAGE"],
+    [2, 1, 0, 10, 0, "IMAGE"],
     [3, 2, 0, 3, 1, "BBOX_DETECTOR"],
-    [4, 3, 0, 10, 0, "IMAGE"],
-    [5, 3, 1, 4, 0, "IMAGE"],
-    [6, 3, 3, 10, 2, "MASK"],
-    [7, 3, 4, null, null, "BBOX"],
-    [8, 4, 0, 9, 3, "IMAGE"],
+    [4, 3, 0, 9, 3, "IMAGE"],
+    [5, 3, 1, 10, 2, "MASK"],
+    [6, 3, 1, 13, 2, "MASK"],
+    [8, 3, 0, 15, 0, "IMAGE"],
     [9, 5, 0, 11, 0, "MODEL"],
     [10, 5, 1, 7, 0, "CLIP"],
     [11, 5, 1, 8, 0, "CLIP"],
@@ -298,28 +277,23 @@
   ],
   "groups": [
     {
-      "title": "Detection",
-      "bounding": [40, 30, 690, 510],
+      "title": "Input & Detection",
+      "bounding": [40, 30, 810, 510],
       "color": "#3f789e"
     },
     {
-      "title": "MeshGraphormer Depth",
-      "bounding": [740, 30, 390, 200],
-      "color": "#8A5082"
-    },
-    {
-      "title": "Models & Conditioning",
-      "bounding": [40, 530, 810, 350],
+      "title": "Models & Prompts",
+      "bounding": [40, 550, 810, 400],
       "color": "#8A8A00"
     },
     {
       "title": "ControlNet & Sampling",
-      "bounding": [840, 330, 690, 280],
+      "bounding": [890, 30, 690, 650],
       "color": "#88AA88"
     },
     {
-      "title": "Output",
-      "bounding": [1540, 30, 690, 370],
+      "title": "Output & Compositing",
+      "bounding": [1590, 30, 690, 370],
       "color": "#A87A3A"
     }
   ],
