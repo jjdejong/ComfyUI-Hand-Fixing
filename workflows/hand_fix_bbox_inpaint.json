@@ -1,6 +1,6 @@
 {
-  "last_node_id": 18,
-  "last_link_id": 30,
+  "last_node_id": 16,
+  "last_link_id": 25,
   "nodes": [
     {
       "id": 1,
@@ -11,7 +11,7 @@
       "order": 0,
       "mode": 0,
       "outputs": [
-        {"name": "IMAGE", "type": "IMAGE", "links": [1], "slot_index": 0},
+        {"name": "IMAGE", "type": "IMAGE", "links": [1, 2], "slot_index": 0},
         {"name": "MASK", "type": "MASK", "links": null}
       ],
       "properties": {"Node name for S&R": "LoadImage"},
@@ -26,7 +26,7 @@
       "order": 1,
       "mode": 0,
       "outputs": [
-        {"name": "BBOX_DETECTOR", "type": "BBOX_DETECTOR", "links": [2], "slot_index": 0},
+        {"name": "BBOX_DETECTOR", "type": "BBOX_DETECTOR", "links": [3], "slot_index": 0},
         {"name": "SEGM_DETECTOR", "type": "SEGM_DETECTOR", "links": null}
       ],
       "properties": {"Node name for S&R": "UltralyticsDetectorProvider"},
@@ -34,177 +34,272 @@
     },
     {
       "id": 3,
-      "type": "FaceDetailer",
+      "type": "BBoxDetectorCombined",
       "pos": [400, 100],
-      "size": {"0": 400, "1": 900},
+      "size": {"0": 350, "1": 200},
       "flags": {},
       "order": 2,
       "mode": 0,
       "inputs": [
-        {"name": "image", "type": "IMAGE", "link": 1},
-        {"name": "model", "type": "MODEL", "link": 3},
-        {"name": "clip", "type": "CLIP", "link": 4},
-        {"name": "vae", "type": "VAE", "link": 5},
-        {"name": "positive", "type": "CONDITIONING", "link": 6},
-        {"name": "negative", "type": "CONDITIONING", "link": 7},
-        {"name": "bbox_detector", "type": "BBOX_DETECTOR", "link": 2},
-        {"name": "sam_model_opt", "type": "SAM_MODEL", "link": null},
-        {"name": "segm_detector_opt", "type": "SEGM_DETECTOR", "link": null},
-        {"name": "detailer_hook", "type": "DETAILER_HOOK", "link": null}
+        {"name": "bbox_detector", "type": "BBOX_DETECTOR", "link": 3},
+        {"name": "image", "type": "IMAGE", "link": 1}
       ],
       "outputs": [
-        {"name": "image", "type": "IMAGE", "links": [8], "slot_index": 0},
-        {"name": "cropped_refined", "type": "IMAGE", "links": null},
-        {"name": "cropped_enhanced_alpha", "type": "IMAGE", "links": null},
-        {"name": "mask", "type": "MASK", "links": null},
-        {"name": "detailer_pipe", "type": "DETAILER_PIPE", "links": null},
-        {"name": "cnet_images", "type": "IMAGE", "links": null}
+        {"name": "MASK", "type": "MASK", "links": [4], "slot_index": 0},
+        {"name": "SEGS", "type": "SEGS", "links": null},
+        {"name": "bbox", "type": "BBOX", "links": null}
       ],
-      "properties": {"Node name for S&R": "FaceDetailer"},
-      "widgets_values": [
-        512,
-        true,
-        1024,
-        123456,
-        "randomize",
-        40,
-        7.0,
-        "dpmpp_2m",
-        "karras",
-        0.95,
-        5,
-        true,
-        false,
-        0.5,
-        10,
-        3.0,
-        10,
-        1.0,
-        0,
-        0.93,
-        0,
-        0.7,
-        "False",
-        10,
-        ""
-      ]
+      "properties": {"Node name for S&R": "BBoxDetectorCombined"},
+      "widgets_values": [0.5, 10, 1.0, 10, "all"]
     },
     {
       "id": 4,
+      "type": "GrowMask",
+      "pos": [800, 100],
+      "size": {"0": 315, "1": 82},
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {"name": "mask", "type": "MASK", "link": 4}
+      ],
+      "outputs": [
+        {"name": "MASK", "type": "MASK", "links": [5, 20], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "GrowMask"},
+      "widgets_values": [30, false]
+    },
+    {
+      "id": 5,
+      "type": "MaskBlur",
+      "pos": [800, 250],
+      "size": {"0": 315, "1": 58},
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {"name": "mask", "type": "MASK", "link": 5}
+      ],
+      "outputs": [
+        {"name": "MASK", "type": "MASK", "links": [6], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "MaskBlur"},
+      "widgets_values": [15]
+    },
+    {
+      "id": 6,
       "type": "CheckpointLoaderSimple",
       "pos": [50, 600],
       "size": {"0": 315, "1": 98},
       "flags": {},
-      "order": 3,
+      "order": 5,
       "mode": 0,
       "outputs": [
-        {"name": "MODEL", "type": "MODEL", "links": [3], "slot_index": 0},
-        {"name": "CLIP", "type": "CLIP", "links": [4, 9, 10], "slot_index": 1},
-        {"name": "VAE", "type": "VAE", "links": [5], "slot_index": 2}
+        {"name": "MODEL", "type": "MODEL", "links": [7], "slot_index": 0},
+        {"name": "CLIP", "type": "CLIP", "links": [8, 9], "slot_index": 1},
+        {"name": "VAE", "type": "VAE", "links": [10, 11], "slot_index": 2}
       ],
       "properties": {"Node name for S&R": "CheckpointLoaderSimple"},
       "widgets_values": ["cyberrealisticXL_v70_fp32.safetensors"]
     },
     {
-      "id": 5,
+      "id": 7,
       "type": "CLIPTextEncode",
-      "pos": [50, 750],
+      "pos": [400, 350],
       "size": {"0": 400, "1": 200},
       "flags": {},
-      "order": 4,
+      "order": 6,
       "mode": 0,
       "inputs": [
-        {"name": "clip", "type": "CLIP", "link": 9}
+        {"name": "clip", "type": "CLIP", "link": 8}
       ],
       "outputs": [
-        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [6], "slot_index": 0}
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [12], "slot_index": 0}
       ],
       "properties": {"Node name for S&R": "CLIPTextEncode"},
       "widgets_values": ["masterpiece, best quality, detailed human hand, (five fingers:1.4), (correct hand anatomy:1.3), proper thumb placement, natural hand pose, realistic skin texture, well-defined knuckles, natural proportions"]
     },
     {
-      "id": 6,
+      "id": 8,
       "type": "CLIPTextEncode",
-      "pos": [50, 1000],
+      "pos": [400, 600],
       "size": {"0": 400, "1": 200},
       "flags": {},
-      "order": 5,
+      "order": 7,
       "mode": 0,
       "inputs": [
-        {"name": "clip", "type": "CLIP", "link": 10}
+        {"name": "clip", "type": "CLIP", "link": 9}
       ],
       "outputs": [
-        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [7], "slot_index": 0}
+        {"name": "CONDITIONING", "type": "CONDITIONING", "links": [13], "slot_index": 0}
       ],
       "properties": {"Node name for S&R": "CLIPTextEncode"},
       "widgets_values": ["(deformed hand:1.6), (extra fingers:1.6), (missing fingers:1.5), (6 fingers:1.7), (7 fingers:1.6), (4 fingers:1.5), (3 fingers:1.5), fused fingers, merged digits, mutated hand, bad hand anatomy, extra limbs, poorly drawn hand, malformed hand, wrong number of fingers, incorrect finger count, (extra digit:1.5), (fewer digits:1.5), floating fingers, disconnected fingers, broken hand, impossible hand pose"]
     },
     {
-      "id": 7,
-      "type": "SaveImage",
-      "pos": [850, 100],
-      "size": {"0": 315, "1": 270},
+      "id": 9,
+      "type": "VAEEncodeForInpaint",
+      "pos": [1150, 100],
+      "size": {"0": 315, "1": 98},
       "flags": {},
-      "order": 6,
+      "order": 8,
       "mode": 0,
       "inputs": [
-        {"name": "images", "type": "IMAGE", "link": 8}
+        {"name": "pixels", "type": "IMAGE", "link": 2},
+        {"name": "vae", "type": "VAE", "link": 10},
+        {"name": "mask", "type": "MASK", "link": 6}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [14], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEEncodeForInpaint"},
+      "widgets_values": [6]
+    },
+    {
+      "id": 10,
+      "type": "KSampler",
+      "pos": [1500, 100],
+      "size": {"0": 315, "1": 474},
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {"name": "model", "type": "MODEL", "link": 7},
+        {"name": "positive", "type": "CONDITIONING", "link": 12},
+        {"name": "negative", "type": "CONDITIONING", "link": 13},
+        {"name": "latent_image", "type": "LATENT", "link": 14}
+      ],
+      "outputs": [
+        {"name": "LATENT", "type": "LATENT", "links": [15], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "KSampler"},
+      "widgets_values": [12345, "randomize", 40, 7.0, "dpmpp_2m", "karras", 0.95]
+    },
+    {
+      "id": 11,
+      "type": "VAEDecode",
+      "pos": [1850, 100],
+      "size": {"0": 210, "1": 46},
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {"name": "samples", "type": "LATENT", "link": 15},
+        {"name": "vae", "type": "VAE", "link": 11}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [16], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "VAEDecode"}
+    },
+    {
+      "id": 12,
+      "type": "ImageCompositeMasked",
+      "pos": [1850, 200],
+      "size": {"0": 315, "1": 146},
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {"name": "destination", "type": "IMAGE", "link": 2},
+        {"name": "source", "type": "IMAGE", "link": 16},
+        {"name": "mask", "type": "MASK", "link": 20},
+        {"name": "x", "type": "INT", "link": null},
+        {"name": "y", "type": "INT", "link": null}
+      ],
+      "outputs": [
+        {"name": "IMAGE", "type": "IMAGE", "links": [21], "slot_index": 0}
+      ],
+      "properties": {"Node name for S&R": "ImageCompositeMasked"},
+      "widgets_values": [0, 0, false]
+    },
+    {
+      "id": 13,
+      "type": "SaveImage",
+      "pos": [2200, 100],
+      "size": {"0": 315, "1": 270},
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 21}
       ],
       "properties": {},
       "widgets_values": ["hand_fixed_bbox"]
     },
     {
-      "id": 8,
-      "type": "Note",
-      "pos": [50, 1250],
-      "size": {"0": 400, "1": 250},
+      "id": 14,
+      "type": "PreviewImage",
+      "pos": [800, 400],
+      "size": {"0": 315, "1": 246},
       "flags": {},
-      "order": 7,
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {"name": "images", "type": "IMAGE", "link": 2}
+      ],
+      "properties": {"Node name for S&R": "PreviewImage"}
+    },
+    {
+      "id": 15,
+      "type": "Note",
+      "pos": [50, 750],
+      "size": {"0": 400, "1": 280},
+      "flags": {},
+      "order": 14,
       "mode": 0,
       "properties": {"text": ""},
-      "widgets_values": ["BBox-Based Hand Fix Workflow (SDXL)\n\nThis workflow uses RECTANGULAR BOUNDING BOXES for proper hand recreation:\n\n1. YOLO detects hands → bounding boxes\n2. FaceDetailer crops RECTANGULAR regions (not tight masks)\n3. Very high denoise (0.95) forces complete hand regeneration\n4. Large crop_factor (3.0) gives context for natural blending\n5. Bbox dilation (10) expands detection area\n\nKey Settings:\n- guide_size: 512 (processing resolution)\n- max_size: 1024 (max dimension)\n- denoise: 0.95 (very aggressive - recreates hand from scratch)\n- crop_factor: 3.0 (lots of surrounding context)\n- bbox_dilation: 10 (expand detection box)\n- steps: 40\n- CFG: 7.0\n\nBest for: Severe deformities (6+ fingers, fused digits, impossible poses)\nThe rectangular crop gives the model ROOM to recreate proper anatomy.\n\nNo depth guidance - lets the model use its training to create correct hands."],
+      "widgets_values": ["BBox-Based Hand Fix Workflow (SDXL)\n\nThis workflow uses RECTANGULAR BOUNDING BOXES for severe hand deformities:\n\n1. YOLO detects hands → bounding boxes\n2. BBoxDetectorCombined creates RECTANGULAR masks from boxes\n3. GrowMask expands the mask (+30px)\n4. MaskBlur (15px) for smooth blending\n5. Very high denoise (0.95) forces complete regeneration\n\nKey Settings:\n- bbox_threshold: 0.5\n- bbox_dilation: 10 (expands detection area)\n- GrowMask: +30px (gives model room to work)\n- MaskBlur: 15px (smooth transitions)\n- denoise: 0.95 (recreates from scratch)\n- steps: 40\n- CFG: 7.0\n\nBest for: 6-finger hands, fused digits, severe distortions\n\nThe rectangular bbox + high denoise lets the model recreate proper anatomy\ninstead of just enhancing the broken hand."],
       "color": "#432",
       "bgcolor": "#653"
     }
   ],
   "links": [
-    [1, 1, 0, 3, 0, "IMAGE"],
-    [2, 2, 0, 3, 6, "BBOX_DETECTOR"],
-    [3, 4, 0, 3, 1, "MODEL"],
-    [4, 4, 1, 3, 2, "CLIP"],
-    [5, 4, 2, 3, 3, "VAE"],
-    [6, 5, 0, 3, 4, "CONDITIONING"],
-    [7, 6, 0, 3, 5, "CONDITIONING"],
-    [8, 3, 0, 7, 0, "IMAGE"],
-    [9, 4, 1, 5, 0, "CLIP"],
-    [10, 4, 1, 6, 0, "CLIP"]
+    [1, 1, 0, 3, 1, "IMAGE"],
+    [2, 1, 0, 9, 0, "IMAGE"],
+    [3, 2, 0, 3, 0, "BBOX_DETECTOR"],
+    [4, 3, 0, 4, 0, "MASK"],
+    [5, 4, 0, 5, 0, "MASK"],
+    [6, 5, 0, 9, 2, "MASK"],
+    [7, 6, 0, 10, 0, "MODEL"],
+    [8, 6, 1, 7, 0, "CLIP"],
+    [9, 6, 1, 8, 0, "CLIP"],
+    [10, 6, 2, 9, 1, "VAE"],
+    [11, 6, 2, 11, 1, "VAE"],
+    [12, 7, 0, 10, 1, "CONDITIONING"],
+    [13, 8, 0, 10, 2, "CONDITIONING"],
+    [14, 9, 0, 10, 3, "LATENT"],
+    [15, 10, 0, 11, 0, "LATENT"],
+    [16, 11, 0, 12, 1, "IMAGE"],
+    [20, 4, 0, 12, 2, "MASK"],
+    [21, 12, 0, 13, 0, "IMAGE"]
   ],
   "groups": [
     {
       "title": "Input & Detection",
-      "bounding": [40, 30, 380, 550],
+      "bounding": [40, 30, 730, 310],
       "color": "#3f789e"
     },
     {
-      "title": "Hand Processing (BBox-based)",
-      "bounding": [390, 30, 430, 1050],
-      "color": "#88AA88"
-    },
-    {
-      "title": "Output",
-      "bounding": [840, 30, 340, 400],
-      "color": "#A87A3A"
+      "title": "Mask Processing",
+      "bounding": [790, 30, 340, 330],
+      "color": "#8A5082"
     },
     {
       "title": "Models & Prompts",
-      "bounding": [40, 590, 430, 650],
+      "bounding": [40, 550, 780, 300],
       "color": "#8A8A00"
+    },
+    {
+      "title": "Inpainting & Output",
+      "bounding": [1140, 30, 1390, 570],
+      "color": "#88AA88"
     }
   ],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.8,
+      "scale": 0.75,
       "offset": [0, 0]
     }
   },
