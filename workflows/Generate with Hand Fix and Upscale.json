@@ -1,8 +1,8 @@
 {
-  "id": "generate-handfix-upscale-faceenhance-v1",
+  "id": "71130604-04fd-4d2f-8277-fb8ac7872815",
   "revision": 0,
-  "last_node_id": 101,
-  "last_link_id": 222,
+  "last_node_id": 103,
+  "last_link_id": 224,
   "nodes": [
     {
       "id": 75,
@@ -38,7 +38,7 @@
           "links": [
             147,
             200,
-            208
+            209
           ]
         }
       ],
@@ -341,8 +341,8 @@
           "links": [
             63,
             203,
-            209,
-            217
+            210,
+            219
           ]
         },
         {
@@ -353,8 +353,8 @@
             161,
             177,
             178,
-            210,
-            218
+            211,
+            220
           ]
         }
       ],
@@ -403,8 +403,8 @@
           "slot_index": 0,
           "links": [
             181,
-            212,
-            220
+            213,
+            222
           ]
         }
       ],
@@ -452,8 +452,8 @@
           "slot_index": 0,
           "links": [
             182,
-            213,
-            221
+            214,
+            223
           ]
         }
       ],
@@ -539,8 +539,8 @@
           "links": [
             146,
             204,
-            211,
-            219
+            212,
+            221
           ]
         }
       ],
@@ -569,7 +569,7 @@
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 222
+          "link": 224
         }
       ],
       "outputs": [],
@@ -734,7 +734,7 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 214
+          "link": 215
         },
         {
           "name": "model",
@@ -767,7 +767,7 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            216
+            218
           ]
         }
       ],
@@ -883,10 +883,42 @@
     },
     {
       "id": 97,
+      "type": "SAMLoader",
+      "pos": [
+        1200,
+        -500
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAM_MODEL",
+          "type": "SAM_MODEL",
+          "links": [
+            207
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SAMLoader"
+      },
+      "widgets_values": [
+        "sam_vit_b_01ec64.pth"
+      ]
+    },
+    {
+      "id": 98,
       "type": "UltralyticsDetectorProvider",
       "pos": [
-        1500,
-        -350
+        1200,
+        -400
       ],
       "size": [
         315,
@@ -901,7 +933,7 @@
           "name": "BBOX_DETECTOR",
           "type": "BBOX_DETECTOR",
           "links": [
-            207
+            208
           ],
           "slot_index": 0
         }
@@ -914,15 +946,15 @@
       ]
     },
     {
-      "id": 98,
+      "id": 99,
       "type": "FaceDetailer",
       "pos": [
-        1500,
+        1200,
         -200
       ],
       "size": [
-        440,
-        900
+        315,
+        960
       ],
       "flags": {},
       "order": 15,
@@ -931,37 +963,43 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 208
+          "link": 209
         },
         {
           "name": "model",
           "type": "MODEL",
-          "link": 209
+          "link": 210
         },
         {
           "name": "clip",
           "type": "CLIP",
-          "link": 210
+          "link": 211
         },
         {
           "name": "vae",
           "type": "VAE",
-          "link": 211
+          "link": 212
         },
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 212
+          "link": 213
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 213
+          "link": 214
         },
         {
           "name": "bbox_detector",
           "type": "BBOX_DETECTOR",
-          "link": 207
+          "link": 208
+        },
+        {
+          "name": "sam_model_opt",
+          "type": "SAM_MODEL",
+          "link": 207,
+          "shape": 7
         }
       ],
       "outputs": [
@@ -969,7 +1007,7 @@
           "name": "image",
           "type": "IMAGE",
           "links": [
-            214
+            215
           ],
           "slot_index": 0
         }
@@ -981,7 +1019,7 @@
       "widgets_values": [
         512,
         true,
-        512,
+        1024,
         165569843492140,
         "randomize",
         30,
@@ -989,22 +1027,65 @@
         "dpmpp_2m_sde",
         "karras",
         0.5,
-        0.8,
+        8,
+        true,
         true,
         0.5,
-        5,
-        3,
         10,
-        "disabled",
-        "ComfyUI"
+        3.0,
+        "center-1",
+        0,
+        0.93,
+        0,
+        0.7,
+        "False",
+        10,
+        "",
+        1,
+        false,
+        20,
+        false,
+        false
       ]
     },
     {
-      "id": 99,
+      "id": 100,
+      "type": "SAMLoader",
+      "pos": [
+        2000,
+        200
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "SAM_MODEL",
+          "type": "SAM_MODEL",
+          "links": [
+            216
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SAMLoader"
+      },
+      "widgets_values": [
+        "sam_vit_b_01ec64.pth"
+      ]
+    },
+    {
+      "id": 101,
       "type": "UltralyticsDetectorProvider",
       "pos": [
-        2200,
-        400
+        2000,
+        300
       ],
       "size": [
         315,
@@ -1019,7 +1100,7 @@
           "name": "BBOX_DETECTOR",
           "type": "BBOX_DETECTOR",
           "links": [
-            215
+            217
           ],
           "slot_index": 0
         }
@@ -1032,15 +1113,15 @@
       ]
     },
     {
-      "id": 100,
+      "id": 102,
       "type": "FaceDetailer",
       "pos": [
-        2200,
-        550
+        2000,
+        500
       ],
       "size": [
-        440,
-        900
+        315,
+        960
       ],
       "flags": {},
       "order": 18,
@@ -1049,37 +1130,43 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 216
+          "link": 218
         },
         {
           "name": "model",
           "type": "MODEL",
-          "link": 217
+          "link": 219
         },
         {
           "name": "clip",
           "type": "CLIP",
-          "link": 218
+          "link": 220
         },
         {
           "name": "vae",
           "type": "VAE",
-          "link": 219
+          "link": 221
         },
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 220
+          "link": 222
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 221
+          "link": 223
         },
         {
           "name": "bbox_detector",
           "type": "BBOX_DETECTOR",
-          "link": 215
+          "link": 217
+        },
+        {
+          "name": "sam_model_opt",
+          "type": "SAM_MODEL",
+          "link": 216,
+          "shape": 7
         }
       ],
       "outputs": [
@@ -1087,7 +1174,7 @@
           "name": "image",
           "type": "IMAGE",
           "links": [
-            222
+            224
           ],
           "slot_index": 0
         }
@@ -1099,7 +1186,7 @@
       "widgets_values": [
         512,
         true,
-        1024,
+        2048,
         165569843492141,
         "randomize",
         35,
@@ -1107,26 +1194,37 @@
         "dpmpp_2m_sde",
         "karras",
         0.35,
-        0.8,
+        8,
+        true,
         true,
         0.5,
         10,
         1.5,
+        "center-1",
+        0,
+        0.93,
+        0,
+        0.7,
+        "False",
         10,
-        "disabled",
-        "ComfyUI"
+        "",
+        1,
+        false,
+        20,
+        false,
+        false
       ]
     },
     {
-      "id": 101,
+      "id": 103,
       "type": "Note",
       "pos": [
-        2700,
-        400
+        2400,
+        200
       ],
       "size": [
         400,
-        300
+        350
       ],
       "flags": {},
       "order": 0,
@@ -1137,7 +1235,7 @@
         "text": ""
       },
       "widgets_values": [
-        "GENERATION + HAND FIX + UPSCALE + FACE ENHANCE\n\nWorkflow Order:\n1. Generate base image (1152x896)\n2. FaceDetailer with YOLOv hand detection (low-res)\n   - Denoise 0.5 for hand regeneration\n   - Larger bounding boxes for full hand context\n3. Ultimate SD Upscale (4x to ~4608x3584)\n4. FaceDetailer with face detection (high-res)\n   - Denoise 0.35 for face enhancement\n   - Preserves facial features\n\nWhy this order?\n\u2713 Hand fixing on low-res is faster\n\u2713 Upscaling preserves corrected hands\n\u2713 Face enhancement benefits from high resolution"
+        "GENERATION + HAND FIX + UPSCALE + FACE ENHANCE\n\nWorkflow Order:\n1. Generate base (1152x896)\n2. FaceDetailer + YOLO hand + SAM (low-res)\n   - Denoise 0.5, crop_factor 3.0\n3. Ultimate SD Upscale (4x)\n4. FaceDetailer + face + SAM (high-res)\n   - Denoise 0.35, crop_factor 1.5\n\nSAM provides precise masks (not tight gloves)"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -1372,125 +1470,141 @@
       207,
       97,
       0,
+      99,
+      7,
+      "SAM_MODEL"
+    ],
+    [
+      208,
       98,
+      0,
+      99,
       6,
       "BBOX_DETECTOR"
     ],
     [
-      208,
+      209,
       75,
       0,
-      98,
+      99,
       0,
       "IMAGE"
-    ],
-    [
-      209,
-      29,
-      0,
-      98,
-      1,
-      "MODEL"
     ],
     [
       210,
       29,
+      0,
+      99,
       1,
-      98,
+      "MODEL"
+    ],
+    [
+      211,
+      29,
+      1,
+      99,
       2,
       "CLIP"
     ],
     [
-      211,
+      212,
       20,
       2,
-      98,
+      99,
       3,
       "VAE"
     ],
     [
-      212,
+      213,
       86,
       0,
-      98,
+      99,
       4,
       "CONDITIONING"
     ],
     [
-      213,
+      214,
       87,
       0,
-      98,
+      99,
       5,
       "CONDITIONING"
-    ],
-    [
-      214,
-      98,
-      0,
-      95,
-      0,
-      "IMAGE"
     ],
     [
       215,
       99,
       0,
-      100,
-      6,
-      "BBOX_DETECTOR"
-    ],
-    [
-      216,
       95,
-      0,
-      100,
       0,
       "IMAGE"
     ],
     [
+      216,
+      100,
+      0,
+      102,
+      7,
+      "SAM_MODEL"
+    ],
+    [
       217,
+      101,
+      0,
+      102,
+      6,
+      "BBOX_DETECTOR"
+    ],
+    [
+      218,
+      95,
+      0,
+      102,
+      0,
+      "IMAGE"
+    ],
+    [
+      219,
       29,
       0,
-      100,
+      102,
       1,
       "MODEL"
     ],
     [
-      218,
+      220,
       29,
       1,
-      100,
+      102,
       2,
       "CLIP"
     ],
     [
-      219,
+      221,
       20,
       2,
-      100,
+      102,
       3,
       "VAE"
     ],
     [
-      220,
+      222,
       86,
       0,
-      100,
+      102,
       4,
       "CONDITIONING"
     ],
     [
-      221,
+      223,
       87,
       0,
-      100,
+      102,
       5,
       "CONDITIONING"
     ],
     [
-      222,
-      100,
+      224,
+      102,
       0,
       27,
       0,
