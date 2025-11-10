@@ -1,8 +1,8 @@
 {
   "id": "generate-handfix-upscale-faceenhance-v1",
   "revision": 0,
-  "last_node_id": 104,
-  "last_link_id": 320,
+  "last_node_id": 101,
+  "last_link_id": 222,
   "nodes": [
     {
       "id": 75,
@@ -38,7 +38,7 @@
           "links": [
             147,
             200,
-            301
+            208
           ]
         }
       ],
@@ -341,8 +341,8 @@
           "links": [
             63,
             203,
-            302,
-            311
+            209,
+            217
           ]
         },
         {
@@ -353,8 +353,8 @@
             161,
             177,
             178,
-            303,
-            312
+            210,
+            218
           ]
         }
       ],
@@ -403,8 +403,8 @@
           "slot_index": 0,
           "links": [
             181,
-            305,
-            314
+            212,
+            220
           ]
         }
       ],
@@ -452,8 +452,8 @@
           "slot_index": 0,
           "links": [
             182,
-            306,
-            315
+            213,
+            221
           ]
         }
       ],
@@ -539,8 +539,8 @@
           "links": [
             146,
             204,
-            304,
-            313
+            211,
+            219
           ]
         }
       ],
@@ -569,7 +569,7 @@
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 320
+          "link": 222
         }
       ],
       "outputs": [],
@@ -734,7 +734,7 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 200
+          "link": 214
         },
         {
           "name": "model",
@@ -767,7 +767,7 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            205
+            216
           ]
         }
       ],
@@ -776,7 +776,6 @@
       },
       "widgets_values": [
         4,
-        "4x-UltraSharp.pth",
         165569843492139,
         "randomize",
         40,
@@ -883,7 +882,7 @@
       "bgcolor": "#653"
     },
     {
-      "id": 100,
+      "id": 97,
       "type": "UltralyticsDetectorProvider",
       "pos": [
         1500,
@@ -902,7 +901,7 @@
           "name": "BBOX_DETECTOR",
           "type": "BBOX_DETECTOR",
           "links": [
-            300
+            207
           ],
           "slot_index": 0
         }
@@ -915,7 +914,7 @@
       ]
     },
     {
-      "id": 101,
+      "id": 98,
       "type": "FaceDetailer",
       "pos": [
         1500,
@@ -932,37 +931,37 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 301
+          "link": 208
         },
         {
           "name": "model",
           "type": "MODEL",
-          "link": 302
+          "link": 209
         },
         {
           "name": "clip",
           "type": "CLIP",
-          "link": 303
+          "link": 210
         },
         {
           "name": "vae",
           "type": "VAE",
-          "link": 304
+          "link": 211
         },
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 305
+          "link": 212
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 306
+          "link": 213
         },
         {
           "name": "bbox_detector",
           "type": "BBOX_DETECTOR",
-          "link": 300
+          "link": 207
         }
       ],
       "outputs": [
@@ -970,7 +969,7 @@
           "name": "image",
           "type": "IMAGE",
           "links": [
-            200
+            214
           ],
           "slot_index": 0
         }
@@ -1001,7 +1000,7 @@
       ]
     },
     {
-      "id": 102,
+      "id": 99,
       "type": "UltralyticsDetectorProvider",
       "pos": [
         2200,
@@ -1020,7 +1019,7 @@
           "name": "BBOX_DETECTOR",
           "type": "BBOX_DETECTOR",
           "links": [
-            310
+            215
           ],
           "slot_index": 0
         }
@@ -1033,7 +1032,7 @@
       ]
     },
     {
-      "id": 103,
+      "id": 100,
       "type": "FaceDetailer",
       "pos": [
         2200,
@@ -1050,37 +1049,37 @@
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 205
+          "link": 216
         },
         {
           "name": "model",
           "type": "MODEL",
-          "link": 311
+          "link": 217
         },
         {
           "name": "clip",
           "type": "CLIP",
-          "link": 312
+          "link": 218
         },
         {
           "name": "vae",
           "type": "VAE",
-          "link": 313
+          "link": 219
         },
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 314
+          "link": 220
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 315
+          "link": 221
         },
         {
           "name": "bbox_detector",
           "type": "BBOX_DETECTOR",
-          "link": 310
+          "link": 215
         }
       ],
       "outputs": [
@@ -1088,7 +1087,7 @@
           "name": "image",
           "type": "IMAGE",
           "links": [
-            320
+            222
           ],
           "slot_index": 0
         }
@@ -1119,7 +1118,7 @@
       ]
     },
     {
-      "id": 104,
+      "id": 101,
       "type": "Note",
       "pos": [
         2700,
@@ -1370,112 +1369,128 @@
       "UPSCALE_MODEL"
     ],
     [
-      300,
-      100,
+      207,
+      97,
       0,
-      101,
+      98,
       6,
       "BBOX_DETECTOR"
     ],
     [
-      301,
+      208,
       75,
       0,
-      101,
+      98,
       0,
       "IMAGE"
     ],
     [
-      302,
+      209,
       29,
       0,
-      101,
+      98,
       1,
       "MODEL"
     ],
     [
-      303,
+      210,
       29,
       1,
-      101,
+      98,
       2,
       "CLIP"
     ],
     [
-      304,
+      211,
       20,
       2,
-      101,
+      98,
       3,
       "VAE"
     ],
     [
-      305,
+      212,
       86,
       0,
-      101,
+      98,
       4,
       "CONDITIONING"
     ],
     [
-      306,
+      213,
       87,
       0,
-      101,
+      98,
       5,
       "CONDITIONING"
     ],
     [
-      310,
-      102,
+      214,
+      98,
       0,
-      103,
+      95,
+      0,
+      "IMAGE"
+    ],
+    [
+      215,
+      99,
+      0,
+      100,
       6,
       "BBOX_DETECTOR"
     ],
     [
-      311,
+      216,
+      95,
+      0,
+      100,
+      0,
+      "IMAGE"
+    ],
+    [
+      217,
       29,
       0,
-      103,
+      100,
       1,
       "MODEL"
     ],
     [
-      312,
+      218,
       29,
       1,
-      103,
+      100,
       2,
       "CLIP"
     ],
     [
-      313,
+      219,
       20,
       2,
-      103,
+      100,
       3,
       "VAE"
     ],
     [
-      314,
+      220,
       86,
       0,
-      103,
+      100,
       4,
       "CONDITIONING"
     ],
     [
-      315,
+      221,
       87,
       0,
-      103,
+      100,
       5,
       "CONDITIONING"
     ],
     [
-      320,
-      103,
+      222,
+      100,
       0,
       27,
       0,
