@@ -494,7 +494,7 @@
         "Node name for S&R": "PrimitiveStringMultiline"
       },
       "widgets_values": [
-        "smooth skin, airbrushed, perfect skin, beauty filter, poreless, polished skin, flat skin, plastic skin, featureless skin, simplified skin, lack of skin detail, dry lips, matte lips, flat lips, chalky lips, dull lips, dry skin, matte skin, excessive fabric detail, extended fabric, fabric strands, loose threads, wool fibers extending, fabric hallucination, exaggerated textile, blurry hair, soft hair, merged hair strands, filtered, over-processed, blurry, smoothed detail"
+        "different person, changed identity, inconsistent features, smooth plastic skin, airbrushed skin, waxy skin, over-smoothed skin, artificial skin, flat textures, blurry skin, flat navel, undefined navel, blurry belly button, flat nipples, undefined areola, smooth nipples, blurry nipples, artificial nipples"
       ],
       "color": "#322",
       "bgcolor": "#533"
@@ -679,7 +679,7 @@
         "Node name for S&R": "PrimitiveStringMultiline"
       },
       "widgets_values": [
-        "same person, consistent identity, facial consistency, preserved features, natural skin texture, realistic skin detail, visible pores, skin texture definition, individual pore detail, subtle skin imperfections, natural imperfections, authentic skin texture, facial detail, face texture, cheek texture, body skin detail, torso texture, moist lips, glossy lips, lip sheen, natural lip moisture, skin moisture, dewy skin, natural skin sheen, moisture highlights, detailed hair strands, individual hair texture, natural hair detail, hair strand clarity, refined fabric texture, contained textile detail, sharp focus, enhanced clarity, photographic quality"
+        "same person, consistent identity, facial consistency, preserved features, natural skin texture, realistic skin detail, visible pores, skin texture definition, enhanced detail, sharp details, clear details, fine texture, detailed navel, realistic belly button, natural navel depth, subtle skin folds around navel, detailed nipples, realistic areola texture, natural skin tone variation, subtle anatomical detail, proper nipple definition, detailed skin pores, natural body skin, subtle skin variation"
       ],
       "color": "#232",
       "bgcolor": "#353"
@@ -899,9 +899,7 @@
         {
           "name": "SAM_MODEL",
           "type": "SAM_MODEL",
-          "links": [
-            207
-          ],
+          "links": [],
           "slot_index": 0
         }
       ],
@@ -997,7 +995,6 @@
         {
           "name": "sam_model_opt",
           "type": "SAM_MODEL",
-          "link": 207,
           "shape": 7
         }
       ],
@@ -1021,8 +1018,8 @@
         1024,
         165569843492140,
         "randomize",
-        30,
-        4.5,
+        35,
+        6.0,
         "dpmpp_2m_sde",
         "karras",
         0.5,
@@ -1031,7 +1028,7 @@
         true,
         0.5,
         10,
-        3.0,
+        2.5,
         "center-1",
         0,
         0.93,
@@ -1282,7 +1279,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "correct hand anatomy, five fingers, natural hand pose, detailed fingers, realistic hands, proper finger proportions, anatomically correct hands"
+        "correct hand anatomy, five fingers, natural hand pose, detailed fingers, realistic hands, proper finger proportions, anatomically correct hands, preserve hand pose, correct existing hand, single hand, maintain hand position"
       ]
     },
     {
@@ -1328,7 +1325,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "malformed hands, extra fingers, missing fingers, fused fingers, mutated hands, deformed hands, bad anatomy, wrong number of fingers, floating fingers, disconnected fingers"
+        "malformed hands, extra fingers, missing fingers, fused fingers, mutated hands, deformed hands, bad anatomy, wrong number of fingers, floating fingers, disconnected fingers, multiple hands, extra hands, additional hands, duplicated hands, wrong hand pose, changed hand gesture"
       ]
     },
     {
@@ -1367,7 +1364,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "detailed facial features, sharp eyes, clear skin texture, refined facial structure, enhanced face, high detail face, crisp facial details, defined features"
+        "sharp facial features, detailed skin pores, natural skin texture, realistic skin detail, fine facial detail, subtle skin imperfections, preserved texture, enhanced clarity, crisp eyes, defined iris detail, natural face"
       ]
     },
     {
@@ -1406,7 +1403,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "blurry face, soft focus face, low detail face, undefined features, poor facial detail, fuzzy features, unclear eyes, muddy skin texture"
+        "smooth skin, plastic skin, airbrushed, over-smoothed, waxy skin, synthetic skin, blurry face, soft focus, low detail, filtered look, beauty filter, artificial smoothing"
       ]
     }
   ],
@@ -1620,14 +1617,6 @@
       "UPSCALE_MODEL"
     ],
     [
-      207,
-      97,
-      0,
-      99,
-      7,
-      "SAM_MODEL"
-    ],
-    [
       208,
       98,
       0,
@@ -1805,7 +1794,8 @@
         800,
         400
       ]
-    }
+    },
+    "workflow_notes": "\n=== Generate with Hand Fix and Upscale Workflow ===\n\nThis workflow performs:\n1. Base generation at 1152x896\n2. Hand fixing on LOW-RES (before upscale) - 16x faster than post-upscale\n3. 4x upscaling with Ultimate SD Upscale (tiled img2img)\n4. Face enhancement on HIGH-RES (after upscale) - maximum detail\n\n=== Hand Fixer Configuration (Low-Res) ===\n\nCRITICAL: Uses BBOX-only mode (no SAM)\n- SAM creates tight \"glove-like\" masks that follow malformed hand contours\n- BBOX mode uses rectangular boxes, giving model freedom to regenerate correct anatomy\n- This is essential for fixing wrong finger counts\n\nParameters TESTED and optimized for REGENERATION:\n- denoise: 0.5 (balanced regeneration without hallucinations)\n  * TESTED: 0.6 caused extra hands to be hallucinated out of context\n  * TESTED: 0.5 produces well-formed hands in proper context\n  * Below 0.5: May not fix finger counts reliably\n  * Sweet spot: 0.5 for this model\n\n- cfg: 6.0 (balanced anatomical guidance)\n  * TESTED: 7.0 was too high for model's recommended 3-5 range\n  * TESTED: 5.5-6.0 with denoise 0.6 created hallucinated hands\n  * TESTED: 6.0 with denoise 0.5 produces correct anatomy in context\n  * Higher CFG helps with composition control while respecting model's range\n  * Sweet spot: 6.0 for this model\n\n- steps: 35 (quality without excessive computation)\n- bbox_crop_factor: 2.5 (optimal context window - TESTED)\n- guide_size: 512, max_size: 1024\n\nHand Fixer Prompts (specialized for pose preservation and anti-hallucination):\n- Positive: Emphasizes \"preserve hand pose, correct existing hand, single hand\"\n  to prevent creating new hands or changing poses\n- Negative: Explicitly rejects \"multiple hands, extra hands, additional hands,\n  duplicated hands, wrong hand pose\" to prevent hallucinations\n\n=== Face Enhancer Configuration (High-Res) ===\n\nUses SAM for precise facial boundaries (appropriate for faces)\n\nParameters optimized for ENHANCEMENT (not regeneration):\n- denoise: 0.35 (subtle refinement - adjust if over-smoothing occurs)\n- cfg: 4.0 (gentle guidance, preserves natural look)\n- steps: 35 (good quality)\n- guide_size: 1024, max_size: 2048\n- bbox_crop_factor: 1.5 (tight crop for faces)\n\nFace Enhancement Prompts (texture-preserving):\n- Positive: Emphasizes \"natural skin texture, detailed skin pores, preserved texture,\n  subtle skin imperfections\" to maintain realistic detail from upscaler\n- Negative: Rejects \"smooth skin, plastic skin, airbrushed, over-smoothed, beauty filter\"\n  to prevent artificial smoothing\n\nNote: If face enhancement over-smooths, reduce denoise to 0.20-0.25\n\n=== Ultimate SD Upscale Configuration ===\n\nTiling optimized for speed vs quality:\n- tile_size: 1024x1024, tile_padding: 32, mask_blur: 32\n- seam_fix_mode: None (20 tiles for 1152x896\u21924608x3584)\n- denoise: 0.28, steps: 40\n\nUpscale Enhancement Prompts (body part detail):\n- Positive: Includes detailed anatomical terms for navel, nipples, areola, skin pores\n  to enhance body parts that general upscaler might miss\n- Negative: Rejects flat/undefined/blurry body part details\n\nEnhanced body parts: navel (depth, skin folds), nipples/areola (texture, definition),\ngeneral skin (pores, natural variation)\n\n=== Testing Notes ===\n\nHand Fixer parameters empirically tested:\n- cfg=7.0, denoise=0.65: Too aggressive, fought model's optimal range\n- cfg=5.5-6.0, denoise=0.6: Hallucinated extra hands out of context\n- cfg=6.0, denoise=0.5, bbox_crop_factor=2.5: \u2713 OPTIMAL\n\nResults: Well-formed hands in context, slightly larger than malformed originals\n(expected due to correct proportions vs compressed malformed anatomy).\n"
   },
   "version": 0.4
 }
