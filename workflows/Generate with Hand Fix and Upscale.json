@@ -899,9 +899,7 @@
         {
           "name": "SAM_MODEL",
           "type": "SAM_MODEL",
-          "links": [
-            207
-          ],
+          "links": [],
           "slot_index": 0
         }
       ],
@@ -997,7 +995,6 @@
         {
           "name": "sam_model_opt",
           "type": "SAM_MODEL",
-          "link": 207,
           "shape": 7
         }
       ],
@@ -1618,14 +1615,6 @@
       95,
       5,
       "UPSCALE_MODEL"
-    ],
-    [
-      207,
-      97,
-      0,
-      99,
-      7,
-      "SAM_MODEL"
     ],
     [
       208,
