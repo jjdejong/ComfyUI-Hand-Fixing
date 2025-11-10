@@ -2,7 +2,7 @@
   "id": "71130604-04fd-4d2f-8277-fb8ac7872815",
   "revision": 0,
   "last_node_id": 107,
-  "last_link_id": 230,
+  "last_link_id": 232,
   "nodes": [
     {
       "id": 75,
@@ -249,7 +249,8 @@
           "type": "CONDITIONING",
           "slot_index": 0,
           "links": [
-            201
+            201,
+            231
           ]
         }
       ],
@@ -296,7 +297,8 @@
           "type": "CONDITIONING",
           "slot_index": 0,
           "links": [
-            202
+            202,
+            232
           ]
         }
       ],
@@ -1152,12 +1154,12 @@
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 201
+          "link": 231
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 202
+          "link": 232
         },
         {
           "name": "bbox_detector",
@@ -1821,6 +1823,22 @@
       107,
       0,
       99,
+      5,
+      "CONDITIONING"
+    ],
+    [
+      231,
+      47,
+      0,
+      102,
+      4,
+      "CONDITIONING"
+    ],
+    [
+      232,
+      76,
+      0,
+      102,
       5,
       "CONDITIONING"
     ]
