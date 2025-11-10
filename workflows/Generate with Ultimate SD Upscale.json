@@ -776,8 +776,8 @@
         "Linear",
         1024,
         1024,
-        64,
-        64,
+        32,
+        32,
         "Half Tile + Intersections",
         1,
         64,
@@ -866,7 +866,7 @@
         "text": ""
       },
       "widgets_values": [
-        "ULTIMATE SD UPSCALE WORKFLOW\n\nUltimate SD Upscale Parameters:\n\u2022 Upscale by: 4x\n\u2022 Upscale model: 4x-UltraSharp.pth\n\u2022 Steps: 40\n\u2022 CFG: 3.5\n\u2022 Sampler: dpmpp_2m_sde\n\u2022 Scheduler: karras\n\u2022 Denoise: 0.28\n\u2022 Mode: Linear\n\u2022 Tile size: 1024x1024\n\u2022 Mask blur: 64px\n\u2022 Tile padding: 64px\n\u2022 Seam fix mode: Half Tile + Intersections\n\u2022 Seam fix denoise: 1.0\n\u2022 Seam fix width: 64\n\u2022 Seam fix mask blur: 8\n\u2022 Seam fix padding: 16\n\u2022 Force uniform tiles: true\n\u2022 Tiled decode: false\n\nHow it works:\n1. Generates base image (1152x896)\n2. Divides into 1024x1024 overlapping tiles\n3. Upscales each tile 4x with 4x-UltraSharp\n4. Runs img2img (denoise 0.28) on each tile\n5. Uses Half Tile + Intersections for seam fixing\n6. Final output: ~4608x3584 (4x larger)\n\nAdvantages:\n\u2713 NO denoise cliff - tiles processed independently\n\u2713 Consistent quality across entire image\n\u2713 Better detail preservation\n\u2713 Scalable to any resolution"
+        "ULTIMATE SD UPSCALE WORKFLOW\n\nUltimate SD Upscale Parameters:\n\u2022 Upscale by: 4x\n\u2022 Upscale model: 4x-UltraSharp.pth\n\u2022 Steps: 40\n\u2022 CFG: 3.5\n\u2022 Sampler: dpmpp_2m_sde\n\u2022 Scheduler: karras\n\u2022 Denoise: 0.28\n\u2022 Mode: Linear\n\u2022 Tile size: 1024x1024\n\u2022 Mask blur: 32px\n\u2022 Tile padding: 32px\n\u2022 Seam fix mode: Half Tile + Intersections\n\u2022 Seam fix denoise: 1.0\n\u2022 Seam fix width: 64\n\u2022 Seam fix mask blur: 8\n\u2022 Seam fix padding: 16\n\u2022 Force uniform tiles: true\n\u2022 Tiled decode: false\n\nHow it works:\n1. Generates base image (1152x896)\n2. Divides into 1024x1024 overlapping tiles (32px padding)\n3. Upscales each tile 4x with 4x-UltraSharp\n4. Runs img2img (denoise 0.28) on each tile\n5. Uses Half Tile + Intersections for seam fixing\n6. Final output: ~4608x3584 (4x larger)\n\nOptimized for speed with ~20 tiles (vs 49 with 64px padding)\n\nAdvantages:\n\u2713 NO denoise cliff - tiles processed independently\n\u2713 Consistent quality across entire image\n\u2713 Better detail preservation\n\u2713 Fast processing with minimal overlap"
       ],
       "color": "#432",
       "bgcolor": "#653"
