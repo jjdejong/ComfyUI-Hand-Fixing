@@ -1,0 +1,1497 @@
+{
+  "id": "generate-handfix-upscale-faceenhance-v1",
+  "revision": 0,
+  "last_node_id": 104,
+  "last_link_id": 320,
+  "nodes": [
+    {
+      "id": 75,
+      "type": "VAEDecode",
+      "pos": [
+        1220,
+        -150
+      ],
+      "size": [
+        210,
+        46
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 148
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 146
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "slot_index": 0,
+          "links": [
+            147,
+            200,
+            301
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 74,
+      "type": "PreviewImage",
+      "pos": [
+        1500,
+        -150
+      ],
+      "size": [
+        600,
+        400
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 147
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        360,
+        -295
+      ],
+      "size": [
+        315,
+        106
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "slot_index": 0,
+          "links": [
+            83
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        1152,
+        896,
+        1
+      ]
+    },
+    {
+      "id": 84,
+      "type": "StringConcatenate",
+      "pos": [
+        20,
+        360
+      ],
+      "size": [
+        210,
+        166
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string_a",
+          "type": "STRING",
+          "widget": {
+            "name": "string_a"
+          },
+          "link": 169
+        },
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "widget": {
+            "name": "string_b"
+          },
+          "link": 168
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            171
+          ]
+        }
+      ],
+      "title": "Merge positive prompts",
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": [
+        "",
+        "",
+        ", "
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 85,
+      "type": "StringConcatenate",
+      "pos": [
+        20,
+        620
+      ],
+      "size": [
+        210,
+        166
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string_a",
+          "type": "STRING",
+          "widget": {
+            "name": "string_a"
+          },
+          "link": 174
+        },
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "widget": {
+            "name": "string_b"
+          },
+          "link": 175
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            173
+          ]
+        }
+      ],
+      "title": "Merge negative prompts",
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": [
+        "",
+        "",
+        ", "
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 47,
+      "type": "CLIPTextEncode",
+      "pos": [
+        340,
+        380
+      ],
+      "size": [
+        290,
+        88
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 160
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 171
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            201
+          ]
+        }
+      ],
+      "title": "Upscale Pass Positive",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 76,
+      "type": "CLIPTextEncode",
+      "pos": [
+        340,
+        590
+      ],
+      "size": [
+        290,
+        88
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 161
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 173
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            202
+          ]
+        }
+      ],
+      "title": "Upscale Pass Negative",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 29,
+      "type": "LoraLoader",
+      "pos": [
+        -130,
+        -236
+      ],
+      "size": [
+        270,
+        126
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 94
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 57
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            63,
+            203,
+            302,
+            311
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            160,
+            161,
+            177,
+            178,
+            303,
+            312
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "LoraLoader"
+      },
+      "widgets_values": [
+        "nsfw-xl-2.1.safetensors",
+        0.25,
+        0.3
+      ]
+    },
+    {
+      "id": 86,
+      "type": "CLIPTextEncode",
+      "pos": [
+        340,
+        -50
+      ],
+      "size": [
+        290,
+        88
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 177
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 179
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            181,
+            305,
+            314
+          ]
+        }
+      ],
+      "title": "First Pass Positive",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 87,
+      "type": "CLIPTextEncode",
+      "pos": [
+        340,
+        85
+      ],
+      "size": [
+        290,
+        88
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 178
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 180
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            182,
+            306,
+            315
+          ]
+        }
+      ],
+      "title": "First Pass Negative",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 81,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -585,
+        630
+      ],
+      "size": [
+        520,
+        184
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            174
+          ]
+        }
+      ],
+      "title": "Enhancement Negative Terms",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "smooth skin, airbrushed, perfect skin, beauty filter, poreless, polished skin, flat skin, plastic skin, featureless skin, simplified skin, lack of skin detail, dry lips, matte lips, flat lips, chalky lips, dull lips, dry skin, matte skin, excessive fabric detail, extended fabric, fabric strands, loose threads, wool fibers extending, fabric hallucination, exaggerated textile, blurry hair, soft hair, merged hair strands, filtered, over-processed, blurry, smoothed detail"
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 20,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        -575,
+        -221
+      ],
+      "size": [
+        344,
+        98
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "slot_index": 0,
+          "links": [
+            94
+          ]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "slot_index": 1,
+          "links": [
+            57
+          ]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "slot_index": 2,
+          "links": [
+            146,
+            204,
+            304,
+            313
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "cyberrealisticXL_v70_fp32.safetensors"
+      ]
+    },
+    {
+      "id": 27,
+      "type": "SaveImage",
+      "pos": [
+        1500,
+        400
+      ],
+      "size": [
+        600,
+        450
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 320
+        }
+      ],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": [
+        "Generate_HandFix_Upscale_FaceEnhance"
+      ]
+    },
+    {
+      "id": 77,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -585,
+        -55
+      ],
+      "size": [
+        520,
+        180
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            169,
+            179
+          ]
+        }
+      ],
+      "title": "Base Positive Prompt",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "1girl, portrait, detailed face, photorealistic"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 80,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -580,
+        175
+      ],
+      "size": [
+        520,
+        180
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            175,
+            180
+          ]
+        }
+      ],
+      "title": "Base Negative Prompt",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "sdxl_cyberrealistic_simpleneg-neg"
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 78,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -585,
+        405
+      ],
+      "size": [
+        520,
+        177
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            168
+          ]
+        }
+      ],
+      "title": "Enhancement Positive Terms",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "same person, consistent identity, facial consistency, preserved features, natural skin texture, realistic skin detail, visible pores, skin texture definition, individual pore detail, subtle skin imperfections, natural imperfections, authentic skin texture, facial detail, face texture, cheek texture, body skin detail, torso texture, moist lips, glossy lips, lip sheen, natural lip moisture, skin moisture, dewy skin, natural skin sheen, moisture highlights, detailed hair strands, individual hair texture, natural hair detail, hair strand clarity, refined fabric texture, contained textile detail, sharp focus, enhanced clarity, photographic quality"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 94,
+      "type": "UpscaleModelLoader",
+      "pos": [
+        650,
+        300
+      ],
+      "size": [
+        315,
+        58
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "UPSCALE_MODEL",
+          "type": "UPSCALE_MODEL",
+          "links": [
+            206
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UpscaleModelLoader"
+      },
+      "widgets_values": [
+        "4x-UltraSharp.pth"
+      ]
+    },
+    {
+      "id": 95,
+      "type": "UltimateSDUpscale",
+      "pos": [
+        650,
+        400
+      ],
+      "size": [
+        315,
+        614
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 200
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 203
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 201
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 202
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 204
+        },
+        {
+          "name": "upscale_model",
+          "type": "UPSCALE_MODEL",
+          "link": 206
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            205
+          ]
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UltimateSDUpscale"
+      },
+      "widgets_values": [
+        4,
+        "4x-UltraSharp.pth",
+        165569843492139,
+        "randomize",
+        40,
+        3.5,
+        "dpmpp_2m_sde",
+        "karras",
+        0.28,
+        "Linear",
+        1024,
+        1024,
+        32,
+        32,
+        "None",
+        1,
+        64,
+        8,
+        16,
+        true,
+        false
+      ]
+    },
+    {
+      "id": 30,
+      "type": "KSampler",
+      "pos": [
+        890,
+        -145
+      ],
+      "size": [
+        270,
+        262
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 63
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 181
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 182
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 83
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            148
+          ]
+        }
+      ],
+      "title": "KSampler Pass 1",
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        711553448522425,
+        "randomize",
+        37,
+        4,
+        "dpmpp_2m_sde",
+        "karras",
+        1
+      ]
+    },
+    {
+      "id": 96,
+      "type": "Note",
+      "pos": [
+        -585,
+        870
+      ],
+      "size": [
+        520,
+        310
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "ULTIMATE SD UPSCALE WORKFLOW\n\nUltimate SD Upscale Parameters:\n\u2022 Upscale by: 4x\n\u2022 Upscale model: 4x-UltraSharp.pth\n\u2022 Steps: 40\n\u2022 CFG: 3.5\n\u2022 Sampler: dpmpp_2m_sde\n\u2022 Scheduler: karras\n\u2022 Denoise: 0.28\n\u2022 Mode: Linear\n\u2022 Tile size: 1024x1024\n\u2022 Mask blur: 32px\n\u2022 Tile padding: 32px\n\u2022 Seam fix mode: None\n\u2022 Seam fix denoise: 1.0\n\u2022 Seam fix width: 64\n\u2022 Seam fix mask blur: 8\n\u2022 Seam fix padding: 16\n\u2022 Force uniform tiles: true\n\u2022 Tiled decode: false\n\nHow it works:\n1. Generates base image (1152x896)\n2. Divides into 1024x1024 overlapping tiles (32px padding)\n3. Upscales each tile 4x with 4x-UltraSharp\n4. Runs img2img (denoise 0.28) on each tile\n5. Blends tiles with linear blending\n6. Final output: ~4608x3584 (4x larger)\n\nOptimized for speed with 20 base tiles (no seam fixing)\n\nAdvantages:\n\u2713 NO denoise cliff - tiles processed independently\n\u2713 Consistent quality across entire image\n\u2713 Better detail preservation\n\u2713 Fast processing with minimal overlap\n\u2713 No visible seams with 32px padding"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 100,
+      "type": "UltralyticsDetectorProvider",
+      "pos": [
+        1500,
+        -350
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "BBOX_DETECTOR",
+          "type": "BBOX_DETECTOR",
+          "links": [
+            300
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UltralyticsDetectorProvider"
+      },
+      "widgets_values": [
+        "bbox/hand_yolov8s.pt"
+      ]
+    },
+    {
+      "id": 101,
+      "type": "FaceDetailer",
+      "pos": [
+        1500,
+        -200
+      ],
+      "size": [
+        440,
+        900
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 301
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 302
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 303
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 304
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 305
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 306
+        },
+        {
+          "name": "bbox_detector",
+          "type": "BBOX_DETECTOR",
+          "link": 300
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            200
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Hand Fixer (Low-Res)",
+      "properties": {
+        "Node name for S&R": "FaceDetailer"
+      },
+      "widgets_values": [
+        512,
+        true,
+        512,
+        165569843492140,
+        "randomize",
+        30,
+        4.5,
+        "dpmpp_2m_sde",
+        "karras",
+        0.5,
+        0.8,
+        true,
+        0.5,
+        5,
+        3,
+        10,
+        "disabled",
+        "ComfyUI"
+      ]
+    },
+    {
+      "id": 102,
+      "type": "UltralyticsDetectorProvider",
+      "pos": [
+        2200,
+        400
+      ],
+      "size": [
+        315,
+        78
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "BBOX_DETECTOR",
+          "type": "BBOX_DETECTOR",
+          "links": [
+            310
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UltralyticsDetectorProvider"
+      },
+      "widgets_values": [
+        "bbox/face_yolov8m.pt"
+      ]
+    },
+    {
+      "id": 103,
+      "type": "FaceDetailer",
+      "pos": [
+        2200,
+        550
+      ],
+      "size": [
+        440,
+        900
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 205
+        },
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 311
+        },
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 312
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 313
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 314
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 315
+        },
+        {
+          "name": "bbox_detector",
+          "type": "BBOX_DETECTOR",
+          "link": 310
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            320
+          ],
+          "slot_index": 0
+        }
+      ],
+      "title": "Face Enhancer (High-Res)",
+      "properties": {
+        "Node name for S&R": "FaceDetailer"
+      },
+      "widgets_values": [
+        512,
+        true,
+        1024,
+        165569843492141,
+        "randomize",
+        35,
+        4.0,
+        "dpmpp_2m_sde",
+        "karras",
+        0.35,
+        0.8,
+        true,
+        0.5,
+        10,
+        1.5,
+        10,
+        "disabled",
+        "ComfyUI"
+      ]
+    },
+    {
+      "id": 104,
+      "type": "Note",
+      "pos": [
+        2700,
+        400
+      ],
+      "size": [
+        400,
+        300
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "GENERATION + HAND FIX + UPSCALE + FACE ENHANCE\n\nWorkflow Order:\n1. Generate base image (1152x896)\n2. FaceDetailer with YOLOv hand detection (low-res)\n   - Denoise 0.5 for hand regeneration\n   - Larger bounding boxes for full hand context\n3. Ultimate SD Upscale (4x to ~4608x3584)\n4. FaceDetailer with face detection (high-res)\n   - Denoise 0.35 for face enhancement\n   - Preserves facial features\n\nWhy this order?\n\u2713 Hand fixing on low-res is faster\n\u2713 Upscaling preserves corrected hands\n\u2713 Face enhancement benefits from high resolution"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      57,
+      20,
+      1,
+      29,
+      1,
+      "CLIP"
+    ],
+    [
+      63,
+      29,
+      0,
+      30,
+      0,
+      "MODEL"
+    ],
+    [
+      83,
+      5,
+      0,
+      30,
+      3,
+      "LATENT"
+    ],
+    [
+      94,
+      20,
+      0,
+      29,
+      0,
+      "MODEL"
+    ],
+    [
+      146,
+      20,
+      2,
+      75,
+      1,
+      "VAE"
+    ],
+    [
+      147,
+      75,
+      0,
+      74,
+      0,
+      "IMAGE"
+    ],
+    [
+      148,
+      30,
+      0,
+      75,
+      0,
+      "LATENT"
+    ],
+    [
+      160,
+      29,
+      1,
+      47,
+      0,
+      "CLIP"
+    ],
+    [
+      161,
+      29,
+      1,
+      76,
+      0,
+      "CLIP"
+    ],
+    [
+      168,
+      78,
+      0,
+      84,
+      1,
+      "STRING"
+    ],
+    [
+      169,
+      77,
+      0,
+      84,
+      0,
+      "STRING"
+    ],
+    [
+      171,
+      84,
+      0,
+      47,
+      1,
+      "STRING"
+    ],
+    [
+      173,
+      85,
+      0,
+      76,
+      1,
+      "STRING"
+    ],
+    [
+      174,
+      81,
+      0,
+      85,
+      0,
+      "STRING"
+    ],
+    [
+      175,
+      80,
+      0,
+      85,
+      1,
+      "STRING"
+    ],
+    [
+      177,
+      29,
+      1,
+      86,
+      0,
+      "CLIP"
+    ],
+    [
+      178,
+      29,
+      1,
+      87,
+      0,
+      "CLIP"
+    ],
+    [
+      179,
+      77,
+      0,
+      86,
+      1,
+      "STRING"
+    ],
+    [
+      180,
+      80,
+      0,
+      87,
+      1,
+      "STRING"
+    ],
+    [
+      181,
+      86,
+      0,
+      30,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      182,
+      87,
+      0,
+      30,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      200,
+      75,
+      0,
+      95,
+      0,
+      "IMAGE"
+    ],
+    [
+      201,
+      47,
+      0,
+      95,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      202,
+      76,
+      0,
+      95,
+      3,
+      "CONDITIONING"
+    ],
+    [
+      203,
+      29,
+      0,
+      95,
+      1,
+      "MODEL"
+    ],
+    [
+      204,
+      20,
+      2,
+      95,
+      4,
+      "VAE"
+    ],
+    [
+      205,
+      95,
+      0,
+      27,
+      0,
+      "IMAGE"
+    ],
+    [
+      206,
+      94,
+      0,
+      95,
+      5,
+      "UPSCALE_MODEL"
+    ],
+    [
+      300,
+      100,
+      0,
+      101,
+      6,
+      "BBOX_DETECTOR"
+    ],
+    [
+      301,
+      75,
+      0,
+      101,
+      0,
+      "IMAGE"
+    ],
+    [
+      302,
+      29,
+      0,
+      101,
+      1,
+      "MODEL"
+    ],
+    [
+      303,
+      29,
+      1,
+      101,
+      2,
+      "CLIP"
+    ],
+    [
+      304,
+      20,
+      2,
+      101,
+      3,
+      "VAE"
+    ],
+    [
+      305,
+      86,
+      0,
+      101,
+      4,
+      "CONDITIONING"
+    ],
+    [
+      306,
+      87,
+      0,
+      101,
+      5,
+      "CONDITIONING"
+    ],
+    [
+      310,
+      102,
+      0,
+      103,
+      6,
+      "BBOX_DETECTOR"
+    ],
+    [
+      311,
+      29,
+      0,
+      103,
+      1,
+      "MODEL"
+    ],
+    [
+      312,
+      29,
+      1,
+      103,
+      2,
+      "CLIP"
+    ],
+    [
+      313,
+      20,
+      2,
+      103,
+      3,
+      "VAE"
+    ],
+    [
+      314,
+      86,
+      0,
+      103,
+      4,
+      "CONDITIONING"
+    ],
+    [
+      315,
+      87,
+      0,
+      103,
+      5,
+      "CONDITIONING"
+    ],
+    [
+      320,
+      103,
+      0,
+      27,
+      0,
+      "IMAGE"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.85,
+      "offset": [
+        800,
+        400
+      ]
+    }
+  },
+  "version": 0.4
+}
