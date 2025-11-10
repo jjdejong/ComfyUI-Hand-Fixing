@@ -1279,7 +1279,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "correct hand anatomy, five fingers, natural hand pose, detailed fingers, realistic hands, proper finger proportions, anatomically correct hands"
+        "correct hand anatomy, five fingers, natural hand pose, detailed fingers, realistic hands, proper finger proportions, anatomically correct hands, preserve hand pose, correct existing hand, single hand, maintain hand position"
       ]
     },
     {
@@ -1325,7 +1325,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "malformed hands, extra fingers, missing fingers, fused fingers, mutated hands, deformed hands, bad anatomy, wrong number of fingers, floating fingers, disconnected fingers"
+        "malformed hands, extra fingers, missing fingers, fused fingers, mutated hands, deformed hands, bad anatomy, wrong number of fingers, floating fingers, disconnected fingers, multiple hands, extra hands, additional hands, duplicated hands, wrong hand pose, changed hand gesture"
       ]
     },
     {
@@ -1364,7 +1364,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "detailed facial features, sharp eyes, clear skin texture, refined facial structure, enhanced face, high detail face, crisp facial details, defined features"
+        "sharp facial features, detailed skin pores, natural skin texture, realistic skin detail, fine facial detail, subtle skin imperfections, preserved texture, enhanced clarity, crisp eyes, defined iris detail, natural face"
       ]
     },
     {
@@ -1403,7 +1403,7 @@
         "Node name for S&R": "CLIPTextEncode"
       },
       "widgets_values": [
-        "blurry face, soft focus face, low detail face, undefined features, poor facial detail, fuzzy features, unclear eyes, muddy skin texture"
+        "smooth skin, plastic skin, airbrushed, over-smoothed, waxy skin, synthetic skin, blurry face, soft focus, low detail, filtered look, beauty filter, artificial smoothing"
       ]
     }
   ],
