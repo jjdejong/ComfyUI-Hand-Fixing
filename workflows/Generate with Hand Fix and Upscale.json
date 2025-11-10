@@ -1,8 +1,8 @@
 {
   "id": "71130604-04fd-4d2f-8277-fb8ac7872815",
   "revision": 0,
-  "last_node_id": 103,
-  "last_link_id": 224,
+  "last_node_id": 107,
+  "last_link_id": 230,
   "nodes": [
     {
       "id": 75,
@@ -354,7 +354,9 @@
             177,
             178,
             211,
-            220
+            220,
+            227,
+            229
           ]
         }
       ],
@@ -983,12 +985,12 @@
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 213
+          "link": 228
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 214
+          "link": 230
         },
         {
           "name": "bbox_detector",
@@ -1150,12 +1152,12 @@
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 222
+          "link": 201
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 223
+          "link": 202
         },
         {
           "name": "bbox_detector",
@@ -1239,6 +1241,170 @@
       ],
       "color": "#432",
       "bgcolor": "#653"
+    },
+    {
+      "id": 104,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -585,
+        -500
+      ],
+      "size": [
+        520,
+        150
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            225
+          ]
+        }
+      ],
+      "title": "Hand Fix Positive",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "correct hand anatomy, five fingers, natural hand pose, detailed fingers, realistic hands, proper finger proportions, anatomically correct hands"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 105,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        -585,
+        -300
+      ],
+      "size": [
+        520,
+        150
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "slot_index": 0,
+          "links": [
+            226
+          ]
+        }
+      ],
+      "title": "Hand Fix Negative",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "malformed hands, extra fingers, missing fingers, fused fingers, mutated hands, deformed hands, bad anatomy, wrong number of fingers, floating fingers, disconnected fingers"
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 106,
+      "type": "CLIPTextEncode",
+      "pos": [
+        340,
+        -500
+      ],
+      "size": [
+        290,
+        88
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 227
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 225
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            228
+          ]
+        }
+      ],
+      "title": "Hand Fix Positive Encode",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
+    },
+    {
+      "id": 107,
+      "type": "CLIPTextEncode",
+      "pos": [
+        340,
+        -370
+      ],
+      "size": [
+        290,
+        88
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 229
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": 226
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "slot_index": 0,
+          "links": [
+            230
+          ]
+        }
+      ],
+      "title": "Hand Fix Negative Encode",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ]
     }
   ],
   "links": [
@@ -1609,6 +1775,54 @@
       27,
       0,
       "IMAGE"
+    ],
+    [
+      225,
+      104,
+      0,
+      106,
+      1,
+      "STRING"
+    ],
+    [
+      226,
+      105,
+      0,
+      107,
+      1,
+      "STRING"
+    ],
+    [
+      227,
+      29,
+      1,
+      106,
+      0,
+      "CLIP"
+    ],
+    [
+      229,
+      29,
+      1,
+      107,
+      0,
+      "CLIP"
+    ],
+    [
+      228,
+      106,
+      0,
+      99,
+      4,
+      "CONDITIONING"
+    ],
+    [
+      230,
+      107,
+      0,
+      99,
+      5,
+      "CONDITIONING"
     ]
   ],
   "groups": [],
