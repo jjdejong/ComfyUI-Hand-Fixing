@@ -4,7 +4,7 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 
 ---
 
-## ⭐ Recommended Workflow
+## Recommended Workflow
 
 ### `Generate with Hand Fix and Upscale.json` **COMPLETE PIPELINE**
 
@@ -17,11 +17,11 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 4. **Enhance faces** on high-res image (after upscale) - maximum detail
 
 **Why this workflow is better:**
-- ✅ Fixes hands BEFORE upscaling (16x faster than post-upscale fixing)
-- ✅ Uses BBOX-only mode for hands (no tight masks that preserve malformed anatomy)
-- ✅ Specialized prompts for each stage (hand fixing, face enhancement, body detail)
-- ✅ Empirically tested and optimized parameters
-- ✅ Comprehensive documentation embedded in workflow
+- Fixes hands BEFORE upscaling (16x faster than post-upscale fixing)
+- Uses BBOX-only mode for hands (no tight masks that preserve malformed anatomy)
+- Specialized prompts for each stage (hand fixing, face enhancement, body detail)
+- Empirically tested and optimized parameters
+- Comprehensive documentation embedded in workflow
 
 **Tested optimal parameters:**
 - Hand Fixer: denoise 0.5, cfg 6.0, bbox_crop_factor 2.5
@@ -30,13 +30,13 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 
 **Key features:**
 - **BBOX-only hand fixing**: Rectangular bounding boxes give model freedom to regenerate correct anatomy
-  - NO SAM for hands (SAM creates "tight glove" masks that preserve malformed shapes)
-  - Prevents hallucinating extra hands with pose preservation prompts
+ - NO SAM for hands (SAM creates "tight glove" masks that preserve malformed shapes)
+ - Prevents hallucinating extra hands with pose preservation prompts
 - **SAM for faces**: Precise facial boundaries (appropriate for face enhancement)
 - **Prompt structure**: Base prompts + enhancement terms for upscaling
-  - Generation uses base prompts only
-  - Upscale merges base + enhancement terms (body part details, texture preservation)
-  - Hand/Face fixers use specialized anatomical prompts
+ - Generation uses base prompts only
+ - Upscale merges base + enhancement terms (body part details, texture preservation)
+ - Hand/Face fixers use specialized anatomical prompts
 - **Body part enhancement**: Specific terms for navel, nipples, areola, skin texture
 - **Texture preservation**: Face enhancement avoids over-smoothing
 
@@ -132,16 +132,16 @@ The "Generate with Hand Fix and Upscale" workflow uses a sophisticated prompt st
 
 #### 2. Enhancement Terms (Upscale Pass)
 - **Node 78**: Enhancement positive terms
-  ```
-  same person, consistent identity, natural skin texture, visible pores,
-  detailed navel, realistic belly button, detailed nipples, realistic areola texture,
-  detailed skin pores, natural body skin...
-  ```
+ ```
+ same person, consistent identity, natural skin texture, visible pores,
+ detailed navel, realistic belly button, detailed nipples, realistic areola texture,
+ detailed skin pores, natural body skin...
+ ```
 - **Node 81**: Enhancement negative terms
-  ```
-  smooth plastic skin, airbrushed, flat navel, undefined areola,
-  blurry nipples, artificial nipples...
-  ```
+ ```
+ smooth plastic skin, airbrushed, flat navel, undefined areola,
+ blurry nipples, artificial nipples...
+ ```
 
 #### 3. Merged Prompts (Upscale Pass)
 - **Nodes 84, 85**: StringConcatenate merges base + enhancement
@@ -149,9 +149,9 @@ The "Generate with Hand Fix and Upscale" workflow uses a sophisticated prompt st
 - Fed to Ultimate SD Upscale
 
 **Why this works:**
-- ✅ **Consistency**: Same base prompts = same subject/scene
-- ✅ **Refinement**: Enhancement terms add detail without changing composition
-- ✅ **Body parts**: Specific anatomical terms guide upscaler to enhance details it might miss
+- **Consistency**: Same base prompts = same subject/scene
+- **Refinement**: Enhancement terms add detail without changing composition
+- **Body parts**: Specific anatomical terms guide upscaler to enhance details it might miss
 
 #### 4. Specialized Prompts (Detailers)
 
@@ -171,7 +171,7 @@ The "Generate with Hand Fix and Upscale" workflow uses a sophisticated prompt st
 
 The following approaches were tested and found to be inferior:
 
-### ❌ MeshGraphormer-based workflows
+### MeshGraphormer-based workflows
 - **Problem**: Creates tight "glove-like" masks that follow malformed hand contours
 - **Result**: Enhances bad hands instead of regenerating correct anatomy
 - **Replaced by**: FaceDetailer with BBOX-only mode (rectangular boxes)
@@ -185,42 +185,42 @@ If you need MeshGraphormer workflows for reference, see git history (commit befo
 ### Quick Start (Recommended Path)
 
 1. **Install requirements**:
-   ```
-   - ComfyUI Impact Pack (via ComfyUI Manager)
-   - Download models (see requirements above)
-   ```
+ ```
+ - ComfyUI Impact Pack (via ComfyUI Manager)
+ - Download models (see requirements above)
+ ```
 
 2. **Load workflow**:
-   - Open ComfyUI
-   - Load `Generate with Hand Fix and Upscale.json`
+ - Open ComfyUI
+ - Load `Generate with Hand Fix and Upscale.json`
 
 3. **Configure base generation**:
-   - Set your checkpoint model
-   - Write your generation prompts (nodes 77, 80)
-   - Generate initial image
+ - Set your checkpoint model
+ - Write your generation prompts (nodes 77, 80)
+ - Generate initial image
 
 4. **Review embedded notes**:
-   - Workflow JSON contains comprehensive parameter documentation
-   - Explains why each parameter is set to its value
-   - Includes testing history and rationale
+ - Workflow JSON contains comprehensive parameter documentation
+ - Explains why each parameter is set to its value
+ - Includes testing history and rationale
 
 5. **Generate and iterate**:
-   - First run may take longer (model loading)
-   - Review hand fixing results
-   - Adjust parameters if needed
+ - First run may take longer (model loading)
+ - Review hand fixing results
+ - Adjust parameters if needed
 
 ### Understanding Parameters
 
 The main workflow has **tested optimal parameters** that were empirically validated:
 
 **Hand Fixer**:
-- ❌ cfg=7.0, denoise=0.65 → Too aggressive, fought model's range
-- ❌ cfg=5.5-6.0, denoise=0.6 → Hallucinated extra hands
-- ✅ cfg=6.0, denoise=0.5 → Well-formed hands in context
+- cfg=7.0, denoise=0.65 → Too aggressive, fought model's range
+- cfg=5.5-6.0, denoise=0.6 → Hallucinated extra hands
+- cfg=6.0, denoise=0.5 → Well-formed hands in context
 
 **bbox_crop_factor**:
-- ❌ 3.0 → Too much context, increased hallucination risk
-- ✅ 2.5 → Optimal - sufficient arm/wrist context without excess space
+- 3.0 → Too much context, increased hallucination risk
+- 2.5 → Optimal - sufficient arm/wrist context without excess space
 
 See workflow notes for complete testing history.
 
@@ -357,4 +357,4 @@ The main workflow can be customized:
 
 ---
 
-Good luck creating amazing images! 🎨
+Good luck creating amazing images! 

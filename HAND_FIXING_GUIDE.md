@@ -1,6 +1,25 @@
 # Complete Guide to Hand Fixing in ComfyUI
-
 **For beginners: Step-by-step guide to fixing distorted hands alongside your FaceDetailer workflow**
+
+---
+
+## CURRENT RECOMMENDED APPROACH (2024-11)
+
+**The most effective method is now:** FaceDetailer with BBOX-only mode (no SAM) for hand fixing
+
+**Key findings from testing:**
+- BBOX-only mode (rectangular boxes) works better than SAM or MeshGraphormer
+- SAM creates tight "glove-like" masks that preserve malformed hand shapes
+- MeshGraphormer has similar tight mask problems
+- Rectangular bounding boxes give the model freedom to regenerate correct anatomy
+
+**Recommended workflow:**
+- See `workflows/README.md` for complete documentation
+- Use `workflows/Generate with Hand Fix and Upscale.json`
+- Tested optimal parameters: denoise 0.5, cfg 6.0, bbox_crop_factor 2.5
+- Fix hands on LOW-RES before upscaling (16x faster)
+
+**The methods below are kept for reference, but FaceDetailer with BBOX-only mode is now the recommended approach.**
 
 ---
 
@@ -29,7 +48,6 @@ Before we dive in, here's what each method does:
 ---
 
 ## Method 1: Impact Pack Hand Detection (Easiest)
-
 **This is the simplest approach - use the same FaceDetailer node you already have, just with a different detector!**
 
 ### What You Need
@@ -58,18 +76,17 @@ Here's how to add hand detection to your workflow:
 
 ```
 [Your Image Source]
-    |
-    ├─> FaceDetailer (for faces) ──> [Output]
-    |      ↑
-    |      └─ UltralyticsDetectorProvider (bbox/face_yolov8s.pt)
-    |
-    └─> FaceDetailer (for hands) ──> [Output]
-           ↑
-           └─ UltralyticsDetectorProvider (bbox/hand_yolov8s.pt)
+ |
+ ├─> FaceDetailer (for faces) ──> [Output]
+ | ↑
+ | └─ UltralyticsDetectorProvider (bbox/face_yolov8s.pt)
+ |
+ └─> FaceDetailer (for hands) ──> [Output]
+ ↑
+ └─ UltralyticsDetectorProvider (bbox/hand_yolov8s.pt)
 ```
 
 ### Step 3: Node Configuration
-
 **For the Hand FaceDetailer node:**
 - **bbox_detector**: Connect UltralyticsDetectorProvider with `hand_yolov8s.pt`
 - **bbox_threshold**: 0.5 (increase to 0.6-0.7 if detecting too many false positives)
@@ -84,34 +101,34 @@ Here's how to add hand detection to your workflow:
 
 ```
 Load Image
-    ├─> VAEEncode ──> [latents]
-    |
-    ├─> CLIP Text Encode (Positive) ──> "masterpiece, best quality, detailed hands, five fingers"
-    |
-    ├─> CLIP Text Encode (Negative) ──> "blurry, distorted, deformed hands, extra fingers, missing fingers"
-    |
-    └─> FaceDetailer (FACES)
-           ├─ model: [Your checkpoint]
-           ├─ clip: [Your CLIP]
-           ├─ vae: [Your VAE]
-           ├─ positive: [Face positive prompt]
-           ├─ negative: [Face negative prompt]
-           ├─ bbox_detector: UltralyticsDetectorProvider (face_yolov8s.pt)
-           ├─ guide_size: 512
-           ├─ denoise: 0.35
-           |
-           └──> FaceDetailer (HANDS)
-                  ├─ model: [Your checkpoint]
-                  ├─ clip: [Your CLIP]
-                  ├─ vae: [Your VAE]
-                  ├─ positive: "detailed hands, five fingers, natural hand pose"
-                  ├─ negative: "deformed hands, extra fingers, missing fingers, fused fingers"
-                  ├─ bbox_detector: UltralyticsDetectorProvider (hand_yolov8s.pt)
-                  ├─ guide_size: 768
-                  ├─ denoise: 0.5
-                  ├─ crop_factor: 2.5
-                  |
-                  └──> Save Image / Preview
+ ├─> VAEEncode ──> [latents]
+ |
+ ├─> CLIP Text Encode (Positive) ──> "masterpiece, best quality, detailed hands, five fingers"
+ |
+ ├─> CLIP Text Encode (Negative) ──> "blurry, distorted, deformed hands, extra fingers, missing fingers"
+ |
+ └─> FaceDetailer (FACES)
+ ├─ model: [Your checkpoint]
+ ├─ clip: [Your CLIP]
+ ├─ vae: [Your VAE]
+ ├─ positive: [Face positive prompt]
+ ├─ negative: [Face negative prompt]
+ ├─ bbox_detector: UltralyticsDetectorProvider (face_yolov8s.pt)
+ ├─ guide_size: 512
+ ├─ denoise: 0.35
+ |
+ └──> FaceDetailer (HANDS)
+ ├─ model: [Your checkpoint]
+ ├─ clip: [Your CLIP]
+ ├─ vae: [Your VAE]
+ ├─ positive: "detailed hands, five fingers, natural hand pose"
+ ├─ negative: "deformed hands, extra fingers, missing fingers, fused fingers"
+ ├─ bbox_detector: UltralyticsDetectorProvider (hand_yolov8s.pt)
+ ├─ guide_size: 768
+ ├─ denoise: 0.5
+ ├─ crop_factor: 2.5
+ |
+ └──> Save Image / Preview
 ```
 
 ### Tips for Better Results
@@ -123,7 +140,6 @@ Load Image
 ---
 
 ## Method 2: BMAB Simple Hand Detailer
-
 **A dedicated node specifically designed for hand enhancement**
 
 ### Installation
@@ -148,36 +164,36 @@ BMAB (Better Mask and Blur) Hand Detailer is a specialized node that:
 
 ```
 Load Image
-    |
-    └─> BMAB Simple Hand Detailer
-           ├─ model: [Your checkpoint]
-           ├─ clip: [Your CLIP]
-           ├─ vae: [Your VAE]
-           ├─ positive: "detailed hands, perfect fingers, natural pose"
-           ├─ negative: "deformed hands, extra digits, fused fingers"
-           ├─ seed: [random or fixed]
-           ├─ steps: 20-30
-           ├─ cfg: 7.0-8.0
-           ├─ sampler_name: "euler_a" or "dpmpp_2m"
-           ├─ scheduler: "normal" or "karras"
-           ├─ denoise: 0.4-0.6
-           ├─ dilation: 10-20 (mask expansion)
-           |
-           └──> Save Image
+ |
+ └─> BMAB Simple Hand Detailer
+ ├─ model: [Your checkpoint]
+ ├─ clip: [Your CLIP]
+ ├─ vae: [Your VAE]
+ ├─ positive: "detailed hands, perfect fingers, natural pose"
+ ├─ negative: "deformed hands, extra digits, fused fingers"
+ ├─ seed: [random or fixed]
+ ├─ steps: 20-30
+ ├─ cfg: 7.0-8.0
+ ├─ sampler_name: "euler_a" or "dpmpp_2m"
+ ├─ scheduler: "normal" or "karras"
+ ├─ denoise: 0.4-0.6
+ ├─ dilation: 10-20 (mask expansion)
+ |
+ └──> Save Image
 ```
 
 ### Advanced: Combining Face and Hand Detailers
 
 ```
 Load Image
-    |
-    ├─> FaceDetailer (process faces first)
-    |      ├─ [standard face settings]
-    |      |
-    |      └──> BMAB Simple Hand Detailer (then hands)
-    |             ├─ [hand settings from above]
-    |             |
-    |             └──> Save Image
+ |
+ ├─> FaceDetailer (process faces first)
+ | ├─ [standard face settings]
+ | |
+ | └──> BMAB Simple Hand Detailer (then hands)
+ | ├─ [hand settings from above]
+ | |
+ | └──> Save Image
 ```
 
 ### BMAB Node Parameters Explained
@@ -190,7 +206,6 @@ Load Image
 ---
 
 ## Method 3: Flux Fill + SegmentAnything (2025 State-of-the-Art)
-
 **The most advanced method for high-quality hand reconstruction**
 
 ### What You Need
@@ -248,30 +263,30 @@ cd ../ComfyUI_essentials && pip install -r requirements.txt
 
 ```
 Load Image
-    |
-    ├──> SAM2AutoSegmentation (Detect hands)
-    |       ├─ sam_model: SAMModelLoader (sam_vit_h_4b8939.pth)
-    |       ├─ detection_prompt: "hand"
-    |       ├─ threshold: 0.5
-    |       |
-    |       └──> [Mask Output]
-    |               |
-    |               └──> GrowMask (Expand mask by 30 pixels)
-    |                       |
-    |                       └──> [Expanded Mask]
-    |
-    └──> FluxFillNode
-            ├─ image: [Original Image]
-            ├─ mask: [Expanded Mask from SAM2]
-            ├─ flux_model: [flux1-fill-dev]
-            ├─ positive: "detailed human hand, five fingers, natural skin texture, proper anatomy"
-            ├─ negative: "deformed, extra fingers, fused digits, unnatural"
-            ├─ seed: [random]
-            ├─ steps: 28-35
-            ├─ cfg_scale: 3.5
-            ├─ denoise: 0.85-1.0
-            |
-            └──> Save Image
+ |
+ ├──> SAM2AutoSegmentation (Detect hands)
+ | ├─ sam_model: SAMModelLoader (sam_vit_h_4b8939.pth)
+ | ├─ detection_prompt: "hand"
+ | ├─ threshold: 0.5
+ | |
+ | └──> [Mask Output]
+ | |
+ | └──> GrowMask (Expand mask by 30 pixels)
+ | |
+ | └──> [Expanded Mask]
+ |
+ └──> FluxFillNode
+ ├─ image: [Original Image]
+ ├─ mask: [Expanded Mask from SAM2]
+ ├─ flux_model: [flux1-fill-dev]
+ ├─ positive: "detailed human hand, five fingers, natural skin texture, proper anatomy"
+ ├─ negative: "deformed, extra fingers, fused digits, unnatural"
+ ├─ seed: [random]
+ ├─ steps: 28-35
+ ├─ cfg_scale: 3.5
+ ├─ denoise: 0.85-1.0
+ |
+ └──> Save Image
 ```
 
 ### Complete Flux Fill Workflow Example
@@ -280,66 +295,63 @@ Here's a full workflow you can implement:
 
 ```
 [1] Load Image ────────────┬──────────────────────────────────────────┐
-                           │                                          │
-                           │                                          │
-[2] SAMModelLoader ────────┤                                          │
-    (sam_vit_h_4b8939.pth) │                                          │
-                           │                                          │
-[3] SAM2AutoSegmentation ──┤                                          │
-    ├─ sam_model: [2]      │                                          │
-    ├─ image: [1]          │                                          │
-    ├─ prompt: "hand"      │                                          │
-    └─ threshold: 0.5      │                                          │
-         │                 │                                          │
-         v                 │                                          │
-[4] GrowMask ──────────────┤                                          │
-    ├─ mask: [3]           │                                          │
-    └─ expand: 30          │                                          │
-         │                 │                                          │
-         v                 │                                          │
-[5] MaskToImage ───────────┤ (optional - for preview)                │
-    └─ mask: [4]           │                                          │
-         │                 │                                          │
-[6] Load Flux Fill ────────┤                                          │
-    (flux1-fill-dev)       │                                          │
-                           │                                          │
-[7] CLIPTextEncode ────────┤                                          │
-    (positive prompt)      │                                          │
-    "detailed hand, 5      │                                          │
-    fingers, natural"      │                                          │
-                           │                                          │
-[8] CLIPTextEncode ────────┤                                          │
-    (negative prompt)      │                                          │
-    "extra fingers,        │                                          │
-    deformed"              │                                          │
-                           │                                          │
+ │ │
+ │ │
+[2] SAMModelLoader ────────┤ │
+ (sam_vit_h_4b8939.pth) │ │
+ │ │
+[3] SAM2AutoSegmentation ──┤ │
+ ├─ sam_model: [2] │ │
+ ├─ image: [1] │ │
+ ├─ prompt: "hand" │ │
+ └─ threshold: 0.5 │ │
+ │ │ │
+ v │ │
+[4] GrowMask ──────────────┤ │
+ ├─ mask: [3] │ │
+ └─ expand: 30 │ │
+ │ │ │
+ v │ │
+[5] MaskToImage ───────────┤ (optional - for preview) │
+ └─ mask: [4] │ │
+ │ │ │
+[6] Load Flux Fill ────────┤ │
+ (flux1-fill-dev) │ │
+ │ │
+[7] CLIPTextEncode ────────┤ │
+ (positive prompt) │ │
+ "detailed hand, 5 │ │
+ fingers, natural" │ │
+ │ │
+[8] CLIPTextEncode ────────┤ │
+ (negative prompt) │ │
+ "extra fingers, │ │
+ deformed" │ │
+ │ │
 [9] FluxFillSampler ───────┴──────────────────────────────────────────┤
-    ├─ model: [6]                                                     │
-    ├─ positive: [7]                                                  │
-    ├─ negative: [8]                                                  │
-    ├─ image: [1]                                                     │
-    ├─ mask: [4]                                                      │
-    ├─ steps: 30                                                      │
-    ├─ cfg: 3.5                                                       │
-    ├─ denoise: 0.9                                                   │
-    └─ seed: random                                                   │
-         │                                                            │
-         v                                                            │
+ ├─ model: [6] │
+ ├─ positive: [7] │
+ ├─ negative: [8] │
+ ├─ image: [1] │
+ ├─ mask: [4] │
+ ├─ steps: 30 │
+ ├─ cfg: 3.5 │
+ ├─ denoise: 0.9 │
+ └─ seed: random │
+ │ │
+ v │
 [10] Save Image ───────────────────────────────────────────────────────┘
 ```
 
 ### Recommended Settings for Flux Fill
-
 **For subtle fixes (slightly distorted hands):**
 - Steps: 28
 - CFG Scale: 3.5
 - Denoise: 0.75-0.85
-
 **For major reconstruction (very broken hands):**
 - Steps: 35
 - CFG Scale: 4.0
 - Denoise: 0.9-1.0
-
 **Prompts:**
 - Positive: "detailed human hand, five fingers, natural skin texture, proper hand anatomy, realistic lighting"
 - Negative: "deformed hand, extra fingers, missing fingers, fused digits, mutated hand, extra limbs"
@@ -355,7 +367,6 @@ Here's a full workflow you can implement:
 ---
 
 ## Method 4: MeshGraphormer + ControlNet (For Severe Distortions)
-
 **For fixing hands with wrong number of fingers, impossible poses, or severe geometric distortions**
 
 ### What This Method Does Differently
@@ -393,94 +404,90 @@ wget https://huggingface.co/diffusers/controlnet-depth-sdxl-1.0/resolve/main/dif
 
 ```
 Original Image
-    │
-    ├──> Detect Hands (YOLO or SAM)
-    │       └──> Hand Bounding Boxes
-    │
-    ├──> MeshGraphormer Hand Detector
-    │       ├─ Input: Cropped hand images
-    │       ├─ Output: 3D hand mesh
-    │       └──> Depth Map (anatomically correct hand structure)
-    │
-    └──> ControlNet + Inpainting
-            ├─ Image: Original
-            ├─ Mask: Hand region
-            ├─ ControlNet: Depth map from MeshGraphormer
-            ├─ Prompt: "detailed hand, five fingers"
-            └──> Reconstructed image with correct hand geometry
+ │
+ ├──> Detect Hands (YOLO or SAM)
+ │ └──> Hand Bounding Boxes
+ │
+ ├──> MeshGraphormer Hand Detector
+ │ ├─ Input: Cropped hand images
+ │ ├─ Output: 3D hand mesh
+ │ └──> Depth Map (anatomically correct hand structure)
+ │
+ └──> ControlNet + Inpainting
+ ├─ Image: Original
+ ├─ Mask: Hand region
+ ├─ ControlNet: Depth map from MeshGraphormer
+ ├─ Prompt: "detailed hand, five fingers"
+ └──> Reconstructed image with correct hand geometry
 ```
 
 ### Complete MeshGraphormer Workflow
 
 ```
 [1] Load Image
-    │
-    ├──> [2] UltralyticsDetector (hand_yolov8s)
-    │       └──> [Hand Boxes]
-    │
-    ├──> [3] CropImageByMask
-    │       ├─ image: [1]
-    │       └─ mask: [2]
-    │           └──> [Cropped Hand Images]
-    │
-    ├──> [4] MeshGraphormer Hand Refiner
-    │       ├─ image: [3]
-    │       └──> [Hand Depth Map]
-    │           │
-    │           └──> [5] Resize (to match original hand size)
-    │                   └──> [Resized Depth]
-    │
-    ├──> [6] Load ControlNet Model
-    │       (control_depth)
-    │
-    ├──> [7] Load Checkpoint
-    │
-    ├──> [8] CLIP Text Encode (Positive)
-    │       "perfect hand, five fingers, natural hand pose, detailed skin texture"
-    │
-    ├──> [9] CLIP Text Encode (Negative)
-    │       "deformed hand, extra fingers, missing fingers, wrong anatomy, mutated"
-    │
-    ├──> [10] Apply ControlNet
-    │       ├─ positive: [8]
-    │       ├─ controlnet: [6]
-    │       ├─ image: [5] (depth map)
-    │       └─ strength: 0.8-1.0
-    │
-    └──> [11] KSampler (Inpaint)
-            ├─ model: [7]
-            ├─ positive: [10]
-            ├─ negative: [9]
-            ├─ latent_image: [1] (encoded)
-            ├─ mask: [2] (hand mask)
-            ├─ steps: 30-40
-            ├─ cfg: 7.5
-            ├─ denoise: 0.75-0.9
-            └──> [12] VAE Decode
-                    └──> [13] Save Image
+ │
+ ├──> [2] UltralyticsDetector (hand_yolov8s)
+ │ └──> [Hand Boxes]
+ │
+ ├──> [3] CropImageByMask
+ │ ├─ image: [1]
+ │ └─ mask: [2]
+ │ └──> [Cropped Hand Images]
+ │
+ ├──> [4] MeshGraphormer Hand Refiner
+ │ ├─ image: [3]
+ │ └──> [Hand Depth Map]
+ │ │
+ │ └──> [5] Resize (to match original hand size)
+ │ └──> [Resized Depth]
+ │
+ ├──> [6] Load ControlNet Model
+ │ (control_depth)
+ │
+ ├──> [7] Load Checkpoint
+ │
+ ├──> [8] CLIP Text Encode (Positive)
+ │ "perfect hand, five fingers, natural hand pose, detailed skin texture"
+ │
+ ├──> [9] CLIP Text Encode (Negative)
+ │ "deformed hand, extra fingers, missing fingers, wrong anatomy, mutated"
+ │
+ ├──> [10] Apply ControlNet
+ │ ├─ positive: [8]
+ │ ├─ controlnet: [6]
+ │ ├─ image: [5] (depth map)
+ │ └─ strength: 0.8-1.0
+ │
+ └──> [11] KSampler (Inpaint)
+ ├─ model: [7]
+ ├─ positive: [10]
+ ├─ negative: [9]
+ ├─ latent_image: [1] (encoded)
+ ├─ mask: [2] (hand mask)
+ ├─ steps: 30-40
+ ├─ cfg: 7.5
+ ├─ denoise: 0.75-0.9
+ └──> [12] VAE Decode
+ └──> [13] Save Image
 ```
 
 ### MeshGraphormer Settings
-
 **ControlNet Settings:**
 - **strength**: 0.8-1.0 (higher = follow depth map more strictly)
 - **start_percent**: 0.0
 - **end_percent**: 0.9 (let the last 10% refine details)
-
 **Sampling Settings:**
 - **steps**: 30-40 (more steps for complex corrections)
 - **cfg**: 7.5-8.5
 - **denoise**: 0.75 for subtle fixes, 0.9 for major reconstruction
 
 ### When to Use MeshGraphormer
-
-✅ **USE when:**
+**USE when:**
 - Hand has 6+ fingers or less than 4 fingers
 - Fingers are fused together
 - Hand pose is anatomically impossible
 - Hand proportions are severely wrong
-
-❌ **DON'T USE when:**
+**DON'T USE when:**
 - Hand is just slightly blurry (use simple detailer)
 - Minor detail issues (use Flux Fill instead)
 - Hand is mostly correct (overkill)
@@ -519,11 +526,11 @@ Here's how to combine everything into one comprehensive workflow:
 
 ```
 Load Image
-    ↓
+ ↓
 FaceDetailer (face_yolov8s) ← Fix faces first
-    ↓
+ ↓
 FaceDetailer (hand_yolov8s) ← Then fix hands
-    ↓
+ ↓
 Save Image
 ```
 
@@ -531,32 +538,32 @@ Save Image
 
 ```
 Load Image
-    ├──> FaceDetailer (faces) ──┐
-    │                            │
-    └──> SAM2 (hands) ──────────┤
-            ↓                    │
-         GrowMask                │
-            ↓                    │
-         FluxFill ───────────────┘
-            ↓
-         Save Image
+ ├──> FaceDetailer (faces) ──┐
+ │ │
+ └──> SAM2 (hands) ──────────┤
+ ↓ │
+ GrowMask │
+ ↓ │
+ FluxFill ───────────────┘
+ ↓
+ Save Image
 ```
 
 ### Option C: Maximum Quality Pipeline (MeshGraphormer)
 
 ```
 Load Image
-    ├──> FaceDetailer (faces) ──┐
-    │                            │
-    ├──> YOLO (hands) ───────────┤
-    │         ↓                  │
-    │    MeshGraphormer          │
-    │         ↓                  │
-    │    ControlNet Depth        │
-    │         ↓                  │
-    └──> Inpaint (guided) ───────┘
-            ↓
-         Save Image
+ ├──> FaceDetailer (faces) ──┐
+ │ │
+ ├──> YOLO (hands) ───────────┤
+ │ ↓ │
+ │ MeshGraphormer │
+ │ ↓ │
+ │ ControlNet Depth │
+ │ ↓ │
+ └──> Inpaint (guided) ───────┘
+ ↓
+ Save Image
 ```
 
 ---
@@ -676,22 +683,19 @@ Negative: "deformed, extra fingers, extra limbs, bad anatomy, bad hands, bad fac
 ---
 
 ## Conclusion
-
 **For most users**, start with **Impact Pack + Hand YOLO** (Method 1) because:
 - It's already installed if you use FaceDetailer
 - Same workflow structure you know
 - Fast and memory efficient
 - Good results for 70-80% of cases
-
 **Upgrade to Flux Fill** (Method 3) when:
 - You need the highest quality
 - You have 8GB+ VRAM
 - Simple methods aren't working well enough
 - You're doing professional/commercial work
-
 **Use MeshGraphormer** (Method 4) only when:
 - Hands have fundamentally wrong anatomy
 - You're willing to invest time in setup and tweaking
 - Other methods have failed
 
-Good luck fixing those hands! 🖐️
+Good luck fixing those hands! 
