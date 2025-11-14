@@ -1,506 +1,360 @@
-# MeshGraphormer Hand Fix Workflows
+# ComfyUI Generation and Upscaling Workflows
 
-Example ComfyUI workflows for fixing hand anatomy issues using MeshGraphormer + ControlNet.
+High-quality image generation workflows with hand fixing and intelligent upscaling.
 
 ---
 
-## Workflows Included
+## ⭐ Recommended Workflow
 
-### 1. `meshgraphormer_hand_fix_simple.json` ⭐ **RECOMMENDED FOR BEGINNERS**
+### `Generate with Hand Fix and Upscale.json` **COMPLETE PIPELINE**
 
-**Best for:** Quick fixes with minimal setup
+**Best for:** Professional quality images with correct hand anatomy and high-resolution detail
 
 **What it does:**
-- Uses the all-in-one `MeshGraphormer-ImpactDetector-DepthMapPreprocessor` node
-- Automatically detects hands and generates depth maps
-- Simpler workflow with fewer nodes
+1. **Generate** base image at 1152x896
+2. **Fix hands** on low-res image (before upscale) - 16x faster than post-upscale
+3. **Upscale 4x** using Ultimate SD Upscale with tiled img2img (~4608x3584)
+4. **Enhance faces** on high-res image (after upscale) - maximum detail
 
-**Key settings:**
-- Steps: 35
-- CFG: 8.0
-- Denoise: 0.85
-- ControlNet strength: 0.9
+**Why this workflow is better:**
+- ✅ Fixes hands BEFORE upscaling (16x faster than post-upscale fixing)
+- ✅ Uses BBOX-only mode for hands (no tight masks that preserve malformed anatomy)
+- ✅ Specialized prompts for each stage (hand fixing, face enhancement, body detail)
+- ✅ Empirically tested and optimized parameters
+- ✅ Comprehensive documentation embedded in workflow
 
-**Use when:**
-- You want the easiest setup
-- You're new to MeshGraphormer
-- You want to quickly test if it works for your image
+**Tested optimal parameters:**
+- Hand Fixer: denoise 0.5, cfg 6.0, bbox_crop_factor 2.5
+- Face Enhancer: denoise 0.35, cfg 4.0, guide_size 1024
+- Ultimate SD Upscale: 1024x1024 tiles, 32px padding, denoise 0.28
+
+**Key features:**
+- **BBOX-only hand fixing**: Rectangular bounding boxes give model freedom to regenerate correct anatomy
+  - NO SAM for hands (SAM creates "tight glove" masks that preserve malformed shapes)
+  - Prevents hallucinating extra hands with pose preservation prompts
+- **SAM for faces**: Precise facial boundaries (appropriate for face enhancement)
+- **Prompt structure**: Base prompts + enhancement terms for upscaling
+  - Generation uses base prompts only
+  - Upscale merges base + enhancement terms (body part details, texture preservation)
+  - Hand/Face fixers use specialized anatomical prompts
+- **Body part enhancement**: Specific terms for navel, nipples, areola, skin texture
+- **Texture preservation**: Face enhancement avoids over-smoothing
+
+**Requirements:**
+- ComfyUI Impact Pack (FaceDetailer, SAMLoader, UltralyticsDetectorProvider)
+- YOLOv8 hand detector: `bbox/hand_yolov8s.pt`
+- YOLOv8 face detector: `bbox/face_yolov8m.pt`
+- SAM model: `sam_vit_b_01ec64.pth`
+- Upscale model: `4x-UltraSharp.pth`
+
+**See workflow notes** (embedded in JSON) for complete parameter rationale and testing history.
 
 ---
 
-### 2. `meshgraphormer_hand_fix_workflow.json` **ADVANCED**
+## Alternative Workflows
 
-**Best for:** Maximum control and quality
+### `Generate with Ultimate SD Upscale.json`
+
+**Best for:** When hands are already correct, just need upscaling
 
 **What it does:**
-- Separate nodes for each step
-- More control over each stage
-- Better for troubleshooting
-- Shows the full pipeline clearly
-
-**Key settings:**
-- Steps: 40
-- CFG: 8.5
-- Denoise: 0.9
-- ControlNet strength: 0.9
+- Generate at 1152x896
+- Upscale 4x with Ultimate SD Upscale
+- No hand/face fixing
 
 **Use when:**
-- You need to fine-tune each step
-- Simple workflow isn't working
-- You want to understand the full process
-- You need maximum quality
+- Generated hands are already correct
+- You want faster processing (no detailer overhead)
+- Testing upscale settings
+
+**Parameters:**
+- 1024x1024 tiles, 32px padding
+- seam_fix_mode: None (20 tiles, fast)
+- denoise: 0.28, steps: 40
 
 ---
 
-## Prerequisites
+### `Generate with 2x2x Upscale (Mac Compatible).json`
 
-Before using these workflows, you must install:
+**Best for:** Low VRAM systems (Mac, older GPUs)
 
-### Required Custom Nodes
+**What it does:**
+- Generate at base resolution
+- Upscale 2x, then 2x again (total 4x)
+- Lower memory usage than single 4x pass
 
-1. **ComfyUI Impact Pack**
-   - Contains: `UltralyticsDetectorProvider`, `BBoxDetectorForEach`
-   - Install via ComfyUI Manager: Search "Impact Pack"
-
-2. **ComfyUI ControlNet Auxiliary Preprocessors**
-   - Contains: `MeshGraphormer-DepthMapPreprocessor`, `MeshGraphormer-ImpactDetector-DepthMapPreprocessor`
-   - Install via ComfyUI Manager: Search "ControlNet Auxiliary" or "controlnet aux"
-
-### Required Models
-
-1. **Hand Detection Model**
-   - File: `hand_yolov8s.pt`
-   - Location: `ComfyUI/models/ultralytics/bbox/hand_yolov8s.pt`
-   - Download: https://huggingface.co/Bingsu/adetailer/resolve/main/hand_yolov8s.pt
-
-2. **ControlNet Depth Model**
-
-   **For SD1.5:**
-   - File: `control_v11f1p_sd15_depth.pth`
-   - Location: `ComfyUI/models/controlnet/`
-   - Download: https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1p_sd15_depth.pth
-
-   **For SDXL:**
-   - File: `diffusers_xl_depth_full.safetensors`
-   - Location: `ComfyUI/models/controlnet/`
-   - Download: https://huggingface.co/diffusers/controlnet-depth-sdxl-1.0/resolve/main/diffusers_xl_depth_full.safetensors
-
-3. **Checkpoint Model**
-   - Any SD1.5 or SDXL checkpoint (the workflow uses Realistic Vision as example)
-   - Must be photorealistic model for best results with hands
-   - Location: `ComfyUI/models/checkpoints/`
-
-4. **MeshGraphormer Model** (Auto-downloads)
-   - Downloads automatically on first use (~200MB)
-   - Location: `ComfyUI/models/ControlNetPreprocessor/` (auto-created)
+**Use when:**
+- Running out of VRAM with standard upscale
+- Using Mac with limited GPU memory
+- Need to process on 6-8GB VRAM
 
 ---
 
-## How to Use
+### `Generate with ControlNet Tile Upscale.json`
 
-### Step 1: Load the Workflow
+**Best for:** Experimental - tile-based ControlNet guidance
 
-1. Open ComfyUI in your browser
-2. Click **"Load"** button
-3. Navigate to: `ComfyUI/custom_nodes/ComfyUI-UniversalDetailer/workflows/`
-4. Select: `meshgraphormer_hand_fix_simple.json` (recommended for first try)
-5. Click **"Open"**
+**What it does:**
+- Uses ControlNet Tile model for guided upscaling
+- Can preserve composition better than pure img2img
 
-### Step 2: Configure the Workflow
-
-#### Update These Nodes:
-
-**1. LoadImage (Node #1)**
-- Click on the node
-- Upload or select your image with hand problems
-- Image should have hands clearly visible (not tiny)
-
-**2. CheckpointLoaderSimple (Node #4 or #5)**
-- Select your checkpoint model
-- **Recommended**: Use photorealistic models like:
-  - Realistic Vision
-  - Deliberate
-  - DreamShaper
-- **Avoid**: Anime or illustration models (poor hand anatomy understanding)
-
-**3. ControlNetLoader (Node #5 or #6)**
-- Verify the correct ControlNet model is selected:
-  - SD1.5: `control_v11f1p_sd15_depth.pth`
-  - SDXL: `diffusers_xl_depth_full.safetensors`
-- Must match your checkpoint version!
-
-**4. UltralyticsDetectorProvider (Node #2)**
-- Should show: `bbox/hand_yolov8s.pt`
-- If red/error: Install hand detection model (see Prerequisites)
-
-### Step 3: Adjust Settings (Optional)
-
-#### If hands still have wrong finger count after first run:
-
-**Increase ControlNet Strength:**
-- Find `ControlNetApply` or `ControlNetApplyAdvanced` node
-- Change strength from `0.9` to `0.95`
-- This forces stronger anatomical correction
-
-**Increase CFG:**
-- Find `KSampler` node
-- Change `cfg` from `8.0` to `9.0` or `9.5`
-- Makes it follow prompts more strictly
-
-**Increase Denoise:**
-- Find `KSampler` node
-- Change `denoise` from `0.85` to `0.9` or `0.95`
-- Allows more drastic changes
-
-**Change Seed:**
-- Find `KSampler` node
-- Click the dice icon next to `seed` to randomize
-- Some seeds work better than others
-
-#### If hands look too artificial/CGI:
-
-**Decrease Denoise:**
-- Find `KSampler` node
-- Change `denoise` from `0.85` to `0.75` or `0.7`
-- Preserves more original detail
-
-**Decrease CFG:**
-- Find `KSampler` node
-- Change `cfg` from `8.0` to `7.0` or `7.5`
-- Less strict guidance
-
-### Step 4: Run the Workflow
-
-1. Click **"Queue Prompt"** button (bottom right)
-2. Watch the progress in the terminal/console
-3. First run will download MeshGraphormer model (~200MB) - be patient!
-4. Check preview images:
-   - Depth map preview shows the anatomically correct hand structure
-   - Should show 5 clear fingers in proper positions
-5. Check final output in SaveImage node
-
-### Step 5: Verify Results
-
-**Good signs:**
-- ✅ Finger count is now correct (5 fingers)
-- ✅ Thumb is at proper angle (not parallel to fingers)
-- ✅ Hand looks natural and proportional
-- ✅ Depth map shows clear hand structure
-
-**If results aren't good:**
-- Check depth map preview - if depth map is wrong, MeshGraphormer couldn't detect hand properly
-- Try increasing detection threshold in `BBoxDetectorForEach` (0.5 → 0.6)
-- Try different seed values
-- Increase steps (35 → 40 or 45)
-- See Troubleshooting section below
+**Use when:**
+- You want to try ControlNet-guided upscaling
+- Standard upscale changes composition too much
 
 ---
 
-## Understanding the Workflow
+### `Generate with Latent Upscale (template).json`
 
-### Simple Workflow Flow:
+**Best for:** Template for latent-space upscaling experiments
 
-```
-Load Image
-    ↓
-MeshGraphormer-ImpactDetector (Detect hands + Generate depth)
-    ↓
-ControlNet (Apply anatomical guidance)
-    ↓
-Inpainting Sampler (Regenerate hand)
-    ↓
-Save Image
-```
+**What it does:**
+- Upscales in latent space before VAE decode
+- Faster but lower quality than pixel-space upscaling
 
-### Advanced Workflow Flow:
-
-```
-Load Image
-    ↓
-YOLO Hand Detection → Find hand bounding boxes
-    ↓
-Crop Hand Regions → Isolate each hand
-    ↓
-MeshGraphormer → Generate anatomically correct depth map
-    ↓
-ControlNet + Conditioning → Guide with correct anatomy
-    ↓
-Inpainting → Regenerate hand within mask
-    ↓
-Composite Back → Blend into original image
-    ↓
-Save Image
-```
+**Use when:**
+- Creating custom workflows
+- Experimenting with latent upscaling
+- Need faster preview iterations
 
 ---
 
-## Parameter Guide
+## Prompt Structure Explained
 
-### Critical Parameters
+### How Prompts Work in the Main Workflow
 
-| Parameter | Location | Recommended | Effect |
-|-----------|----------|-------------|--------|
-| **ControlNet Strength** | ControlNetApply | 0.85-0.95 | How strongly to follow anatomy guidance |
-| **Denoise** | KSampler | 0.8-0.95 | How much to change (higher = more change) |
-| **CFG Scale** | KSampler | 7.5-9.0 | How strictly to follow prompts |
-| **Steps** | KSampler | 30-45 | Quality vs speed tradeoff |
-| **Detection Threshold** | BBoxDetector | 0.4-0.6 | Hand detection sensitivity |
-| **Mask Dilation** | BBoxDetector | 10-20 | Mask expansion around hand |
+The "Generate with Hand Fix and Upscale" workflow uses a sophisticated prompt structure:
 
-### Parameter Adjustment Guide
+#### 1. Base Prompts (Generation Pass)
+- **Node 77**: Base positive prompt (e.g., "1girl, portrait, detailed face, photorealistic...")
+- **Node 80**: Base negative prompt (e.g., "worst quality, low quality...")
+- Used for initial 1152x896 generation
 
-**For stubborn wrong finger count:**
-```
-ControlNet Strength: 0.95
-CFG: 9.0-9.5
-Denoise: 0.9-0.95
-Steps: 40-45
-```
+#### 2. Enhancement Terms (Upscale Pass)
+- **Node 78**: Enhancement positive terms
+  ```
+  same person, consistent identity, natural skin texture, visible pores,
+  detailed navel, realistic belly button, detailed nipples, realistic areola texture,
+  detailed skin pores, natural body skin...
+  ```
+- **Node 81**: Enhancement negative terms
+  ```
+  smooth plastic skin, airbrushed, flat navel, undefined areola,
+  blurry nipples, artificial nipples...
+  ```
 
-**For natural-looking results:**
-```
-ControlNet Strength: 0.85-0.9
-CFG: 7.5-8.0
-Denoise: 0.75-0.85
-Steps: 30-35
-```
+#### 3. Merged Prompts (Upscale Pass)
+- **Nodes 84, 85**: StringConcatenate merges base + enhancement
+- **Nodes 47, 76**: CLIPTextEncode creates conditioning
+- Fed to Ultimate SD Upscale
 
-**For subtle fixes:**
-```
-ControlNet Strength: 0.8
-CFG: 7.0
-Denoise: 0.6-0.7
-Steps: 25-30
-```
+**Why this works:**
+- ✅ **Consistency**: Same base prompts = same subject/scene
+- ✅ **Refinement**: Enhancement terms add detail without changing composition
+- ✅ **Body parts**: Specific anatomical terms guide upscaler to enhance details it might miss
+
+#### 4. Specialized Prompts (Detailers)
+
+**Hand Fixer** (nodes 106, 107):
+- Positive: "correct hand anatomy, five fingers, preserve hand pose, correct existing hand, single hand..."
+- Negative: "malformed hands, extra fingers, multiple hands, extra hands, wrong hand pose..."
+- **Purpose**: Fix anatomy while preventing hallucinations
+
+**Face Enhancer** (nodes 108, 109):
+- Positive: "sharp facial features, detailed skin pores, natural skin texture, preserved texture..."
+- Negative: "smooth skin, plastic skin, airbrushed, over-smoothed, beauty filter..."
+- **Purpose**: Enhance detail without over-smoothing
+
+---
+
+## Obsolete Workflows (Removed)
+
+The following approaches were tested and found to be inferior:
+
+### ❌ MeshGraphormer-based workflows
+- **Problem**: Creates tight "glove-like" masks that follow malformed hand contours
+- **Result**: Enhances bad hands instead of regenerating correct anatomy
+- **Replaced by**: FaceDetailer with BBOX-only mode (rectangular boxes)
+
+If you need MeshGraphormer workflows for reference, see git history (commit before removal).
+
+---
+
+## Getting Started
+
+### Quick Start (Recommended Path)
+
+1. **Install requirements**:
+   ```
+   - ComfyUI Impact Pack (via ComfyUI Manager)
+   - Download models (see requirements above)
+   ```
+
+2. **Load workflow**:
+   - Open ComfyUI
+   - Load `Generate with Hand Fix and Upscale.json`
+
+3. **Configure base generation**:
+   - Set your checkpoint model
+   - Write your generation prompts (nodes 77, 80)
+   - Generate initial image
+
+4. **Review embedded notes**:
+   - Workflow JSON contains comprehensive parameter documentation
+   - Explains why each parameter is set to its value
+   - Includes testing history and rationale
+
+5. **Generate and iterate**:
+   - First run may take longer (model loading)
+   - Review hand fixing results
+   - Adjust parameters if needed
+
+### Understanding Parameters
+
+The main workflow has **tested optimal parameters** that were empirically validated:
+
+**Hand Fixer**:
+- ❌ cfg=7.0, denoise=0.65 → Too aggressive, fought model's range
+- ❌ cfg=5.5-6.0, denoise=0.6 → Hallucinated extra hands
+- ✅ cfg=6.0, denoise=0.5 → Well-formed hands in context
+
+**bbox_crop_factor**:
+- ❌ 3.0 → Too much context, increased hallucination risk
+- ✅ 2.5 → Optimal - sufficient arm/wrist context without excess space
+
+See workflow notes for complete testing history.
 
 ---
 
 ## Troubleshooting
 
-### Issue: No hands detected
+### Hands still malformed after fixing
 
-**Symptoms:** Workflow completes but image unchanged
+**Check:**
+1. Is Hand Fixer using BBOX-only mode? (no SAM connection)
+2. Is denoise at 0.5? (lower = preserves malformed structure)
+3. Is cfg at 6.0? (lower = less anatomical guidance)
+4. Are hand-specific prompts loaded? (check nodes 106, 107)
 
-**Solutions:**
-1. Lower `threshold` in BBoxDetectorForEach (0.5 → 0.3)
-2. Check hand is visible and not tiny (<100px)
-3. Verify `hand_yolov8s.pt` is in correct location
-4. Check ComfyUI console for detection errors
+**Try:**
+- Different seed (some seeds work better)
+- Increase steps to 40
+- Check bbox_threshold (0.5 is usually good)
 
-### Issue: Depth map looks wrong
+### Extra hands hallucinated
 
-**Symptoms:** MeshGraphormer depth preview doesn't show clear hand
+**This indicates over-regeneration**:
+1. Check denoise - should be 0.5, not higher
+2. Check cfg - should be 6.0
+3. Verify anti-hallucination prompts (node 107 should include "multiple hands, extra hands...")
+4. Check bbox_crop_factor - should be 2.5, not 3.0
 
-**Solutions:**
-1. Hand might be too small - crop/zoom the input image
-2. Hand might be obscured - ensure hand is clearly visible
-3. Unusual hand pose - MeshGraphormer works best with natural poses
-4. Increase `dilation` to include more context around hand
+### Face looks over-smoothed
 
-### Issue: Still has 6 fingers
+**Face Enhancer may be too aggressive**:
+1. Reduce denoise from 0.35 to 0.20-0.25
+2. Check prompts include texture preservation terms
+3. Consider removing Face Enhancer entirely if upscaler does well enough
 
-**Symptoms:** Finger count still wrong after processing
+### Body parts not detailed enough
 
-**Solutions:**
-1. **Increase ControlNet strength to 0.95**
-2. **Increase CFG to 9.0 or higher**
-3. **Increase denoise to 0.95**
-4. Add emphasis to prompts:
-   - Positive: `(exactly five fingers:1.4)`, `(one thumb four fingers:1.3)`
-   - Negative: `(6 fingers:1.6)`, `(extra finger:1.5)`
-5. Try multiple seeds - some work better than others
-6. Increase steps to 45-50
+**Enhancement terms may not be applied**:
+1. Check nodes 78, 81 include body part terms (navel, nipples, areola)
+2. Verify merge nodes (84, 85) are connecting properly
+3. Check Ultimate SD Upscale is using merged prompts (nodes 47, 76)
 
-### Issue: Thumb still looks like finger
+### SAM cuts off facial hair / mouth
 
-**Symptoms:** Thumb parallel to fingers or wrong angle
-
-**Solutions:**
-1. Check MeshGraphormer depth preview - thumb should be angled
-2. If depth map shows correct thumb but output doesn't:
-   - Increase ControlNet strength to 0.95
-   - Add to negative: `(thumb parallel to fingers:1.5)`
-   - Add to positive: `(opposable thumb:1.3)`
-3. Try different seed
-
-### Issue: Hand looks artificial/CGI
-
-**Symptoms:** Hand is anatomically correct but looks fake
-
-**Solutions:**
-1. **Lower denoise to 0.7-0.8**
-2. **Lower CFG to 7.0-7.5**
-3. Add to prompts:
-   - Positive: `natural skin texture`, `realistic lighting`, `photorealistic`
-4. Check checkpoint model - must be photorealistic, not anime
-5. Increase crop_factor to include more surrounding context
-
-### Issue: Background around hand changes
-
-**Symptoms:** Area around hand is different from original
-
-**Solutions:**
-1. Reduce `dilation` in BBoxDetector (20 → 10)
-2. Lower `denoise` (0.85 → 0.75)
-3. Reduce `grow_mask_by` in VAEEncodeForInpaint (6 → 3)
-4. Use mask blur/feather (add GrowMask node with negative value)
-
-### Issue: "Error loading node" or missing nodes
-
-**Symptoms:** Red nodes, workflow won't load
-
-**Solutions:**
-1. Install missing custom nodes via ComfyUI Manager
-2. Check Prerequisites section - install all required nodes
-3. Restart ComfyUI after installing nodes
-4. Check console for specific missing node errors
-
-### Issue: Out of memory
-
-**Symptoms:** CUDA out of memory error
-
-**Solutions:**
-1. Reduce resolution in MeshGraphormer preprocessor (512 → 384)
-2. Close other programs using GPU
-3. Enable model offloading in ComfyUI settings
-4. Reduce image size before processing
-5. Use fp16 checkpoint models instead of fp32
+**SAM mask too tight for faces**:
+1. Increase sam_dilation from 0 to 20-25 pixels (Face Enhancer node 102)
+2. Or remove SAM from Face Enhancer entirely (BBOX-only like Hand Fixer)
 
 ---
 
-## Prompt Templates
+## Workflow Customization
 
-### For Extra Fingers (6→5)
+### Adapting for Your Needs
 
-**Positive:**
-```
-masterpiece, best quality, realistic human hand, (exactly five fingers:1.3),
-detailed hand anatomy, (one thumb four fingers:1.2), proper finger count,
-natural proportions, photorealistic skin, well-defined knuckles
-```
+The main workflow can be customized:
 
-**Negative:**
-```
-(6 fingers:1.6), (extra finger:1.5), (seven fingers:1.4), (six digits:1.4),
-deformed hand, bad anatomy, extra digit, fewer digits, fused fingers,
-mutated hand, disfigured
-```
+**Change resolution:**
+- Modify EmptyLatentImage dimensions (node for generation)
+- Upscaling will still work (scales based on input)
 
-### For Missing Fingers (4→5)
+**Change upscale factor:**
+- Modify Ultimate SD Upscale upscale_by parameter
+- Adjust tile_padding proportionally (32px for 4x, 24px for 3x, etc.)
 
-**Positive:**
-```
-complete hand, (five fingers:1.4), (full set of fingers:1.3), all fingers visible,
-detailed hand anatomy, one thumb and four fingers, no missing digits,
-complete hand structure, natural proportions
-```
+**Skip hand fixing:**
+- Disconnect Hand Fixer output
+- Connect VAEDecode directly to Ultimate SD Upscale
 
-**Negative:**
-```
-(missing fingers:1.6), (4 fingers:1.5), (three fingers:1.4), (incomplete hand:1.4),
-fewer digits, cut off fingers, partial hand, amputated, deformed
-```
+**Skip face enhancement:**
+- Disconnect Face Enhancer output
+- Connect Ultimate SD Upscale directly to SaveImage
 
-### For Wrong Thumb Position
-
-**Positive:**
-```
-detailed hand, (proper thumb anatomy:1.3), (opposable thumb:1.3),
-thumb at natural angle, correct thumb position, thumb distinct from fingers,
-realistic hand structure, five digits with proper thumb placement
-```
-
-**Negative:**
-```
-(thumb parallel to fingers:1.6), (thumb like finger:1.5), (five identical fingers:1.4),
-wrong thumb position, thumb in line with fingers, incorrect thumb angle,
-bad hand anatomy
-```
+**Add your own detailers:**
+- Copy FaceDetailer node structure
+- Add YOLO detector for your target (e.g., body parts)
+- Create specialized prompts
+- Insert before or after existing detailers
 
 ---
 
-## Success Tips
+## Performance Tips
 
-1. **Use photorealistic checkpoints** - Anime models don't understand hand anatomy well
-2. **Hands should be clearly visible** - At least 150x150px in the original image
-3. **Try multiple seeds** - Results vary significantly with different seeds
-4. **Start with simple workflow** - Master it before moving to advanced
-5. **Check depth map preview** - If depth is wrong, result will be wrong
-6. **Be patient** - First run downloads models (~200MB)
-7. **Iterate** - Adjust one parameter at a time to see effect
-8. **Save working settings** - When you find settings that work, save the workflow
+**Faster generation:**
+- Reduce steps (35 → 25 for testing)
+- Use smaller tiles (1024 → 768)
+- Skip face enhancement
+- Use 2x2x workflow for low VRAM
 
----
+**Higher quality:**
+- Increase steps (35 → 40-50)
+- Use larger tiles (1024 → 1536, needs more VRAM)
+- Add seam_fix_mode (but slower: 20 tiles → 49 tiles)
+- Increase upscale denoise slightly (0.28 → 0.32)
 
-## Expected Results
-
-### Success Rates (Based on Community Reports)
-
-| Issue | Success Rate | Notes |
-|-------|--------------|-------|
-| 6 fingers → 5 fingers | 85-90% | High success if hand clearly visible |
-| 4 fingers → 5 fingers | 80-85% | May need multiple attempts |
-| Thumb like finger → proper thumb | 90-95% | MeshGraphormer excels at this |
-| Fused fingers → separated | 70-80% | Harder, may need manual touch-up |
-| Multiple issues | 60-75% | May need 2-3 iterations |
-
-### Processing Time
-
-- **First run**: 2-4 minutes (model download + inference)
-- **Subsequent runs**: 30-90 seconds per image
-- **GPU**: RTX 3060 or better recommended
-- **VRAM**: 8GB minimum, 10GB+ recommended
-
----
-
-## Combining with Face Detailing
-
-To process both faces and hands in one workflow:
-
-1. Add FaceDetailer node before the hand detection
-2. Connect FaceDetailer output to the hand detection input
-3. Process faces first, then hands
-4. See main FIXING_HAND_ANATOMY.md guide for detailed example
-
----
-
-## Next Steps
-
-Once you've mastered these workflows:
-
-1. **Experiment with settings** - Find optimal values for your images
-2. **Try different checkpoints** - Some models work better than others
-3. **Combine techniques** - Use FaceDetailer for faces, MeshGraphormer for hands
-4. **Create variations** - Modify workflows for your specific needs
-5. **Share results** - Help the community by sharing what works
-
----
-
-## Getting Help
-
-If you're stuck:
-
-1. **Check the depth map preview** - Is MeshGraphormer detecting the hand?
-2. **Check console output** - Look for error messages
-3. **Review Prerequisites** - Are all models and nodes installed?
-4. **Try the simple workflow** - Easier to troubleshoot
-5. **Adjust one parameter at a time** - Systematic debugging
-6. **See main guides**:
-   - `FIXING_HAND_ANATOMY.md` - Complete guide
-   - `INSTALLATION_TROUBLESHOOTING.md` - Installation help
-   - `HAND_FIXING_GUIDE.md` - Alternative methods
+**Memory optimization:**
+- Use 2x2x Upscale workflow
+- Reduce tile size
+- Lower guide_size in FaceDetailer
+- Process fewer regions simultaneously
 
 ---
 
 ## Additional Resources
 
-- **Main Guide**: `../FIXING_HAND_ANATOMY.md`
-- **Installation Help**: `../INSTALLATION_TROUBLESHOOTING.md`
-- **ControlNet Aux GitHub**: https://github.com/Fannovel16/comfyui_controlnet_aux
-- **Impact Pack GitHub**: https://github.com/ltdrdata/ComfyUI-Impact-Pack
-- **ComfyUI Workflows**: https://comfyworkflows.com (search "hand fix")
-- **Civitai**: https://civitai.com/models (search "hand detailer workflow")
+**Main documentation:**
+- Workflow embedded notes (open JSON, check `extra.workflow_notes`)
+- Git commit history for testing details
+
+**Required downloads:**
+- Hand detector: https://huggingface.co/Bingsu/adetailer/resolve/main/hand_yolov8s.pt
+- Face detector: https://huggingface.co/Bingsu/adetailer/resolve/main/face_yolov8m.pt
+- SAM model: https://huggingface.co/spaces/abhishek/StableSAM/resolve/main/sam_vit_b_01ec64.pth
+- 4x-UltraSharp: https://huggingface.co/Kim2091/UltraSharp/resolve/main/4x-UltraSharp.pth
+
+**ComfyUI nodes:**
+- Impact Pack: https://github.com/ltdrdata/ComfyUI-Impact-Pack
+- Install via ComfyUI Manager (search "Impact Pack")
 
 ---
 
-Good luck fixing those hands! 🖐️
+## Version History
+
+**Current version** (2024-11):
+- FaceDetailer-based hand fixing with BBOX-only mode
+- Tested optimal parameters (cfg 6.0, denoise 0.5)
+- Specialized prompts for each stage
+- Body part enhancement in upscale pass
+- Comprehensive documentation
+
+**Previous approaches** (deprecated):
+- MeshGraphormer-based hand fixing (tight mask problem)
+- Post-upscale hand fixing (16x slower)
+- Generic prompts for all stages
+
+---
+
+Good luck creating amazing images! 🎨
