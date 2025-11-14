@@ -1,5 +1,4 @@
 # Installation Troubleshooting Guide
-
 **Common installation issues and their solutions**
 
 ---
@@ -8,19 +7,17 @@
 
 ### Error 1: "This action is not allowed with this security level configuration"
 **Where:** ComfyUI Manager when trying to enter git URL
-
 **Solution:**
-- ✅ **Use the search box** in ComfyUI Manager instead of entering URLs
-- ✅ Search for "controlnet aux" to find MeshGraphormer
-- ✅ Or use Manual Download method (see Solution 2 below)
+- **Use the search box** in ComfyUI Manager instead of entering URLs
+- Search for "controlnet aux" to find MeshGraphormer
+- Or use Manual Download method (see Solution 2 below)
 
 ### Error 2: Git Clone Asks for Username/Password
 **Where:** Terminal/command line when running `git clone`
-
 **Solution:**
-- ✅ **Use ComfyUI Manager search** (easiest - see Solution 1)
-- ✅ **Download ZIP manually** from GitHub (see Solution 2)
-- ✅ Skip git entirely (see Solutions 1 & 2)
+- **Use ComfyUI Manager search** (easiest - see Solution 1)
+- **Download ZIP manually** from GitHub (see Solution 2)
+- Skip git entirely (see Solutions 1 & 2)
 
 ---
 
@@ -30,9 +27,7 @@ When trying to install custom nodes by entering a git URL in ComfyUI Manager, yo
 ```
 "This action is not allowed with this security level configuration."
 ```
-
 **This is a security feature** that restricts manual URL entry. You can only install nodes from the Manager's official trusted list.
-
 **Solution:** Jump to [Solution 1](#solution-1-use-comfyui-manager-easiest---recommended) and use the **search function** instead of entering URLs.
 
 ---
@@ -52,54 +47,48 @@ You may be prompted for username and password. This can happen due to:
 ---
 
 ## Solution 1: Use ComfyUI Manager (Easiest - Recommended)
-
 **This is the easiest method - no command line needed!**
 
 ### Step 1: Install ComfyUI Manager (if not already installed)
 
 1. Navigate to `ComfyUI/custom_nodes/`
 2. Download ComfyUI Manager:
-   - Visit: https://github.com/ltdrdata/ComfyUI-Manager
-   - Click "Code" → "Download ZIP"
-   - Extract to `ComfyUI/custom_nodes/ComfyUI-Manager/`
+ - Visit: https://github.com/ltdrdata/ComfyUI-Manager
+ - Click "Code" → "Download ZIP"
+ - Extract to `ComfyUI/custom_nodes/ComfyUI-Manager/`
 3. Restart ComfyUI
 
 ### Step 2: Install Nodes Through Manager
-
 **IMPORTANT: Use the search function, don't enter git URLs directly!**
 
 1. **In ComfyUI web interface**, click the **Manager** button
 2. Click **"Install Custom Nodes"**
 3. **Use the search box** to find nodes:
-   - Search "**ControlNet Auxiliary**" or "**controlnet aux**" → Find "ComfyUI's ControlNet Auxiliary Preprocessors" → Click "Install"
-   - Search "**BMAB**" → Click "Install"
-   - Search "**SAM2**" → Click "Install"
-   - etc.
+ - Search "**ControlNet Auxiliary**" or "**controlnet aux**" → Find "ComfyUI's ControlNet Auxiliary Preprocessors" → Click "Install"
+ - Search "**BMAB**" → Click "Install"
+ - Search "**SAM2**" → Click "Install"
+ - etc.
 4. Restart ComfyUI when prompted
-
-**⚠️ Security Restriction Warning**
+** Security Restriction Warning**
 
 If you try to **manually enter a git URL** in ComfyUI Manager, you may see:
 ```
 "This action is not allowed with this security level configuration."
 ```
-
 **Solution:**
-- ✅ **Use the search function** instead of entering URLs
-- ✅ The node must be in Manager's official list to install this way
-- ✅ If not found in search, use **Manual Download** (Solution 2 below)
-
+- **Use the search function** instead of entering URLs
+- The node must be in Manager's official list to install this way
+- If not found in search, use **Manual Download** (Solution 2 below)
 **How to search effectively:**
 - For MeshGraphormer: Search "**controlnet aux**" or "**auxiliary**"
 - For Impact Pack nodes: Search "**impact**"
 - Use partial names if full name doesn't work
-
 **Advantages:**
-- ✅ No git commands needed
-- ✅ No authentication issues
-- ✅ Automatic dependency installation
-- ✅ Easy updates through GUI
-- ✅ Only nodes from trusted sources
+- No git commands needed
+- No authentication issues
+- Automatic dependency installation
+- Easy updates through GUI
+- Only nodes from trusted sources
 
 ---
 
@@ -112,23 +101,23 @@ For any custom node that's giving git authentication errors:
 1. **Open browser** and go to: https://github.com/Fannovel16/comfyui_controlnet_aux
 
 2. **Download as ZIP**:
-   - Click the green "Code" button
-   - Click "Download ZIP"
-   - Save to your Downloads folder
+ - Click the green "Code" button
+ - Click "Download ZIP"
+ - Save to your Downloads folder
 
 3. **Extract ZIP**:
-   - Extract the downloaded ZIP file
-   - You'll get a folder named `comfyui_controlnet_aux-main`
+ - Extract the downloaded ZIP file
+ - You'll get a folder named `comfyui_controlnet_aux-main`
 
 4. **Move to ComfyUI**:
-   - Rename folder to remove `-main`: `comfyui_controlnet_aux`
-   - Move the folder to: `ComfyUI/custom_nodes/comfyui_controlnet_aux/`
+ - Rename folder to remove `-main`: `comfyui_controlnet_aux`
+ - Move the folder to: `ComfyUI/custom_nodes/comfyui_controlnet_aux/`
 
 5. **Install dependencies**:
-   ```bash
-   cd ComfyUI/custom_nodes/comfyui_controlnet_aux/
-   pip install -r requirements.txt
-   ```
+ ```bash
+ cd ComfyUI/custom_nodes/comfyui_controlnet_aux/
+ pip install -r requirements.txt
+ ```
 
 6. **Restart ComfyUI**
 
@@ -171,12 +160,10 @@ git clone http://github.com/Fannovel16/comfyui_controlnet_aux.git
 If `wget` commands also ask for authentication or don't work:
 
 ### For ControlNet Models
-
 **Instead of:**
 ```bash
 wget https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f1p_sd15_depth.pth
 ```
-
 **Do this:**
 
 1. **Open browser** and visit: https://huggingface.co/lllyasviel/ControlNet-v1-1/tree/main
@@ -188,12 +175,10 @@ wget https://huggingface.co/lllyasviel/ControlNet-v1-1/resolve/main/control_v11f
 4. **Save to**: `ComfyUI/models/controlnet/`
 
 ### For Hand Detection Models
-
 **Instead of:**
 ```bash
 wget https://huggingface.co/Bingsu/adetailer/resolve/main/hand_yolov8s.pt
 ```
-
 **Do this:**
 
 1. Visit: https://huggingface.co/Bingsu/adetailer/tree/main
@@ -203,12 +188,10 @@ wget https://huggingface.co/Bingsu/adetailer/resolve/main/hand_yolov8s.pt
 3. Save to: `ComfyUI/models/ultralytics/bbox/`
 
 ### For SAM Models
-
 **Instead of:**
 ```bash
 wget https://dl.fbaipublicfiles.com/segment_anything/sam_vit_h_4b8939.pth
 ```
-
 **Do this:**
 
 1. Open browser and visit: https://github.com/facebookresearch/segment-anything#model-checkpoints
@@ -299,9 +282,9 @@ ls ComfyUI/models/sams/sam_vit_h_4b8939.pth
 1. **Start ComfyUI**
 2. **Right-click on canvas** → "Add Node"
 3. **Look for the nodes**:
-   - Search "MeshGraphormer" (should appear if installed)
-   - Search "BMAB" (should appear if installed)
-   - etc.
+ - Search "MeshGraphormer" (should appear if installed)
+ - Search "BMAB" (should appear if installed)
+ - etc.
 
 If nodes don't appear, check the ComfyUI console/terminal for error messages.
 
@@ -312,9 +295,8 @@ If nodes don't appear, check the ComfyUI console/terminal for error messages.
 ### Check ComfyUI Console
 
 When you start ComfyUI, the terminal/console shows:
-- ✅ Successfully loaded custom nodes
-- ❌ Errors loading nodes (missing dependencies, etc.)
-
+- Successfully loaded custom nodes
+- Errors loading nodes (missing dependencies, etc.)
 **Look for lines like:**
 ```
 [ComfyUI-MeshGraphormer] Loaded successfully
@@ -355,15 +337,13 @@ These come with many custom nodes pre-installed, avoiding git clone issues entir
 ---
 
 ## Summary
-
 **Recommended approach for beginners:**
 
-1. ✅ **First try: ComfyUI Manager** (GUI-based, easiest)
-2. ✅ **If that fails: Manual ZIP download** (no git needed)
-3. ✅ **Download models through browser** (no wget needed)
-4. ✅ **Verify files are in correct locations**
-5. ✅ **Check console for errors on startup**
-
+1. **First try: ComfyUI Manager** (GUI-based, easiest)
+2. **If that fails: Manual ZIP download** (no git needed)
+3. **Download models through browser** (no wget needed)
+4. **Verify files are in correct locations**
+5. **Check console for errors on startup**
 **You don't need git or command line expertise to use ComfyUI!** The Manager makes it beginner-friendly.
 
 ---
