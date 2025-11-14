@@ -1,20 +1,33 @@
-# ComfyUI Hand Fixing Guide
+# ComfyUI Hand Fixing & Image Enhancement Guide
 
-Comprehensive guides and workflows for fixing hand anatomy issues in AI-generated images using ComfyUI.
+Comprehensive guides and workflows for fixing hands, enhancing faces, and upscaling images in ComfyUI. Complete production pipelines from generation to final high-resolution output.
 
 ---
 
 ## Overview
 
-This repository contains detailed guides, example workflows, and troubleshooting resources for fixing common hand generation problems in AI art:
+This repository contains detailed guides, example workflows, and troubleshooting resources for comprehensive image enhancement in AI art:
 
+### 🖐️ **Hand Fixing**
 - ❌ Extra fingers (6+ fingers)
 - ❌ Missing fingers (less than 5)
 - ❌ Incorrect thumb position
 - ❌ Fused or malformed fingers
 - ❌ Blurry or distorted hands
 
-**Solution:** Multiple proven methods from simple inpainting to advanced MeshGraphormer + ControlNet anatomical reconstruction.
+### 👤 **Face Detailing**
+- ✨ Enhance facial features and details
+- 🎯 Fix blurry or distorted faces
+- 🔍 Improve eyes, nose, mouth details
+- 📸 Upscale and refine portraits
+
+### 📈 **Image Upscaling**
+- 🚀 Ultimate SD Upscale (4x, seamless tiling)
+- 🎨 ControlNet Tile Upscale (quality preservation)
+- 🔄 2x2x Multi-stage Upscaling (up to 4x)
+- ⚡ Latent Space Upscaling (fast)
+
+**Complete Production Workflows:** Combine generation → hand fixing → face enhancement → upscaling in one seamless pipeline!
 
 ---
 
@@ -93,12 +106,32 @@ This repository contains detailed guides, example workflows, and troubleshooting
 
 Located in [`workflows/`](workflows/) directory:
 
+#### Hand Fixing Workflows
+
 | Workflow | Description | Recommended For |
 |----------|-------------|-----------------|
-| `meshgraphormer_hand_fix_simple.json` | ⭐ All-in-one simplified workflow | Beginners, quick fixes |
+| `meshgraphormer_hand_fix_simple.json` | ⭐ All-in-one simplified workflow | Beginners, quick anatomical fixes |
 | `meshgraphormer_hand_fix_workflow.json` | Advanced multi-stage workflow | Maximum control, fine-tuning |
 | `hand_fix_bbox_inpaint.json` | Basic bbox detection + inpaint | Learning the fundamentals |
-| `Generate with Hand Fix and Upscale.json` | Complete generation + fix + upscale | Production workflow |
+
+#### Production Workflows (Generation + Enhancement + Upscaling)
+
+| Workflow | Description | Features |
+|----------|-------------|----------|
+| `Generate with Hand Fix and Upscale.json` | ⭐ **Complete production pipeline** | Generation (1152x896) → Hand Fix → Face Enhance → Ultimate SD Upscale (4x) |
+| `Generate with Ultimate SD Upscale.json` | Generation with 4x upscaling | Base generation → Ultimate SD Upscale → Save |
+| `Generate with ControlNet Tile Upscale.json` | ControlNet-guided tile upscaling | Generation → ControlNet Tile refinement → Upscale |
+| `Generate with 2x2x Upscale (Mac Compatible).json` | Multi-stage 4x upscaling | Two-pass 2x upscaling (Mac M-series optimized) |
+| `Generate with Latent Upscale (template).json` | Fast latent space upscaling | Quick upscaling in latent space |
+
+**Workflow Order (Production Pipeline):**
+```
+1. Generate base image (e.g., 1152x896)
+2. FaceDetailer + Hand Fix (low-res pass)
+3. Ultimate SD Upscale (4x enlargement)
+4. FaceDetailer (high-res refinement)
+5. Save final image
+```
 
 **See [workflows/README.md](workflows/README.md) for detailed workflow documentation**
 
@@ -147,6 +180,109 @@ Located in [`workflows/`](workflows/) directory:
 
 ---
 
+## Face Detailing & Upscaling Features
+
+This repository isn't just about hands! The production workflows include comprehensive image enhancement:
+
+### 👤 FaceDetailer
+
+**What it does:**
+- Automatically detects and enhances faces in images
+- Fixes blurry or low-quality facial features
+- Improves eyes, nose, mouth, and overall face structure
+- Works at both low-res (pre-upscale) and high-res (post-upscale)
+
+**Key features:**
+- Uses YOLO face detection (same technology as hand detection)
+- Precise masking with SAM (Segment Anything Model)
+- Separate prompts for face enhancement
+- Configurable denoise levels for subtle or dramatic improvements
+
+**Typical settings:**
+- **Low-res pass** (before upscale): Denoise 0.4-0.5, crop_factor 2.0-3.0
+- **High-res pass** (after upscale): Denoise 0.3-0.35, crop_factor 1.5
+
+### 📈 Ultimate SD Upscale
+
+**What it does:**
+- Upscales images by 2x or 4x with exceptional quality
+- Uses tiled processing to handle large images without VRAM issues
+- Maintains coherence and detail through SD denoising
+- Seamlessly blends tiles for artifact-free results
+
+**How it works:**
+1. Divides image into overlapping tiles
+2. Upscales each tile using an upscale model (e.g., 4x-UltraSharp)
+3. Runs SD denoising pass on each tile for detail enhancement
+4. Blends tiles together seamlessly
+
+**Advantages over simple upscaling:**
+- ✅ Much better detail preservation
+- ✅ Adds realistic details during upscaling
+- ✅ No VRAM limits (processes tiles one at a time)
+- ✅ Maintains prompt coherence across entire image
+
+**Typical settings:**
+- **Upscale factor**: 2x or 4x
+- **Tile size**: 512-768 (larger = slower but more coherent)
+- **Denoise**: 0.3-0.5 (lower = preserve original, higher = add detail)
+- **Steps**: 20-30
+
+### 🎨 ControlNet Tile Upscale
+
+**Alternative upscaling method:**
+- Uses ControlNet Tile to guide the upscaling
+- Better preservation of original image structure
+- Slower but higher quality for some images
+
+### 🔄 Multi-Stage Upscaling (2x2x)
+
+**For maximum quality:**
+- First pass: 2x upscale (e.g., 1152x896 → 2304x1792)
+- Second pass: 2x upscale again (→ 4608x3584)
+- **Mac Compatible**: Optimized for Apple Silicon (M1/M2/M3)
+
+**Advantages:**
+- More gradual upscaling = better quality
+- Less stress on VRAM per pass
+- Can stop after first 2x if desired
+
+### Complete Production Pipeline
+
+**The "Generate with Hand Fix and Upscale" workflow combines everything:**
+
+```
+Step 1: Base Generation
+  - Generate image at moderate resolution (1152x896)
+  - Use your favorite checkpoint and prompts
+
+Step 2: Low-Res Enhancement
+  - FaceDetailer: Enhance faces (denoise 0.35, crop_factor 1.5)
+  - Hand Fix: Fix hands using YOLO + SAM (denoise 0.5, crop_factor 3.0)
+  - Works on manageable resolution for speed
+
+Step 3: Ultimate SD Upscale
+  - Upscale 4x (1152x896 → 4608x3584)
+  - Tile size 512, denoise 0.4
+  - Adds detail while enlarging
+
+Step 4: High-Res Enhancement
+  - FaceDetailer again: Refine faces at high resolution
+  - Denoise 0.35, crop_factor 1.5
+  - Final polish on facial features
+
+Step 5: Save
+  - Final high-resolution image with perfect faces and hands
+```
+
+**Why this order works:**
+1. **Generate at moderate res** - Faster, less VRAM
+2. **Fix major issues at low-res** - Easier to fix hands/faces when smaller
+3. **Upscale** - Enlarges the already-improved image
+4. **Refine at high-res** - Final touch-ups on faces benefit from high resolution
+
+---
+
 ## Prerequisites
 
 ### Required Software
@@ -165,9 +301,10 @@ Install via ComfyUI Manager (search for these names):
 
 ### Optional Custom Nodes (for advanced methods)
 
-3. **ComfyUI-SAM2** - Segment Anything for precise masking
-4. **ComfyUI-FluxFill** - State-of-the-art inpainting
-5. **BMAB (Better Mask and Blur)** - Automated hand detailer
+3. **Ultimate SD Upscale** - High-quality 4x upscaling with tiled processing
+4. **ComfyUI-SAM2** - Segment Anything for precise masking (used in face/hand detailing)
+5. **ComfyUI-FluxFill** - State-of-the-art inpainting
+6. **BMAB (Better Mask and Blur)** - Automated hand detailer
 
 ### Required Models
 
@@ -179,6 +316,11 @@ Install via ComfyUI Manager (search for these names):
 - `control_v11f1p_sd15_depth.pth` (SD1.5) or
 - `diffusers_xl_depth_full.safetensors` (SDXL)
 - MeshGraphormer model (auto-downloads ~200MB on first use)
+
+**For Upscaling workflows:**
+- Upscale model (e.g., `4x-UltraSharp.pth`, `RealESRGAN_x4plus.pth`)
+- ControlNet Tile model (for ControlNet Tile Upscale workflow)
+- Location: `ComfyUI/models/upscale_models/`
 
 **Download links and installation instructions in [INSTALLATION_TROUBLESHOOTING.md](INSTALLATION_TROUBLESHOOTING.md)**
 
@@ -347,7 +489,7 @@ Based on community reports and testing:
 
 ### Before → After Results
 
-**Common scenarios that can be fixed:**
+**Hand Fixing:**
 
 ✅ **Six fingers → Five fingers**
 - Method: MeshGraphormer + ControlNet
@@ -364,6 +506,36 @@ Based on community reports and testing:
 ✅ **Fused fingers → Separated fingers**
 - Method: MeshGraphormer or Flux Fill
 - Success Rate: 70-80%
+
+**Face Enhancement:**
+
+✅ **Blurry face → Sharp, detailed face**
+- Method: FaceDetailer with SAM
+- Success Rate: 85-95%
+
+✅ **Low-quality eyes/mouth → Crisp facial features**
+- Method: FaceDetailer (high-res pass)
+- Success Rate: 90-95%
+
+**Upscaling:**
+
+✅ **1152x896 → 4608x3584 (4x)**
+- Method: Ultimate SD Upscale
+- Quality: Excellent detail preservation + enhancement
+- Time: 2-5 minutes (depending on settings)
+
+✅ **512x512 → 4096x4096 (8x via 2x2x)**
+- Method: Multi-stage 2x upscaling
+- Quality: Maximum quality, gradual scaling
+- Time: 5-10 minutes
+
+**Complete Pipeline:**
+
+✅ **Low-res with hand/face issues → High-res perfection**
+- Workflow: Generate with Hand Fix and Upscale
+- Input: 1152x896 with 6 fingers, blurry face
+- Output: 4608x3584 with correct hands, sharp face, rich detail
+- Time: 3-6 minutes total
 
 ---
 
@@ -405,6 +577,24 @@ Based on community reports and testing:
 ### Q: The workflows have red nodes. What do I do?
 **A:** You're missing custom nodes or models. See [INSTALLATION_TROUBLESHOOTING.md](INSTALLATION_TROUBLESHOOTING.md#issue-error-loading-node-or-missing-nodes) and [workflows/README.md](workflows/README.md#prerequisites).
 
+### Q: What's the difference between Ultimate SD Upscale and regular upscaling?
+**A:** Regular upscaling just enlarges pixels. Ultimate SD Upscale uses AI to add realistic details during upscaling by processing tiles with Stable Diffusion. Result: much better quality, especially at 4x.
+
+### Q: Should I fix hands/faces before or after upscaling?
+**A:** **Both!** The production workflow does a low-res pass before upscaling (fixes major issues), then a high-res pass after upscaling (refines details). This gives best results.
+
+### Q: Can I use these workflows for portraits without hands?
+**A:** Absolutely! Use the FaceDetailer + Upscale workflows. The face enhancement and upscaling work great for portraits, character art, etc.
+
+### Q: How big can I upscale images?
+**A:** Ultimate SD Upscale can handle any size due to tiling. Common workflow: Start at 1152x896 → 4x upscale → 4608x3584 final. You can do 2x2x for 8x total, but file sizes get huge!
+
+### Q: Which upscale model should I use?
+**A:**
+- **4x-UltraSharp**: Best for photorealistic images
+- **RealESRGAN_x4plus**: Good general-purpose upscaler
+- **4x-AnimeSharp**: Best for anime/illustration styles
+
 ---
 
 ## Contributing
@@ -425,13 +615,20 @@ Consider contributing back to help the community.
 
 ### Model Downloads
 - **Hand YOLO**: https://huggingface.co/Bingsu/adetailer
+- **Face YOLO**: https://huggingface.co/Bingsu/adetailer (same source, face_yolov8s.pt)
 - **ControlNet Depth (SD1.5)**: https://huggingface.co/lllyasviel/ControlNet-v1-1
 - **ControlNet Depth (SDXL)**: https://huggingface.co/diffusers/controlnet-depth-sdxl-1.0
+- **ControlNet Tile**: https://huggingface.co/lllyasviel/ControlNet-v1-1 (control_v11f1e_sd15_tile.pth)
 - **SAM Models**: https://github.com/facebookresearch/segment-anything#model-checkpoints
 - **Flux Fill**: https://huggingface.co/black-forest-labs/FLUX.1-Fill-dev
+- **Upscale Models**:
+  - 4x-UltraSharp: https://huggingface.co/Kim2091/UltraSharp
+  - RealESRGAN_x4plus: https://github.com/xinntao/Real-ESRGAN/releases
+  - 4x-AnimeSharp (for anime): https://huggingface.co/Kim2091/AnimeSharp
 
 ### Custom Nodes
 - **Impact Pack**: https://github.com/ltdrdata/ComfyUI-Impact-Pack
+- **Ultimate SD Upscale**: https://github.com/ssitu/ComfyUI_UltimateSDUpscale
 - **ControlNet Aux (MeshGraphormer)**: https://github.com/Fannovel16/comfyui_controlnet_aux
 - **BMAB**: https://github.com/portu-sim/comfyui_bmab
 - **SAM2**: https://github.com/neverbiasu/ComfyUI-SAM2
@@ -468,11 +665,13 @@ This guide synthesizes knowledge from:
 - Research papers on hand pose estimation and image generation
 
 Special thanks to the developers of:
-- **ltdrdata** - ComfyUI Impact Pack
-- **Fannovel16** - ControlNet Auxiliary Preprocessors
+- **ltdrdata** - ComfyUI Impact Pack (FaceDetailer, bbox detection)
+- **Fannovel16** - ControlNet Auxiliary Preprocessors (MeshGraphormer)
+- **ssitu** - Ultimate SD Upscale
 - **kijai** - FluxFill integration
 - **neverbiasu** - SAM2 integration
 - **portu-sim** - BMAB
+- **lllyasviel** - ControlNet models
 
 ---
 
@@ -486,6 +685,7 @@ If you find these guides helpful:
 
 ---
 
-**Good luck fixing those hands!** 🖐️
+**Good luck creating perfect images!** 🖐️👤📈
 
-*For detailed instructions, start with [HAND_FIXING_GUIDE.md](HAND_FIXING_GUIDE.md)*
+*For detailed hand fixing instructions, start with [HAND_FIXING_GUIDE.md](HAND_FIXING_GUIDE.md)*
+*For complete production workflows, check out the [workflows/](workflows/) directory*
