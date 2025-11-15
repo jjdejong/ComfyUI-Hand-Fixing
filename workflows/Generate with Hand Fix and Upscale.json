@@ -2,7 +2,7 @@
   "id": "71130604-04fd-4d2f-8277-fb8ac7872815",
   "revision": 0,
   "last_node_id": 107,
-  "last_link_id": 236,
+  "last_link_id": 242,
   "nodes": [
     {
       "id": 75,
@@ -766,7 +766,8 @@
           "name": "IMAGE",
           "type": "IMAGE",
           "links": [
-            218
+            218,
+            237
           ]
         }
       ],
@@ -1064,7 +1065,8 @@
           "name": "SAM_MODEL",
           "type": "SAM_MODEL",
           "links": [
-            216
+            216,
+            239
           ],
           "slot_index": 0
         }
@@ -1096,7 +1098,8 @@
           "name": "BBOX_DETECTOR",
           "type": "BBOX_DETECTOR",
           "links": [
-            217
+            217,
+            238
           ],
           "slot_index": 0
         }
@@ -1405,6 +1408,166 @@
       "widgets_values": [
         "smooth skin, plastic skin, airbrushed, over-smoothed, waxy skin, synthetic skin, blurry face, soft focus, low detail, filtered look, beauty filter, artificial smoothing"
       ]
+    },
+    {
+      "id": 110,
+      "type": "ImpactSimpleDetectorSEGS",
+      "pos": [
+        2200,
+        400
+      ],
+      "size": {
+        "0": 360,
+        "1": 280
+      },
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "title": "Face Mask Preview Detector",
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 237
+        },
+        {
+          "name": "bbox_detector",
+          "type": "BBOX_DETECTOR",
+          "link": 238
+        },
+        {
+          "name": "sam_model_opt",
+          "type": "SAM_MODEL",
+          "link": 239
+        }
+      ],
+      "outputs": [
+        {
+          "name": "SEGS",
+          "type": "SEGS",
+          "links": [
+            240
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ImpactSimpleDetectorSEGS"
+      },
+      "widgets_values": [
+        0.5,
+        10,
+        1.5,
+        10,
+        "all",
+        "center-1",
+        0,
+        0.93,
+        0,
+        0.7,
+        "False"
+      ]
+    },
+    {
+      "id": 111,
+      "type": "SEGSToMaskList",
+      "pos": [
+        2600,
+        400
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 23,
+      "mode": 0,
+      "title": "Extract Face Masks",
+      "inputs": [
+        {
+          "name": "segs",
+          "type": "SEGS",
+          "link": 240
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": [
+            241
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "SEGSToMaskList"
+      }
+    },
+    {
+      "id": 112,
+      "type": "MaskToImage",
+      "pos": [
+        2850,
+        400
+      ],
+      "size": {
+        "0": 210,
+        "1": 26
+      },
+      "flags": {},
+      "order": 24,
+      "mode": 0,
+      "title": "Visualize Face Masks",
+      "inputs": [
+        {
+          "name": "mask",
+          "type": "MASK",
+          "link": 241
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            242
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "MaskToImage"
+      }
+    },
+    {
+      "id": 113,
+      "type": "PreviewImage",
+      "pos": [
+        3100,
+        400
+      ],
+      "size": {
+        "0": 320,
+        "1": 320
+      },
+      "flags": {},
+      "order": 25,
+      "mode": 0,
+      "title": "Face Mask Preview (Check SAM Coverage)",
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 242
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
     }
   ],
   "links": [
@@ -1783,6 +1946,54 @@
       109,
       0,
       "CLIP"
+    ],
+    [
+      237,
+      95,
+      0,
+      110,
+      0,
+      "IMAGE"
+    ],
+    [
+      238,
+      101,
+      0,
+      110,
+      1,
+      "BBOX_DETECTOR"
+    ],
+    [
+      239,
+      100,
+      0,
+      110,
+      2,
+      "SAM_MODEL"
+    ],
+    [
+      240,
+      110,
+      0,
+      111,
+      0,
+      "SEGS"
+    ],
+    [
+      241,
+      111,
+      0,
+      112,
+      0,
+      "MASK"
+    ],
+    [
+      242,
+      112,
+      0,
+      113,
+      0,
+      "IMAGE"
     ]
   ],
   "groups": [],
