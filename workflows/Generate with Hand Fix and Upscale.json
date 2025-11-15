@@ -2,7 +2,7 @@
   "id": "71130604-04fd-4d2f-8277-fb8ac7872815",
   "revision": 0,
   "last_node_id": 107,
-  "last_link_id": 242,
+  "last_link_id": 241,
   "nodes": [
     {
       "id": 75,
@@ -767,7 +767,8 @@
           "type": "IMAGE",
           "links": [
             218,
-            237
+            237,
+            243
           ]
         }
       ],
@@ -1471,7 +1472,7 @@
     },
     {
       "id": 111,
-      "type": "SEGSToMaskList",
+      "type": "SEGSToImageList",
       "pos": [
         2600,
         400
@@ -1483,7 +1484,7 @@
       "flags": {},
       "order": 23,
       "mode": 0,
-      "title": "Extract Face Masks",
+      "title": "Extract Masked Face Images",
       "inputs": [
         {
           "name": "segs",
@@ -1493,8 +1494,8 @@
       ],
       "outputs": [
         {
-          "name": "MASK",
-          "type": "MASK",
+          "name": "IMAGE",
+          "type": "IMAGE",
           "links": [
             241
           ],
@@ -1503,51 +1504,14 @@
         }
       ],
       "properties": {
-        "Node name for S&R": "SEGSToMaskList"
+        "Node name for S&R": "SEGSToImageList"
       }
     },
     {
       "id": 112,
-      "type": "MaskToImage",
-      "pos": [
-        2850,
-        400
-      ],
-      "size": {
-        "0": 210,
-        "1": 26
-      },
-      "flags": {},
-      "order": 24,
-      "mode": 0,
-      "title": "Visualize Face Masks",
-      "inputs": [
-        {
-          "name": "mask",
-          "type": "MASK",
-          "link": 241
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [
-            242
-          ],
-          "shape": 3,
-          "slot_index": 0
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "MaskToImage"
-      }
-    },
-    {
-      "id": 113,
       "type": "PreviewImage",
       "pos": [
-        3100,
+        2850,
         400
       ],
       "size": {
@@ -1555,14 +1519,14 @@
         "1": 320
       },
       "flags": {},
-      "order": 25,
+      "order": 24,
       "mode": 0,
-      "title": "Face Mask Preview (Check SAM Coverage)",
+      "title": "Face Mask Preview (Actual Masked Faces)",
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 242
+          "link": 241
         }
       ],
       "properties": {
@@ -1984,14 +1948,6 @@
       111,
       0,
       112,
-      0,
-      "MASK"
-    ],
-    [
-      242,
-      112,
-      0,
-      113,
       0,
       "IMAGE"
     ]
