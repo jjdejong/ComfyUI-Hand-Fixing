@@ -611,7 +611,7 @@ This happens in PuLID workflows using UltimateSDUpscale, even with standard imag
 
 **Root cause:** When an image tensor is shared between multiple nodes (PuLID, ControlNet, UltimateSDUpscale), PyTorch creates non-contiguous tensor views. The upscale model's conv2d operations require contiguous memory layout, causing the error.
 
-**Solution 0: FIXED in latest workflow (2024-01-21)**
+**Solution 0: FIXED in latest workflow (2025-11-21)**
 The `PuLID_ControlNet_Ultimate_SD_Upscale_SDXL.json` workflow now includes a RepeatImageBatch node (count=1) that creates a contiguous copy of the image tensor before UltimateSDUpscale. This should resolve the tensor error for most users.
 
 If you downloaded the workflow before this fix, reload the latest version from the repository.
@@ -688,41 +688,61 @@ Add an ImageScale node before UltimateSDUpscale to resize to dimensions that are
 
 **Symptom:** PuLID workflows take 4+ hours on Mac M4/M3/M2 instead of expected 2-5 minutes
 
-**Root cause:** InsightFace/ONNXRuntime not using Mac Metal/CoreML acceleration by default.
+**Root cause:** InsightFace uses ONNXRuntime, which has NO MPS (Metal Performance Shaders) support on Mac as of 2025. InsightFace runs on CPU cores only, causing extreme slowness.
 
-**Background:**
-- InsightFace node options: CPU, CUDA, ROCM (no Metal/MPS option in standard PuLID implementation)
-- Mac unified memory means CPU processes share memory with GPU, but doesn't automatically mean GPU acceleration
-- Default ONNXRuntime may not have CoreML execution provider enabled
+**Technical background:**
+- **ONNXRuntime does NOT support MPS** - this is a requested feature but not yet implemented (GitHub issue #21271)
+- **CoreML execution provider exists** BUT has critical limitations:
+  - Does not support dynamic shapes (falls back to CPU when present)
+  - InsightFace models often use dynamic shapes
+  - Even when CoreML works, performance can be inconsistent
+- **onnxruntime-silicon package** is a Mac-specific build, but as of 2024 discussions, it still only supports CPU
+- **Mac unified memory** means CPU and GPU share memory, but this does NOT mean CPU processes automatically use GPU acceleration
 
-**Potential solutions to investigate:**
+**Why this affects PuLID specifically:**
+- InsightFace face analysis is the bottleneck (runs on CPU cores)
+- Users report "unable to see mouth movements in real-time" with face swapping
+- 100x+ slowdown compared to GPU-accelerated systems
+- This explains 4-hour processing time on Mac M4 Max (should be 2-5 minutes with GPU acceleration)
 
-1. **Check ONNXRuntime CoreML support:**
-   - Ensure ONNXRuntime was installed with CoreML support: `pip install onnxruntime-coreml`
-   - Or reinstall with: `pip uninstall onnxruntime && pip install onnxruntime-coreml`
+**Current state (2025):**
+- No practical solution for Mac GPU acceleration with InsightFace/ONNXRuntime
+- Installing onnxruntime-coreml may help marginally but won't solve the fundamental issue
+- The only way to get acceptable performance is to use workflows that minimize InsightFace usage
 
-2. **Verify ComfyUI PyTorch uses MPS:**
-   - Check if PyTorch is using MPS backend for Mac
-   - In Python: `import torch; print(torch.backends.mps.is_available())`
-   - Should return `True` on M-series Macs
+**Workarounds:**
 
-3. **Profile where time is spent:**
-   - Use ComfyUI's built-in profiling to identify the slow component
-   - Check console output for which nodes take longest
-   - InsightFace face analysis is a likely bottleneck
+1. **Use Multi-ControlNet_Latent workflow** (BEST for Mac users):
+   - Significantly faster than ControlNet_Tile (30 seconds vs 4+ hours)
+   - Uses same PuLID identity preservation
+   - Lower quality but actually completes in reasonable time
+   - File: `Multi-ControlNet_4x_Upscale_with_PuLID_SDXL.json`
 
-4. **Alternative: Use Multi-ControlNet_Latent workflow:**
-   - Significantly faster (30 seconds vs hours)
-   - Uses latent upscaling instead of Ultimate SD Upscale
-   - Good for testing if the issue is specifically with the tiled upscaling
+2. **Reduce image resolution:**
+   - Process 512x512 images instead of 1024x1024
+   - InsightFace processing time scales with image size
+   - Upscale the final result if needed
 
-**Expected behavior:**
-- Mac M4 Max with 36GB should process in 2-5 minutes for PuLID_ControlNet_Tile
-- If taking 4+ hours, something is preventing GPU acceleration
+3. **Use non-PuLID workflows:**
+   - Standard generation workflows don't use InsightFace
+   - File: `Generate with Hand Fix and Upscale.json`
+   - No identity preservation but much faster on Mac
 
-**Workaround if issue persists:**
-- Use Multi-ControlNet_Latent workflow for faster iterations (30 seconds)
-- Or use PuLID_Ultimate_SD_Upscale without ControlNet Tile (simpler pipeline)
+4. **Process on a different machine:**
+   - Use a Windows/Linux machine with CUDA GPU
+   - Or use cloud-based ComfyUI services
+   - Mac M-series excellent for generation, poor for InsightFace
+
+**Expected vs Actual performance on Mac M4 Max:**
+- **With GPU acceleration (CUDA):** 2-5 minutes for PuLID_ControlNet_Tile
+- **Mac CPU-only (current reality):** 4+ hours for the same workflow
+- **Multi-ControlNet_Latent on Mac:** ~30 seconds (acceptable workaround)
+
+**Future outlook:**
+- MPS support for ONNXRuntime is requested but no timeline
+- CoreML dynamic shape support is a platform limitation
+- Mac users currently stuck with CPU-only InsightFace processing
+- This is a known issue across all Mac ML apps using InsightFace
 
 ### Invalid Workflow UUID Error
 
@@ -731,7 +751,7 @@ Add an ImageScale node before UltimateSDUpscale to resize to dimensions that are
 **Root cause:** Workflow IDs were using simple strings instead of UUID format.
 
 **Solution:**
-1. **FIXED in latest workflows (2024-01-21)** - All workflows now use valid UUID format
+1. **FIXED in latest workflows (2025-11-21)** - All workflows now use valid UUID format
 2. If using older workflows, reload the latest version from the repository
 
 **Technical details:**
