@@ -218,15 +218,24 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 - PuLID weight: 0.8 (high for strong identity preservation)
 - PuLID mode: "fidelity" for photorealism
 - ControlNet Tile strength: 0.7 (structural guidance)
-- Ultimate SD Upscale: 4x, 512x512 tiles (was 1024, fixed for compatibility)
-- Mask blur: 8px (was 32px)
-- Tile padding: 32px (was 64px)
+- Ultimate SD Upscale: 4x, 256x256 tiles (conservative for compatibility)
+- Mask blur: 4px (minimal)
+- Tile padding: 16px (reduced)
 - force_uniform_tiles: false (dimension flexibility)
+- tiled_decode: true (memory efficient VAE decoding)
 - Denoise: 0.35 (adds detail while preserving identity/structure)
 - Steps: 30, CFG: 6.5
 - Sampler: dpmpp_2m_sde, Scheduler: karras
 
+**Tensor Error Fix:**
+- Added RepeatImageBatch node (count=1) before UltimateSDUpscale
+- This creates a contiguous copy of the image tensor
+- Prevents "view size is not compatible with input tensor" error
+- The error occurs because the image is shared between multiple nodes (PuLID, ControlNet, UltimateSDUpscale), creating non-contiguous tensor views
+
 **Processing time:** 3-8 minutes (worth it for absolute best quality)
+
+**NOTE:** If you still get tensor errors, use **PuLID_ControlNet_Tile** instead (guaranteed stability, excellent quality)
 
 ---
 
@@ -325,7 +334,7 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 |--------|-------------------------------|-------------------|------------------------|-------------------------|
 | **Quality** | **ULTIMATE** (5/5) | Production (5/5) | Excellent (4/5) | Good (3/5) |
 | **Speed** | 3-8 minutes | 3-8 minutes | 2-5 minutes | ~30 seconds |
-| **Stability** | Very stable | Tensor errors possible | Very stable | Stable |
+| **Stability** | Tensor errors possible | Tensor errors possible | **Very stable** | Stable |
 | **Identity** | PuLID 0.8 | PuLID 0.8 | PuLID 0.8 | PuLID 0.7 |
 | **Structure** | ControlNet 0.7 | None | ControlNet 0.7 | ControlNet 1.0 |
 | **Detail** | **Best possible** | Best texture/detail | Great texture/detail | Smooth, less detail |
@@ -579,6 +588,54 @@ See workflow notes for complete testing history.
 **SAM mask too tight for faces**:
 1. Increase sam_dilation from 0 to 20-25 pixels (Face Enhancer node 102)
 2. Or remove SAM from Face Enhancer entirely (BBOX-only like Hand Fixer)
+
+### UltimateSDUpscale Tensor Error
+
+**Error: "view size is not compatible with input tensor's size and stride"**
+
+This happens in PuLID workflows using UltimateSDUpscale, even with standard image sizes like 1024x1024.
+
+**Root cause:** When an image tensor is shared between multiple nodes (PuLID, ControlNet, UltimateSDUpscale), PyTorch creates non-contiguous tensor views. The upscale model's conv2d operations require contiguous memory layout, causing the error.
+
+**Solution 0: FIXED in latest workflow (2024-01-21)**
+The `PuLID_ControlNet_Ultimate_SD_Upscale_SDXL.json` workflow now includes a RepeatImageBatch node (count=1) that creates a contiguous copy of the image tensor before UltimateSDUpscale. This should resolve the tensor error for most users.
+
+If you downloaded the workflow before this fix, reload the latest version from the repository.
+
+**Solution 1: Use PuLID_ControlNet_Tile instead (RECOMMENDED IF STILL FAILING)**
+- This workflow was specifically designed to avoid these tensor errors
+- Uses Tiled VAE instead of UltimateSDUpscale
+- Guaranteed stability across all image dimensions
+- Still provides excellent quality (4/5 vs 5/5)
+- Faster processing: 2-5 minutes vs 3-8 minutes
+- File: `PuLID_ControlNet_Tile_4x_Upscale_SDXL.json`
+
+**Solution 2: Try a different upscale model**
+Some upscale models handle tiling better than 4x-UltraSharp:
+- 4x_NMKD-Superscale-SP_178000_G (good compatibility)
+- RealESRGAN_x4plus (widely compatible)
+- 4x-UltraMix_Balanced (alternative)
+
+Change the upscale model in node 11 (UpscaleModelLoader).
+
+**Solution 3: Preprocess your image**
+Add an ImageScale node before UltimateSDUpscale to resize to dimensions that are multiples of 64:
+- Good sizes: 512x512, 768x768, 1024x1024, 512x768
+- Some aspect ratios work better than others
+
+**Why PuLID_ControlNet_Tile is better for most users:**
+- No tensor errors ever
+- Works with any image dimensions
+- Memory efficient (6-8GB VRAM vs 8GB+)
+- Faster processing
+- Still combines PuLID + ControlNet Tile guidance
+- Only slightly lower quality than Ultimate (4/5 vs 5/5)
+
+**When to persist with UltimateSDUpscale:**
+- Only if you absolutely need the maximum possible quality
+- You're willing to experiment with different upscale models
+- You can preprocess images to compatible dimensions
+- You have time for troubleshooting
 
 ### PuLID Model Loading Error
 

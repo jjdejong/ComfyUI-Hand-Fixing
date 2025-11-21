@@ -1,8 +1,8 @@
 {
   "id": "pulid-controlnet-ultimate-sdxl-001",
   "revision": 0,
-  "last_node_id": 16,
-  "last_link_id": 30,
+  "last_node_id": 17,
+  "last_link_id": 31,
   "nodes": [
     {
       "id": 1,
@@ -50,7 +50,7 @@
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [5, 6, 7]
+          "links": [5, 6, 31]
         },
         {
           "name": "MASK",
@@ -404,17 +404,17 @@
         "karras",
         0.35,
         "Linear",
-        512,
-        512,
-        8,
-        32,
+        256,
+        256,
+        4,
+        16,
         "None",
         1,
         64,
         8,
         16,
         false,
-        false
+        true
       ],
       "color": "#393"
     },
@@ -458,6 +458,36 @@
       ],
       "color": "#432",
       "bgcolor": "#653"
+    },
+    {
+      "id": 15,
+      "type": "RepeatImageBatch",
+      "pos": [600, -100],
+      "size": [315, 58],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 31
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [7]
+        }
+      ],
+      "title": "15 | Make Image Contiguous",
+      "properties": {
+        "Node name for S&R": "RepeatImageBatch"
+      },
+      "widgets_values": [1],
+      "color": "#666",
+      "bgcolor": "#555"
     }
   ],
   "links": [
@@ -467,7 +497,7 @@
     [4, 1, 2, 12, 4, "VAE"],
     [5, 2, 0, 6, 4, "IMAGE"],
     [6, 2, 0, 10, 3, "IMAGE"],
-    [7, 2, 0, 12, 0, "IMAGE"],
+    [7, 15, 0, 12, 0, "IMAGE"],
     [8, 3, 0, 6, 1, "PULID"],
     [9, 4, 0, 6, 3, "FACEANALYSIS"],
     [10, 5, 0, 6, 2, "EVA_CLIP"],
@@ -478,7 +508,8 @@
     [15, 10, 0, 12, 2, "CONDITIONING"],
     [16, 10, 1, 12, 3, "CONDITIONING"],
     [17, 11, 0, 12, 5, "UPSCALE_MODEL"],
-    [18, 12, 0, 13, 0, "IMAGE"]
+    [18, 12, 0, 13, 0, "IMAGE"],
+    [31, 2, 0, 15, 0, "IMAGE"]
   ],
   "groups": [],
   "config": {},
