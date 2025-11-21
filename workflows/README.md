@@ -119,20 +119,74 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 
 ---
 
+### `PuLID_Ultimate_SD_Upscale_SDXL.json` ⭐ **[HIGHEST QUALITY]**
+
+**Best for:** Maximum quality identity-preserving upscaling with SDXL
+
+**What it does:**
+- Loads reference image with face
+- Uses PuLID to preserve facial identity (weight 0.8)
+- Uses Ultimate SD Upscale for maximum quality
+- 4x upscale with proper upscale model + tiled SD enhancement
+
+**Why this is better:**
+- **Much higher quality** than latent upscaling
+- Pixel-space upscaling preserves detail
+- Per-tile SD denoising adds realistic texture
+- PuLID ensures identity preservation even at high denoise
+- Suitable for production/final output
+
+**Use when:**
+- You want the absolute best quality upscaling
+- Maintaining facial identity is critical
+- Processing time is acceptable (3-8 minutes)
+- Final render/production output
+
+**Requirements:**
+- **Custom Node**: [PuLID_ComfyUI](https://github.com/cubiq/PuLID_ComfyUI)
+- **Custom Node**: [Ultimate SD Upscale](https://github.com/ssitu/ComfyUI_UltimateSDUpscale)
+- **Model (CRITICAL)**: `ip-adapter_pulid_sdxl_fp16.safetensors`
+  - Download: https://huggingface.co/huchenlei/ipadapter_pulid/resolve/main/ip-adapter_pulid_sdxl_fp16.safetensors
+  - Save to: `ComfyUI/models/pulid/`
+  - **DO NOT** use `pulid_v1.1.safetensors` - incompatible format!
+- **Upscale Model**: `4x-UltraSharp.pth`
+  - Download: https://huggingface.co/Kim2091/UltraSharp/resolve/main/4x-UltraSharp.pth
+  - Save to: `ComfyUI/models/upscale_models/`
+- InsightFace and EVA CLIP models (auto-download on first run)
+
+**Parameters:**
+- PuLID weight: 0.8 (high for strong identity preservation)
+- PuLID mode: "fidelity" for photorealism
+- Ultimate SD Upscale: 4x, 1024x1024 tiles, 32px padding
+- Denoise: 0.35 (adds detail while preserving structure)
+- Steps: 30, CFG: 6.5
+- Sampler: dpmpp_2m_sde, Scheduler: karras
+
+**Processing time:** 3-8 minutes (vs. 30 seconds for latent upscaling)
+
+---
+
 ### `Multi-ControlNet_4x_Upscale_with_PuLID_SDXL.json`
 
-**Best for:** Identity-preserving img2img upscaling with SDXL
+**Best for:** Fast identity-preserving img2img upscaling with SDXL
 
 **What it does:**
 - Loads a base image with face reference
 - Uses PuLID to preserve facial identity during upscaling
 - Applies ControlNet Tile for structural guidance
-- Upscales 4x using latent upscaling
+- Upscales 4x using **latent upscaling** (faster, lower quality)
 
 **Use when:**
-- You want to maintain specific facial identity in img2img
-- Upscaling photos while preserving the person's appearance
-- Need strong identity preservation with high denoise values
+- You need faster iteration speed
+- Testing prompts/parameters
+- Identity preservation is more important than maximum detail
+- VRAM is limited
+
+**vs. PuLID_Ultimate_SD_Upscale:**
+- **10-20x faster** but lower quality
+- Latent upscaling vs. pixel-space tiled upscaling
+- Good for iteration, not final output
+- See comparison section below
 
 **Requirements:**
 - **Custom Node**: [PuLID_ComfyUI](https://github.com/cubiq/PuLID_ComfyUI)
@@ -147,10 +201,98 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 - PuLID weight: 0.7 (adjust 0.5-0.9 for identity strength)
 - PuLID mode: "fidelity" for photorealism
 - ControlNet Tile strength: 1.0 (full structural guidance)
-- Upscale: 4x latent upscaling
+- Upscale: 4x latent upscaling (fast)
 - Denoise: 0.55 (high enough to enhance while preserving identity)
 
-**See workflow notes** (embedded in JSON) for setup instructions.
+**Processing time:** ~30 seconds
+
+---
+
+## PuLID Workflow Comparison
+
+### Quality vs. Speed Tradeoff
+
+| Aspect | PuLID_Ultimate_SD_Upscale ⭐ | Multi-ControlNet_Latent |
+|--------|----------------------------|-------------------------|
+| **Quality** | ⭐⭐⭐⭐⭐ Production | ⭐⭐⭐ Good |
+| **Speed** | 3-8 minutes | ~30 seconds |
+| **Detail** | Excellent texture/detail | Smooth, less detail |
+| **Method** | Pixel upscale + tiled SD | Latent space upscale |
+| **Best for** | Final output | Iteration/testing |
+| **VRAM** | 8GB+ | 6GB+ |
+
+### Technical Differences
+
+**PuLID_Ultimate_SD_Upscale (High Quality):**
+```
+Input Image (1024x1024)
+  ↓ (PuLID applied to model)
+  ↓ (4x-UltraSharp upscale model)
+Upscaled (4096x4096)
+  ↓ (divide into 16x 1024x1024 tiles)
+Tile 1 → img2img denoise 0.35 → Enhanced
+Tile 2 → img2img denoise 0.35 → Enhanced
+... (all tiles processed)
+  ↓ (blend tiles seamlessly)
+Final (4096x4096) with realistic detail
+```
+
+**Multi-ControlNet_Latent (Fast):**
+```
+Input Image (1024x1024)
+  ↓ (PuLID applied to model)
+  ↓ (ControlNet Tile guidance)
+  ↓ (encode to latent)
+Latent (128x128 @ 4 channels)
+  ↓ (nearest-neighbor scale 4x)
+Latent (512x512 @ 4 channels)
+  ↓ (KSampler denoise 0.55 - ONE pass)
+  ↓ (decode to pixels)
+Final (4096x4096) smooth but less detail
+```
+
+### When to Use Each
+
+**Use PuLID_Ultimate_SD_Upscale when:**
+- ✅ This is your final render
+- ✅ Quality matters more than speed
+- ✅ You want realistic skin texture, fabric detail
+- ✅ Production/portfolio work
+- ✅ You have 3-8 minutes to wait
+
+**Use Multi-ControlNet_Latent when:**
+- ✅ Testing different prompts/settings
+- ✅ Need quick iteration
+- ✅ Preview quality is sufficient
+- ✅ Limited VRAM (6GB)
+- ✅ Speed is critical
+
+### Quality Examples
+
+**Texture detail:**
+- Ultimate SD: Visible skin pores, fabric weave, hair strands
+- Latent: Smooth skin, simplified fabric, blended hair
+
+**Sharpness:**
+- Ultimate SD: Sharp edges, clear detail
+- Latent: Slightly soft, less micro-detail
+
+**Realism:**
+- Ultimate SD: Photographic quality
+- Latent: Good but more "AI-generated" look
+
+### Recommended Workflow
+
+1. **First pass**: Use Multi-ControlNet_Latent for quick testing
+   - Test PuLID weight (0.6, 0.7, 0.8, 0.9)
+   - Test different prompts
+   - Find best reference image
+   - Takes 30 seconds per test
+
+2. **Final render**: Use PuLID_Ultimate_SD_Upscale
+   - Once you have optimal parameters
+   - For the final production output
+   - Takes 3-8 minutes but worth it
 
 ---
 
