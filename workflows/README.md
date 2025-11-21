@@ -330,16 +330,16 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 
 ### Quality vs. Speed Tradeoff
 
-| Aspect | ControlNet+Ultimate **BEST** | PuLID_Ultimate_SD | PuLID_ControlNet_Tile | Multi-ControlNet_Latent |
-|--------|-------------------------------|-------------------|------------------------|-------------------------|
-| **Quality** | **ULTIMATE** (5/5) | Production (5/5) | Excellent (4/5) | Good (3/5) |
+| Aspect | ControlNet+Ultimate **HIGHEST QUALITY** | PuLID_Ultimate_SD | PuLID_ControlNet_Tile **RECOMMENDED** | Multi-ControlNet_Latent |
+|--------|------------------------------------------|-------------------|---------------------------------------|-------------------------|
+| **Quality** | **ULTIMATE** (5/5) | Production (5/5) | Excellent (4.5/5) | Good (3/5) |
 | **Speed** | 3-8 minutes | 3-8 minutes | 2-5 minutes | ~30 seconds |
-| **Stability** | Tensor errors possible | Tensor errors possible | **Very stable** | Stable |
+| **Stability** | **Issues on some systems** | **Issues on some systems** | **Rock solid** | Stable |
 | **Identity** | PuLID 0.8 | PuLID 0.8 | PuLID 0.8 | PuLID 0.7 |
 | **Structure** | ControlNet 0.7 | None | ControlNet 0.7 | ControlNet 1.0 |
-| **Detail** | **Best possible** | Best texture/detail | Great texture/detail | Smooth, less detail |
+| **Detail** | **Best possible** | Best texture/detail | Near-perfect detail | Smooth, less detail |
 | **Method** | All 3 combined | Pixel upscale + SD | Tiled VAE + ControlNet | Latent space upscale |
-| **Best for** | **Everything** | Maximum detail | Reliable quality | Iteration/testing |
+| **Best for** | **When it works** | Maximum detail | **Most users** | Iteration/testing |
 | **VRAM** | 8GB+ | 8GB+ | 6-8GB | 6GB+ |
 
 ### Technical Differences
@@ -374,30 +374,35 @@ Final (4096x4096) smooth but less detail
 
 ### When to Use Each
 
-**Use PuLID_ControlNet_Ultimate_SD_Upscale when: ULTIMATE QUALITY**
-- You need the absolute best quality possible
-- Both identity AND composition preservation are critical
-- Production/portfolio/final output work
-- You want all three technologies working together
-- You have 3-8 minutes to wait
-- This is THE definitive workflow for maximum quality
-
-**Use PuLID_ControlNet_Tile when: RECOMMENDED FOR MOST**
-- You want excellent quality with guaranteed stability
+**Use PuLID_ControlNet_Tile: RECOMMENDED FOR MOST USERS**
+- Excellent quality (4.5/5) with guaranteed stability
+- Combines PuLID + ControlNet Tile guidance
+- Works reliably on all systems
+- No tensor errors ever
 - Best balance of quality, speed, and reliability
-- Memory efficiency is important
-- 2-5 minutes is acceptable
-- Good for most production work
+- 2-5 minutes processing time
+- Memory efficient (6-8GB VRAM)
+- **This is the definitive workflow for most production work**
+
+**Use PuLID_ControlNet_Ultimate_SD_Upscale: ONLY IF YOU CAN HANDLE INSTABILITY**
+- Absolute maximum quality (5/5) when it works
+- **WARNING: Persistent tensor errors on many systems**
+- Even with fixes, remains unstable for some Mac/GPU configurations
+- Only worth attempting if:
+  - You need that extra 10% quality over ControlNet_Tile
+  - You're willing to troubleshoot and experiment
+  - You can try different upscale models
+  - Stability issues are acceptable
+- 3-8 minutes when it works
 
 **Use PuLID_Ultimate_SD_Upscale when:**
 - You need maximum detail but NOT structural guidance
-- Your image dimensions work without tensor errors
-- You're okay with occasional stability issues
+- Same stability warnings as above
 - Identity preservation alone is sufficient
 
 **Use Multi-ControlNet_Latent when:**
 - Testing different prompts/settings
-- Need quick iteration
+- Need quick iteration (30 seconds)
 - Preview quality is sufficient
 - Limited VRAM (6GB)
 - Speed is critical
@@ -424,18 +429,19 @@ Final (4096x4096) smooth but less detail
    - Find best reference image
    - Takes 30 seconds per test
 
-2. **Production render**: Use PuLID_ControlNet_Tile **RECOMMENDED FOR MOST**
+2. **Final render**: Use PuLID_ControlNet_Tile **RECOMMENDED**
    - Once you have optimal parameters
-   - Excellent quality with guaranteed stability
+   - Excellent quality (4.5/5) with guaranteed stability
    - Takes 2-5 minutes
-   - Best balance for most use cases
+   - **This is the definitive workflow for production work**
+   - Works reliably for all users
 
-3. **Ultimate quality**: Use PuLID_ControlNet_Ultimate_SD_Upscale **ABSOLUTE BEST**
-   - When you need the very best possible quality
-   - Combines all three technologies: PuLID + ControlNet + Ultimate SD
-   - Takes 3-8 minutes
-   - Worth it for portfolio pieces and final production work
-   - This is the definitive workflow
+3. **Experimental maximum quality**: PuLID_ControlNet_Ultimate_SD_Upscale **USE AT YOUR OWN RISK**
+   - Only if ControlNet_Tile's 4.5/5 quality isn't enough
+   - Has persistent stability issues on many systems
+   - May work after trying different upscale models
+   - Takes 3-8 minutes when it works
+   - **Most users should stick with ControlNet_Tile**
 
 ---
 
