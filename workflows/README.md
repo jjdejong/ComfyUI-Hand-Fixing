@@ -119,6 +119,41 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 
 ---
 
+### `Multi-ControlNet_4x_Upscale_with_PuLID_SDXL.json`
+
+**Best for:** Identity-preserving img2img upscaling with SDXL
+
+**What it does:**
+- Loads a base image with face reference
+- Uses PuLID to preserve facial identity during upscaling
+- Applies ControlNet Tile for structural guidance
+- Upscales 4x using latent upscaling
+
+**Use when:**
+- You want to maintain specific facial identity in img2img
+- Upscaling photos while preserving the person's appearance
+- Need strong identity preservation with high denoise values
+
+**Requirements:**
+- **Custom Node**: [PuLID_ComfyUI](https://github.com/cubiq/PuLID_ComfyUI)
+- **Model (CRITICAL)**: `ip-adapter_pulid_sdxl_fp16.safetensors`
+  - Download from: https://huggingface.co/huchenlei/ipadapter_pulid/resolve/main/ip-adapter_pulid_sdxl_fp16.safetensors
+  - Save to: `ComfyUI/models/pulid/`
+  - **DO NOT** use `pulid_v1.1.safetensors` - incompatible format!
+- **ControlNet**: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors
+- InsightFace and EVA CLIP models (auto-download on first run)
+
+**Parameters:**
+- PuLID weight: 0.7 (adjust 0.5-0.9 for identity strength)
+- PuLID mode: "fidelity" for photorealism
+- ControlNet Tile strength: 1.0 (full structural guidance)
+- Upscale: 4x latent upscaling
+- Denoise: 0.55 (high enough to enhance while preserving identity)
+
+**See workflow notes** (embedded in JSON) for setup instructions.
+
+---
+
 ## Prompt Structure Explained
 
 ### How Prompts Work in the Main Workflow
@@ -268,6 +303,42 @@ See workflow notes for complete testing history.
 **SAM mask too tight for faces**:
 1. Increase sam_dilation from 0 to 20-25 pixels (Face Enhancer node 102)
 2. Or remove SAM from Face Enhancer entirely (BBOX-only like Hand Fixer)
+
+### PuLID Model Loading Error
+
+**Error: "Missing key(s) in state_dict" for PulidModelLoader**
+
+This happens when using the wrong model file format. The error looks like:
+```
+RuntimeError: Error(s) in loading state_dict for IDEncoder:
+Missing key(s) in state_dict: "body.0.weight", "body.0.bias", ...
+```
+
+**Root cause:** ComfyUI's PuLID implementation requires IPAdapter-converted models, not the original PuLID model files.
+
+**Solution:**
+1. **Download the correct model file:**
+   - File: `ip-adapter_pulid_sdxl_fp16.safetensors`
+   - URL: https://huggingface.co/huchenlei/ipadapter_pulid/resolve/main/ip-adapter_pulid_sdxl_fp16.safetensors
+   - Save to: `ComfyUI/models/pulid/`
+
+2. **DO NOT use these files** (they are incompatible):
+   - `pulid_v1.1.safetensors` (original format)
+   - `pulid_flux_v0.9.1.safetensors` (for Flux, not SDXL)
+
+3. **Verify installation:**
+   - Check that `ComfyUI/models/pulid/ip-adapter_pulid_sdxl_fp16.safetensors` exists
+   - Workflow node 22 should load this file
+   - Restart ComfyUI after downloading
+
+4. **If still failing:**
+   - Verify PuLID_ComfyUI custom node is installed: `ComfyUI/custom_nodes/PuLID_ComfyUI`
+   - Check file size: ~1.35 GB (incomplete download if smaller)
+   - Try re-downloading the model
+
+**Alternative models:**
+- Main source: https://huggingface.co/huchenlei/ipadapter_pulid
+- Backup: https://huggingface.co/Runzy/ip-adapter_pulid
 
 ---
 
