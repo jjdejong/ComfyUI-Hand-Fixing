@@ -1,0 +1,506 @@
+{
+  "id": "550e8400-e29b-41d4-a716-ipadapter-coreml",
+  "revision": 0,
+  "last_node_id": 14,
+  "last_link_id": 25,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "CheckpointLoaderSimple",
+      "pos": [-200, 200],
+      "size": [315, 105],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [1]
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [2, 3]
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [4, 5]
+        }
+      ],
+      "title": "1 | Load Checkpoint",
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": ["cyberrealisticXL_v70_fp32.safetensors"],
+      "color": "#369"
+    },
+    {
+      "id": 2,
+      "type": "LoadImage",
+      "pos": [-200, 400],
+      "size": [315, 314],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [6, 7, 8]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "2 | Load Reference Face",
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": ["example.png", "image"],
+      "color": "#666"
+    },
+    {
+      "id": 3,
+      "type": "IPAdapterUnifiedLoaderFaceID",
+      "pos": [-200, 0],
+      "size": [315, 78],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "links": [9]
+        },
+        {
+          "name": "ipadapter",
+          "type": "IPADAPTER",
+          "links": [10]
+        }
+      ],
+      "title": "3 | IPAdapter Unified Loader FaceID",
+      "properties": {
+        "Node name for S&R": "IPAdapterUnifiedLoaderFaceID"
+      },
+      "widgets_values": ["FACEID PLUS V2", 1.0, "CoreML"],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 4,
+      "type": "CLIPTextEncode",
+      "pos": [150, 200],
+      "size": [400, 200],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [11]
+        }
+      ],
+      "title": "4 | Positive Prompt",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": ["photorealistic portrait, detailed face, natural skin texture, sharp focus, high quality, professional photography"],
+      "color": "#232"
+    },
+    {
+      "id": 5,
+      "type": "CLIPTextEncode",
+      "pos": [150, 420],
+      "size": [400, 200],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [12]
+        }
+      ],
+      "title": "5 | Negative Prompt",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": ["blurry, low quality, cartoon, painting, illustration, plastic skin, smooth skin, bad anatomy, artifacts"],
+      "color": "#339"
+    },
+    {
+      "id": 6,
+      "type": "IPAdapterFaceID",
+      "pos": [150, 0],
+      "size": [315, 258],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 9
+        },
+        {
+          "name": "ipadapter",
+          "type": "IPADAPTER",
+          "link": 10
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 6
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 11
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 12
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [13]
+        },
+        {
+          "name": "CONDITIONING+",
+          "type": "CONDITIONING",
+          "links": [14]
+        },
+        {
+          "name": "CONDITIONING-",
+          "type": "CONDITIONING",
+          "links": [15]
+        }
+      ],
+      "title": "6 | IPAdapter FaceID",
+      "properties": {
+        "Node name for S&R": "IPAdapterFaceID"
+      },
+      "widgets_values": [0.8, 0.0, 1.0, "standard", 0.0, false],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 7,
+      "type": "ControlNetLoader",
+      "pos": [600, 0],
+      "size": [315, 58],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CONTROL_NET",
+          "type": "CONTROL_NET",
+          "links": [16]
+        }
+      ],
+      "title": "7 | Load ControlNet Tile",
+      "properties": {
+        "Node name for S&R": "ControlNetLoader"
+      },
+      "widgets_values": ["SDXL/TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 8,
+      "type": "ControlNetApplyAdvanced",
+      "pos": [600, 80],
+      "size": [315, 186],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 14
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 15
+        },
+        {
+          "name": "control_net",
+          "type": "CONTROL_NET",
+          "link": 16
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [17]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [18]
+        }
+      ],
+      "title": "8 | Apply ControlNet Tile",
+      "properties": {
+        "Node name for S&R": "ControlNetApplyAdvanced"
+      },
+      "widgets_values": [0.7, 0.0, 1.0],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 9,
+      "type": "VAEEncodeTiled",
+      "pos": [950, 0],
+      "size": [315, 78],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 8
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [19]
+        }
+      ],
+      "title": "9 | VAE Encode Tiled",
+      "properties": {
+        "Node name for S&R": "VAEEncodeTiled"
+      },
+      "widgets_values": [512],
+      "color": "#393"
+    },
+    {
+      "id": 10,
+      "type": "LatentUpscaleBy",
+      "pos": [950, 100],
+      "size": [315, 82],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [20]
+        }
+      ],
+      "title": "10 | Latent Upscale 4x",
+      "properties": {
+        "Node name for S&R": "LatentUpscaleBy"
+      },
+      "widgets_values": ["nearest-exact", 4.0],
+      "color": "#393"
+    },
+    {
+      "id": 11,
+      "type": "KSampler",
+      "pos": [950, 200],
+      "size": [315, 262],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 13
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 17
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 18
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 20
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [21]
+        }
+      ],
+      "title": "11 | KSampler",
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [1234, "fixed", 30, 5.0, "dpmpp_2m_sde", "karras", 0.55],
+      "color": "#393"
+    },
+    {
+      "id": 12,
+      "type": "VAEDecodeTiled",
+      "pos": [950, 480],
+      "size": [315, 78],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 21
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [22]
+        }
+      ],
+      "title": "12 | VAE Decode Tiled",
+      "properties": {
+        "Node name for S&R": "VAEDecodeTiled"
+      },
+      "widgets_values": [512],
+      "color": "#393"
+    },
+    {
+      "id": 13,
+      "type": "SaveImage",
+      "pos": [1300, 0],
+      "size": [600, 700],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 22
+        }
+      ],
+      "outputs": [],
+      "title": "13 | Save Image",
+      "properties": {
+        "Node name for S&R": "SaveImage"
+      },
+      "widgets_values": ["IPAdapter_FaceID_CoreML_4x"],
+      "color": "#666"
+    },
+    {
+      "id": 14,
+      "type": "Note",
+      "pos": [600, 300],
+      "size": [600, 500],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Mac-Optimized Workflow with CoreML",
+      "properties": {},
+      "widgets_values": [
+        "**IPAdapter FaceID + ControlNet Tile + CoreML** - **MAC OPTIMIZED**\n\nThis workflow is specifically designed for Mac M-series (M1/M2/M3/M4) users:\n• **IPAdapter FaceID PLUS V2** - Identity preservation\n• **CoreML execution provider** - Mac GPU/Neural Engine acceleration\n• **ControlNet Tile** (strength 0.7) - Structural guidance\n• **Tiled VAE** - Memory efficient, tensor-error-free upscaling\n\n**Why CoreML for Mac:**\n• PuLID uses ONNXRuntime which has NO MPS support\n• IPAdapter FaceID supports CoreML execution provider\n• CoreML can use Mac Metal GPU + Neural Engine\n• Potentially 10-100x faster than CPU-only processing\n\n**Performance expectations:**\n• **PuLID on Mac M4 Max:** 4+ hours (CPU only)\n• **This workflow (if CoreML works):** Minutes instead of hours\n• **If CoreML falls back to CPU:** Similar to PuLID performance\n\n**Parameters:**\n• IPAdapter weight: 0.8 (strong identity preservation)\n• ControlNet Tile strength: 0.7 (structural guidance)\n• VAE tile size: 512px (memory efficient)\n• Denoise: 0.55, Steps: 30, CFG: 5.0\n• Sampler: dpmpp_2m_sde (sharp output)\n• Scheduler: karras\n\n**Requirements:**\n• ComfyUI_IPAdapter_plus custom node\n• Model: ip-adapter-faceid-plusv2_sdxl.bin\n• ControlNet: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n• InsightFace models (for face analysis)\n\n**Testing CoreML performance:**\n1. Run this workflow and check ComfyUI console\n2. Look for CoreML execution messages\n3. Monitor processing time\n4. If still taking hours, CoreML may have fallen back to CPU\n\n**If CoreML doesn't accelerate:**\n• CoreML may not support the specific model architecture\n• Dynamic shapes may force CPU fallback\n• Try reducing image resolution (512x512 vs 1024x1024)\n• Consider Multi-ControlNet_Latent workflow instead\n\n**Processing time:** Target 2-5 minutes (vs 4+ hours with PuLID CPU)"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 3, 0, "MODEL"],
+    [2, 1, 1, 4, 0, "CLIP"],
+    [3, 1, 1, 5, 0, "CLIP"],
+    [4, 1, 2, 9, 1, "VAE"],
+    [5, 1, 2, 12, 1, "VAE"],
+    [6, 2, 0, 6, 2, "IMAGE"],
+    [7, 2, 0, 8, 3, "IMAGE"],
+    [8, 2, 0, 9, 0, "IMAGE"],
+    [9, 3, 0, 6, 0, "MODEL"],
+    [10, 3, 1, 6, 1, "IPADAPTER"],
+    [11, 4, 0, 6, 3, "CONDITIONING"],
+    [12, 5, 0, 6, 4, "CONDITIONING"],
+    [13, 6, 0, 11, 0, "MODEL"],
+    [14, 6, 1, 8, 0, "CONDITIONING"],
+    [15, 6, 2, 8, 1, "CONDITIONING"],
+    [16, 7, 0, 8, 2, "CONTROL_NET"],
+    [17, 8, 0, 11, 1, "CONDITIONING"],
+    [18, 8, 1, 11, 2, "CONDITIONING"],
+    [19, 9, 0, 10, 0, "LATENT"],
+    [20, 10, 0, 11, 3, "LATENT"],
+    [21, 11, 0, 12, 0, "LATENT"],
+    [22, 12, 0, 13, 0, "IMAGE"]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

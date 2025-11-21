@@ -247,6 +247,68 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 
 ---
 
+### `IPAdapter_FaceID_CoreML_ControlNet_Tile_4x_Upscale_SDXL.json` **[MAC OPTIMIZED]**
+
+**Best for:** Mac M-series users needing fast identity-preserving upscaling without CPU bottleneck
+
+**What it does:**
+- Uses IPAdapter FaceID PLUS V2 for identity preservation
+- **CoreML execution provider** - leverages Mac Metal GPU + Neural Engine
+- Applies ControlNet Tile for structural guidance (strength 0.7)
+- Uses Tiled VAE for memory-efficient, stable upscaling
+- 4x upscale optimized for Mac performance
+
+**Why this is better than PuLID on Mac:**
+- **PuLID problem:** InsightFace uses ONNXRuntime with NO MPS support on Mac
+- **PuLID on Mac M4 Max:** 4+ hours processing time (CPU only)
+- **This workflow:** IPAdapter FaceID supports CoreML execution provider
+- **Potential speedup:** Minutes instead of hours (if CoreML accelerates successfully)
+- **CoreML uses:** Mac Metal GPU + Neural Engine instead of CPU cores only
+
+**Use when:**
+- You're on Mac M-series (M1/M2/M3/M4)
+- PuLID workflows taking hours to complete
+- Need identity preservation with acceptable performance
+- Willing to test if CoreML acceleration works for you
+
+**Caveats:**
+- CoreML may fall back to CPU if models use dynamic shapes
+- Performance gains not guaranteed (needs testing on your system)
+- If still slow, CoreML may not be accelerating this specific model
+- Fall back to Multi-ControlNet_Latent if this doesn't help
+
+**Requirements:**
+- **Custom Node**: [ComfyUI_IPAdapter_plus](https://github.com/cubiq/ComfyUI_IPAdapter_plus)
+- **Model**: `ip-adapter-faceid-plusv2_sdxl.bin`
+  - Download: https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-plusv2_sdxl.bin
+  - Save to: `ComfyUI/models/ipadapter/`
+- **ControlNet**: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors
+- InsightFace models (auto-download, used for face analysis)
+- **Note:** Still requires InsightFace, but IPAdapter's CoreML provider may accelerate it
+
+**Parameters:**
+- IPAdapter weight: 0.8 (strong identity preservation)
+- ControlNet Tile strength: 0.7 (structural guidance)
+- VAE tile size: 512px (memory efficient)
+- Denoise: 0.55, Steps: 30, CFG: 5.0
+- Sampler: dpmpp_2m_sde (sharp output)
+- Scheduler: karras
+
+**Testing CoreML performance:**
+1. Run workflow and monitor ComfyUI console for CoreML messages
+2. Check processing time vs PuLID (should be much faster if working)
+3. If still taking hours, CoreML likely fell back to CPU
+4. Try reducing resolution to 512x512 to test
+
+**Expected performance on Mac M4 Max:**
+- **Best case (CoreML accelerates):** 2-5 minutes
+- **Worst case (CPU fallback):** 4+ hours like PuLID
+- **Alternative if slow:** Multi-ControlNet_Latent (~30 seconds)
+
+**Processing time:** Target 2-5 minutes (test to confirm CoreML acceleration)
+
+---
+
 ### `Multi-ControlNet_4x_Upscale_with_PuLID_SDXL.json`
 
 **Best for:** Fast identity-preserving img2img upscaling with SDXL
@@ -706,37 +768,47 @@ Add an ImageScale node before UltimateSDUpscale to resize to dimensions that are
 - This explains 4-hour processing time on Mac M4 Max (should be 2-5 minutes with GPU acceleration)
 
 **Current state (2025):**
-- No practical solution for Mac GPU acceleration with InsightFace/ONNXRuntime
-- Installing onnxruntime-coreml may help marginally but won't solve the fundamental issue
-- The only way to get acceptable performance is to use workflows that minimize InsightFace usage
+- No practical solution for Mac GPU acceleration with PuLID specifically
+- IPAdapter FaceID has CoreML provider option that may work better on Mac
+- Worth testing both approaches to see which performs better on your system
 
-**Workarounds:**
+**Solutions for Mac users:**
 
-1. **Use Multi-ControlNet_Latent workflow** (BEST for Mac users):
+1. **Try IPAdapter FaceID with CoreML** (NEW - WORTH TESTING):
+   - Uses IPAdapter FaceID PLUS V2 instead of PuLID
+   - Has CoreML execution provider option (not available in PuLID)
+   - CoreML can leverage Mac Metal GPU + Neural Engine
+   - May provide 10-100x speedup if CoreML accelerates successfully
+   - Target processing time: 2-5 minutes (vs 4+ hours)
+   - File: `IPAdapter_FaceID_CoreML_ControlNet_Tile_4x_Upscale_SDXL.json`
+   - **Caveat:** Performance not guaranteed - CoreML may fall back to CPU
+
+2. **Use Multi-ControlNet_Latent workflow** (FASTEST fallback):
    - Significantly faster than ControlNet_Tile (30 seconds vs 4+ hours)
    - Uses same PuLID identity preservation
    - Lower quality but actually completes in reasonable time
    - File: `Multi-ControlNet_4x_Upscale_with_PuLID_SDXL.json`
 
-2. **Reduce image resolution:**
+3. **Reduce image resolution:**
    - Process 512x512 images instead of 1024x1024
    - InsightFace processing time scales with image size
    - Upscale the final result if needed
 
-3. **Use non-PuLID workflows:**
+4. **Use non-PuLID workflows:**
    - Standard generation workflows don't use InsightFace
    - File: `Generate with Hand Fix and Upscale.json`
    - No identity preservation but much faster on Mac
 
-4. **Process on a different machine:**
+5. **Process on a different machine:**
    - Use a Windows/Linux machine with CUDA GPU
    - Or use cloud-based ComfyUI services
    - Mac M-series excellent for generation, poor for InsightFace
 
 **Expected vs Actual performance on Mac M4 Max:**
 - **With GPU acceleration (CUDA):** 2-5 minutes for PuLID_ControlNet_Tile
-- **Mac CPU-only (current reality):** 4+ hours for the same workflow
-- **Multi-ControlNet_Latent on Mac:** ~30 seconds (acceptable workaround)
+- **PuLID on Mac (CPU only):** 4+ hours for the same workflow
+- **IPAdapter FaceID CoreML (if it works):** 2-5 minutes target (needs testing)
+- **Multi-ControlNet_Latent on Mac:** ~30 seconds (fastest workaround)
 
 **Future outlook:**
 - MPS support for ONNXRuntime is requested but no timeline
