@@ -166,6 +166,70 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 
 ---
 
+### `PuLID_ControlNet_Ultimate_SD_Upscale_SDXL.json` **[ULTIMATE QUALITY]**
+
+**Best for:** Absolute maximum quality with identity preservation, structural guidance, AND pixel-perfect upscaling
+
+**What it does:**
+- Loads reference image with face
+- Uses PuLID to preserve facial identity (weight 0.8)
+- Applies ControlNet Tile for structural guidance (strength 0.7)
+- Uses Ultimate SD Upscale for maximum quality pixel-space upscaling
+- 4x upscale with proper upscale model + tiled SD enhancement
+
+**Why this is THE BEST approach:**
+- **Identity preservation** from PuLID (high denoise tolerance)
+- **Structure preservation** from ControlNet Tile (maintains composition)
+- **Maximum detail** from Ultimate SD Upscale (realistic textures)
+- **All three work together synergistically**
+- Best possible quality for production work
+
+**Use when:**
+- You need the absolute highest quality possible
+- Both identity AND composition are critical
+- Production/portfolio/final output
+- Processing time of 3-8 minutes is acceptable
+- You want everything: identity + structure + detail
+
+**vs. PuLID_Ultimate_SD_Upscale:**
+- Adds ControlNet Tile for structural guidance
+- Better composition preservation
+- Slightly slower but higher quality
+
+**vs. PuLID_ControlNet_Tile:**
+- Uses Ultimate SD Upscale instead of Tiled VAE
+- Higher quality textures and detail
+- More processing time but worth it
+
+**Requirements:**
+- **Custom Node**: [PuLID_ComfyUI](https://github.com/cubiq/PuLID_ComfyUI)
+- **Custom Node**: [Ultimate SD Upscale](https://github.com/ssitu/ComfyUI_UltimateSDUpscale)
+- **Model (CRITICAL)**: `ip-adapter_pulid_sdxl_fp16.safetensors`
+  - Download: https://huggingface.co/huchenlei/ipadapter_pulid/resolve/main/ip-adapter_pulid_sdxl_fp16.safetensors
+  - Save to: `ComfyUI/models/pulid/`
+  - **DO NOT** use `pulid_v1.1.safetensors` - incompatible format!
+- **ControlNet**: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors
+- **Upscale Model**: `4x-UltraSharp.pth`
+  - Download: https://huggingface.co/Kim2091/UltraSharp/resolve/main/4x-UltraSharp.pth
+  - Save to: `ComfyUI/models/upscale_models/`
+- InsightFace and EVA CLIP models (auto-download on first run)
+
+**Parameters (Tensor Error Fixed):**
+- PuLID weight: 0.8 (high for strong identity preservation)
+- PuLID mode: "fidelity" for photorealism
+- ControlNet Tile strength: 0.7 (structural guidance)
+- Ultimate SD Upscale: 4x, 512x512 tiles (was 1024, fixed for compatibility)
+- Mask blur: 8px (was 32px)
+- Tile padding: 32px (was 64px)
+- force_uniform_tiles: false (dimension flexibility)
+- Denoise: 0.35 (adds detail while preserving identity/structure)
+- Steps: 30, CFG: 6.5
+- Sampler: dpmpp_2m_sde, Scheduler: karras
+
+**Processing time:** 3-8 minutes (worth it for absolute best quality)
+
+---
+
 ### `Multi-ControlNet_4x_Upscale_with_PuLID_SDXL.json`
 
 **Best for:** Fast identity-preserving img2img upscaling with SDXL
@@ -257,15 +321,17 @@ High-quality image generation workflows with hand fixing and intelligent upscali
 
 ### Quality vs. Speed Tradeoff
 
-| Aspect | PuLID_Ultimate_SD_Upscale | PuLID_ControlNet_Tile ⭐ | Multi-ControlNet_Latent |
-|--------|---------------------------|--------------------------|-------------------------|
-| **Quality** | ⭐⭐⭐⭐⭐ Production | ⭐⭐⭐⭐ Excellent | ⭐⭐⭐ Good |
-| **Speed** | 3-8 minutes | 2-5 minutes | ~30 seconds |
-| **Stability** | ⚠️ Tensor errors possible | ✅ Very stable | ✅ Stable |
-| **Detail** | Best texture/detail | Great texture/detail | Smooth, less detail |
-| **Method** | Pixel upscale + tiled SD | Tiled VAE + ControlNet | Latent space upscale |
-| **Best for** | Maximum quality | Reliable quality | Iteration/testing |
-| **VRAM** | 8GB+ | 6-8GB | 6GB+ |
+| Aspect | ControlNet+Ultimate **BEST** | PuLID_Ultimate_SD | PuLID_ControlNet_Tile | Multi-ControlNet_Latent |
+|--------|-------------------------------|-------------------|------------------------|-------------------------|
+| **Quality** | **ULTIMATE** (5/5) | Production (5/5) | Excellent (4/5) | Good (3/5) |
+| **Speed** | 3-8 minutes | 3-8 minutes | 2-5 minutes | ~30 seconds |
+| **Stability** | Very stable | Tensor errors possible | Very stable | Stable |
+| **Identity** | PuLID 0.8 | PuLID 0.8 | PuLID 0.8 | PuLID 0.7 |
+| **Structure** | ControlNet 0.7 | None | ControlNet 0.7 | ControlNet 1.0 |
+| **Detail** | **Best possible** | Best texture/detail | Great texture/detail | Smooth, less detail |
+| **Method** | All 3 combined | Pixel upscale + SD | Tiled VAE + ControlNet | Latent space upscale |
+| **Best for** | **Everything** | Maximum detail | Reliable quality | Iteration/testing |
+| **VRAM** | 8GB+ | 8GB+ | 6-8GB | 6GB+ |
 
 ### Technical Differences
 
@@ -299,27 +365,33 @@ Final (4096x4096) smooth but less detail
 
 ### When to Use Each
 
-**Use PuLID_Ultimate_SD_Upscale when:**
-- ✅ You need the absolute maximum quality
-- ✅ Your image dimensions work without tensor errors
-- ✅ Production/portfolio work
-- ✅ You have 3-8 minutes to wait
-- ✅ Stability isn't an issue for you
+**Use PuLID_ControlNet_Ultimate_SD_Upscale when: ULTIMATE QUALITY**
+- You need the absolute best quality possible
+- Both identity AND composition preservation are critical
+- Production/portfolio/final output work
+- You want all three technologies working together
+- You have 3-8 minutes to wait
+- This is THE definitive workflow for maximum quality
 
-**Use PuLID_ControlNet_Tile when:** ⭐ **RECOMMENDED**
-- ✅ You want excellent quality with guaranteed stability
-- ✅ UltimateSDUpscale gives you tensor errors
-- ✅ Memory efficiency is important
-- ✅ You want ControlNet structural guidance
-- ✅ 2-5 minutes is acceptable
-- ✅ Best balance of quality, speed, and reliability
+**Use PuLID_ControlNet_Tile when: RECOMMENDED FOR MOST**
+- You want excellent quality with guaranteed stability
+- Best balance of quality, speed, and reliability
+- Memory efficiency is important
+- 2-5 minutes is acceptable
+- Good for most production work
+
+**Use PuLID_Ultimate_SD_Upscale when:**
+- You need maximum detail but NOT structural guidance
+- Your image dimensions work without tensor errors
+- You're okay with occasional stability issues
+- Identity preservation alone is sufficient
 
 **Use Multi-ControlNet_Latent when:**
-- ✅ Testing different prompts/settings
-- ✅ Need quick iteration
-- ✅ Preview quality is sufficient
-- ✅ Limited VRAM (6GB)
-- ✅ Speed is critical
+- Testing different prompts/settings
+- Need quick iteration
+- Preview quality is sufficient
+- Limited VRAM (6GB)
+- Speed is critical
 
 ### Quality Examples
 
@@ -343,17 +415,18 @@ Final (4096x4096) smooth but less detail
    - Find best reference image
    - Takes 30 seconds per test
 
-2. **Final render**: Use PuLID_ControlNet_Tile ⭐ **RECOMMENDED**
+2. **Production render**: Use PuLID_ControlNet_Tile **RECOMMENDED FOR MOST**
    - Once you have optimal parameters
    - Excellent quality with guaranteed stability
    - Takes 2-5 minutes
-   - Best for most use cases
+   - Best balance for most use cases
 
-3. **Maximum quality** (optional): Use PuLID_Ultimate_SD_Upscale
-   - Only if ControlNet Tile isn't quite enough
-   - If you need the absolute best and no tensor errors
+3. **Ultimate quality**: Use PuLID_ControlNet_Ultimate_SD_Upscale **ABSOLUTE BEST**
+   - When you need the very best possible quality
+   - Combines all three technologies: PuLID + ControlNet + Ultimate SD
    - Takes 3-8 minutes
-   - Worth it for critical portfolio pieces
+   - Worth it for portfolio pieces and final production work
+   - This is the definitive workflow
 
 ---
 
