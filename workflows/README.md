@@ -214,18 +214,26 @@ High-quality image generation workflows with hand fixing and intelligent upscali
   - Save to: `ComfyUI/models/upscale_models/`
 - InsightFace and EVA CLIP models (auto-download on first run)
 
-**Parameters (Tensor Error Fixed):**
+**Parameters (Optimized from User Testing):**
 - PuLID weight: 0.8 (high for strong identity preservation)
 - PuLID mode: "fidelity" for photorealism
-- ControlNet Tile strength: 0.7 (structural guidance)
+- ControlNet Tile strength: 0.7 (structural guidance - essential at high denoise)
 - Ultimate SD Upscale: 4x, 256x256 tiles (conservative for compatibility)
 - Mask blur: 4px (minimal)
 - Tile padding: 16px (reduced)
 - force_uniform_tiles: false (dimension flexibility)
 - tiled_decode: true (memory efficient VAE decoding)
-- Denoise: 0.35 (adds detail while preserving identity/structure)
+- Denoise: 0.42 (tested optimal - avoids blockiness while minimizing hallucinations)
 - Steps: 30, CFG: 6.5
-- Sampler: dpmpp_2m_sde, Scheduler: karras
+- Sampler: dpmpp_2m_sde (SDE samplers essential - non-SDE causes soft focus)
+- Scheduler: karras
+
+**Why these parameters matter:**
+- **Denoise < 0.42**: Causes blockiness in upscaled output
+- **Denoise > 0.45**: Increased hallucinations and composition drift
+- **ControlNet Tile**: Essential for controlling hallucinations at high denoise values
+- **SDE samplers**: Required for sharp output (non-SDE = soft focus even at lower denoise)
+- **This combination** balances detail, sharpness, and stability
 
 **Tensor Error Fix:**
 - Added RepeatImageBatch node (count=1) before UltimateSDUpscale
@@ -642,6 +650,39 @@ Add an ImageScale node before UltimateSDUpscale to resize to dimensions that are
 - You're willing to experiment with different upscale models
 - You can preprocess images to compatible dimensions
 - You have time for troubleshooting
+
+### Blockiness in Upscaled Output
+
+**Symptom:** Upscaled images show blocky artifacts, especially in smooth areas like skin
+
+**Root cause:** Denoise value too low - the SD denoising pass isn't strong enough to blend the upscaled tiles smoothly.
+
+**Solution:**
+1. Increase denoise value to 0.42 or higher (tested optimal range: 0.42-0.45)
+2. Keep ControlNet Tile enabled at strength 0.7 to prevent hallucinations
+3. Use SDE samplers (dpmpp_2m_sde) for sharp output
+4. If hallucinations increase, dial back denoise slightly (0.42-0.43)
+
+**Why ControlNet Tile is essential:**
+- High denoise (0.42+) needed to avoid blockiness
+- High denoise alone causes hallucinations and composition drift
+- ControlNet Tile constrains the composition while allowing sufficient denoising
+- This is why the combined workflow (PuLID + ControlNet + Ultimate SD) works
+
+### Soft Focus in Upscaled Output
+
+**Symptom:** Output looks blurry or has soft focus, even with good detail
+
+**Root cause:** Non-SDE samplers at any denoise level produce softer results.
+
+**Solution:**
+1. Use SDE samplers: dpmpp_2m_sde, dpmpp_3m_sde, or euler_ancestral
+2. Keep denoise at 0.42+ (lowering denoise with non-SDE won't help focus)
+3. SDE samplers introduce controlled noise that maintains sharpness
+
+**Trade-offs:**
+- SDE samplers: Sharp but slightly more variation between seeds
+- Non-SDE samplers: More consistent but soft focus
 
 ### PuLID Model Loading Error
 
