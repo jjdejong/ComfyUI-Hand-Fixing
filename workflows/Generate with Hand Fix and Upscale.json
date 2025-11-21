@@ -365,7 +365,7 @@
         "Node name for S&R": "LoraLoader"
       },
       "widgets_values": [
-        "nsfw-xl-2.1.safetensors",
+        "detail-tweaker-xl.safetensors",
         0.25,
         0.3
       ]

@@ -1,8 +1,8 @@
 {
-  "id": "pulid-ultimate-sdxl-001",
+  "id": "pulid-controlnet-tile-4x-v1",
   "revision": 0,
-  "last_node_id": 12,
-  "last_link_id": 20,
+  "last_node_id": 20,
+  "last_link_id": 40,
   "nodes": [
     {
       "id": 1,
@@ -27,7 +27,7 @@
         {
           "name": "VAE",
           "type": "VAE",
-          "links": [4]
+          "links": [4, 5]
         }
       ],
       "title": "1 | Load Checkpoint",
@@ -50,7 +50,7 @@
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [5, 6]
+          "links": [6, 7, 8]
         },
         {
           "name": "MASK",
@@ -78,7 +78,7 @@
         {
           "name": "PULID",
           "type": "PULID",
-          "links": [7]
+          "links": [9]
         }
       ],
       "title": "3 | Load PuLID Model",
@@ -102,7 +102,7 @@
         {
           "name": "FACEANALYSIS",
           "type": "FACEANALYSIS",
-          "links": [8]
+          "links": [10]
         }
       ],
       "title": "4 | Load InsightFace",
@@ -126,7 +126,7 @@
         {
           "name": "EVA_CLIP",
           "type": "EVA_CLIP",
-          "links": [9]
+          "links": [11]
         }
       ],
       "title": "5 | Load EVA CLIP",
@@ -143,7 +143,7 @@
       "pos": [150, 100],
       "size": [315, 266],
       "flags": {},
-      "order": 8,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {
@@ -154,29 +154,29 @@
         {
           "name": "pulid",
           "type": "PULID",
-          "link": 7
+          "link": 9
         },
         {
           "name": "eva_clip",
           "type": "EVA_CLIP",
-          "link": 9
+          "link": 11
         },
         {
           "name": "face_analysis",
           "type": "FACEANALYSIS",
-          "link": 8
+          "link": 10
         },
         {
           "name": "image",
           "type": "IMAGE",
-          "link": 5
+          "link": 6
         }
       ],
       "outputs": [
         {
           "name": "MODEL",
           "type": "MODEL",
-          "links": [10]
+          "links": [12]
         }
       ],
       "title": "6 | Apply PuLID",
@@ -206,7 +206,7 @@
         {
           "name": "CONDITIONING",
           "type": "CONDITIONING",
-          "links": [11]
+          "links": [13]
         }
       ],
       "title": "7 | Positive Prompt",
@@ -235,7 +235,7 @@
         {
           "name": "CONDITIONING",
           "type": "CONDITIONING",
-          "links": [12]
+          "links": [14]
         }
       ],
       "title": "8 | Negative Prompt",
@@ -247,7 +247,7 @@
     },
     {
       "id": 9,
-      "type": "UpscaleModelLoader",
+      "type": "ControlNetLoader",
       "pos": [500, 440],
       "size": [315, 58],
       "flags": {},
@@ -256,131 +256,244 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "UPSCALE_MODEL",
-          "type": "UPSCALE_MODEL",
-          "links": [13]
+          "name": "CONTROL_NET",
+          "type": "CONTROL_NET",
+          "links": [15]
         }
       ],
-      "title": "9 | Load Upscale Model",
+      "title": "9 | Load ControlNet Tile",
       "properties": {
-        "Node name for S&R": "UpscaleModelLoader"
+        "Node name for S&R": "ControlNetLoader"
       },
-      "widgets_values": ["4x-UltraSharp.pth"],
+      "widgets_values": ["SDXL/TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors"],
       "color": "#232",
       "bgcolor": "#353"
     },
     {
       "id": 10,
-      "type": "UltimateSDUpscale",
-      "pos": [950, 0],
-      "size": [315, 614],
+      "type": "ControlNetApplyAdvanced",
+      "pos": [500, 520],
+      "size": [315, 186],
       "flags": {},
-      "order": 9,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 6
-        },
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 10
-        },
-        {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 11
+          "link": 13
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 12
+          "link": 14
+        },
+        {
+          "name": "control_net",
+          "type": "CONTROL_NET",
+          "link": 15
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 7
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [16]
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [17]
+        }
+      ],
+      "title": "10 | Apply ControlNet Tile",
+      "properties": {
+        "Node name for S&R": "ControlNetApplyAdvanced"
+      },
+      "widgets_values": [0.7, 0.0, 1.0],
+      "color": "#2a363b",
+      "bgcolor": "#3f5159"
+    },
+    {
+      "id": 11,
+      "type": "VAEEncodeTiled",
+      "pos": [150, 400],
+      "size": [270, 150],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "pixels",
+          "type": "IMAGE",
+          "link": 8
         },
         {
           "name": "vae",
           "type": "VAE",
           "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [18]
+        }
+      ],
+      "title": "11 | VAE Encode Tiled",
+      "properties": {
+        "Node name for S&R": "VAEEncodeTiled"
+      },
+      "widgets_values": [512, 64, 64, 8]
+    },
+    {
+      "id": 12,
+      "type": "LatentUpscaleBy",
+      "pos": [150, 580],
+      "size": [270, 82],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 18
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [19]
+        }
+      ],
+      "title": "12 | Latent Upscale 4x",
+      "properties": {
+        "Node name for S&R": "LatentUpscaleBy"
+      },
+      "widgets_values": ["nearest-exact", 4]
+    },
+    {
+      "id": 13,
+      "type": "KSampler",
+      "pos": [950, 200],
+      "size": [315, 262],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 12
         },
         {
-          "name": "upscale_model",
-          "type": "UPSCALE_MODEL",
-          "link": 13
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 16
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 17
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 19
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [20]
+        }
+      ],
+      "title": "13 | KSampler",
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [1234, "fixed", 30, 5.0, "dpmpp_2m_sde", "karras", 0.55],
+      "color": "#393"
+    },
+    {
+      "id": 14,
+      "type": "VAEDecodeTiled",
+      "pos": [950, 500],
+      "size": [270, 150],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 20
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 5
         }
       ],
       "outputs": [
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [14]
+          "links": [21]
         }
       ],
-      "title": "10 | Ultimate SD Upscale",
+      "title": "14 | VAE Decode Tiled",
       "properties": {
-        "Node name for S&R": "UltimateSDUpscale"
+        "Node name for S&R": "VAEDecodeTiled"
       },
-      "widgets_values": [
-        4,
-        1234,
-        "fixed",
-        30,
-        6.5,
-        "dpmpp_2m_sde",
-        "karras",
-        0.35,
-        "Linear",
-        512,
-        512,
-        8,
-        32,
-        "None",
-        1,
-        64,
-        8,
-        16,
-        false,
-        false
-      ],
-      "color": "#393"
+      "widgets_values": [512, 64, 64, 8]
     },
     {
-      "id": 11,
+      "id": 15,
       "type": "SaveImage",
-      "pos": [1300, 0],
+      "pos": [1300, 200],
       "size": [600, 700],
       "flags": {},
-      "order": 10,
+      "order": 14,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 14
+          "link": 21
         }
       ],
       "outputs": [],
-      "title": "11 | Save Image",
+      "title": "15 | Save Image",
       "properties": {
         "Node name for S&R": "SaveImage"
       },
-      "widgets_values": ["PuLID_Ultimate_4x"],
+      "widgets_values": ["PuLID_ControlNet_4x"],
       "color": "#666"
     },
     {
-      "id": 12,
+      "id": 16,
       "type": "Note",
-      "pos": [950, 650],
-      "size": [600, 300],
+      "pos": [950, 700],
+      "size": [600, 350],
       "flags": {},
-      "order": 11,
+      "order": 15,
       "mode": 0,
       "inputs": [],
       "outputs": [],
       "title": "Workflow Parameters Explained",
       "properties": {},
       "widgets_values": [
-        "**PuLID Identity Preservation + Ultimate SD Upscale**\n\nThis workflow combines:\n• PuLID weight 0.8 - Strong identity preservation (adjust 0.6-0.9)\n• Ultimate SD Upscale - Maximum quality tiled upscaling\n• 4x upscale with 512x512 tiles, 8px blur, 32px padding\n• Denoise 0.35 - Adds detail while preserving identity\n• 30 steps - Balance of quality and speed\n\n**Tensor Error Fix:**\n• Tile size reduced to 512x512 (was 1024x1024)\n• force_uniform_tiles disabled for dimension flexibility\n• More compatible with various input image sizes\n\n**vs. Latent Upscaling:**\n• 10-20x slower but MUCH higher quality\n• Pixel-space upscale model + per-tile SD enhancement\n• Better texture, detail, and realism\n\n**vs. ControlNet Tile version:**\n• Use PuLID_ControlNet_Tile_4x if this gives errors\n• ControlNet version more memory efficient\n\n**Requirements:**\n• PuLID_ComfyUI custom node\n• Ultimate SD Upscale custom node\n• Model: ip-adapter_pulid_sdxl_fp16.safetensors\n• Upscale model: 4x-UltraSharp.pth\n\n**Processing time:** 3-8 minutes depending on input size"
+        "**PuLID + ControlNet Tile + Tiled VAE (4x Upscale)**\n\nThis workflow combines:\n• PuLID weight 0.8 - Strong identity preservation (adjust 0.6-0.9)\n• ControlNet Tile strength 0.7 - Preserves structure from input\n• VAEEncodeTiled/VAEDecodeTiled - Handles large images without memory issues\n• Denoise 0.55 - Moderate regeneration with identity preservation\n• 30 steps, CFG 5.0 - Balanced quality\n\n**vs. UltimateSDUpscale:**\n• This uses ControlNet Tile + Tiled VAE (more memory efficient)\n• UltimateSDUpscale can cause tensor errors with certain dimensions\n• This approach is more stable for large upscales\n\n**Processing:**\n• Input image → VAE Encode Tiled\n• Latent 4x upscale (nearest-exact)\n• KSampler with PuLID + ControlNet guidance\n• VAE Decode Tiled → Final 4x image\n\n**Requirements:**\n• ComfyUI-PuLID custom node\n• Model: ip-adapter_pulid_sdxl_fp16.safetensors\n• ControlNet: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n\n**Processing time:** 2-5 minutes depending on input size"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -390,17 +503,24 @@
     [1, 1, 0, 6, 0, "MODEL"],
     [2, 1, 1, 7, 0, "CLIP"],
     [3, 1, 1, 8, 0, "CLIP"],
-    [4, 1, 2, 10, 4, "VAE"],
-    [5, 2, 0, 6, 4, "IMAGE"],
-    [6, 2, 0, 10, 0, "IMAGE"],
-    [7, 3, 0, 6, 1, "PULID"],
-    [8, 4, 0, 6, 3, "FACEANALYSIS"],
-    [9, 5, 0, 6, 2, "EVA_CLIP"],
-    [10, 6, 0, 10, 1, "MODEL"],
-    [11, 7, 0, 10, 2, "CONDITIONING"],
-    [12, 8, 0, 10, 3, "CONDITIONING"],
-    [13, 9, 0, 10, 5, "UPSCALE_MODEL"],
-    [14, 10, 0, 11, 0, "IMAGE"]
+    [4, 1, 2, 11, 1, "VAE"],
+    [5, 1, 2, 14, 1, "VAE"],
+    [6, 2, 0, 6, 4, "IMAGE"],
+    [7, 2, 0, 10, 3, "IMAGE"],
+    [8, 2, 0, 11, 0, "IMAGE"],
+    [9, 3, 0, 6, 1, "PULID"],
+    [10, 4, 0, 6, 3, "FACEANALYSIS"],
+    [11, 5, 0, 6, 2, "EVA_CLIP"],
+    [12, 6, 0, 13, 0, "MODEL"],
+    [13, 7, 0, 10, 0, "CONDITIONING"],
+    [14, 8, 0, 10, 1, "CONDITIONING"],
+    [15, 9, 0, 10, 2, "CONTROL_NET"],
+    [16, 10, 0, 13, 1, "CONDITIONING"],
+    [17, 10, 1, 13, 2, "CONDITIONING"],
+    [18, 11, 0, 12, 0, "LATENT"],
+    [19, 12, 0, 13, 3, "LATENT"],
+    [20, 13, 0, 14, 0, "LATENT"],
+    [21, 14, 0, 15, 0, "IMAGE"]
   ],
   "groups": [],
   "config": {},
