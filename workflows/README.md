@@ -684,6 +684,45 @@ Add an ImageScale node before UltimateSDUpscale to resize to dimensions that are
 - SDE samplers: Sharp but slightly more variation between seeds
 - Non-SDE samplers: More consistent but soft focus
 
+### Extremely Slow Processing on Mac (Hours Instead of Minutes)
+
+**Symptom:** PuLID workflows take 4+ hours on Mac M4/M3/M2 instead of expected 2-5 minutes
+
+**Root cause:** InsightFace was set to CPU instead of AUTO, preventing use of Mac Metal Performance Shaders (MPS) acceleration.
+
+**Solution:**
+1. **FIXED in latest workflows (2024-01-21)** - All PuLID workflows now use InsightFace with "AUTO" device setting
+2. If using older workflows, manually change InsightFace device:
+   - Open workflow in ComfyUI
+   - Find "Load InsightFace" node (node 4)
+   - Change device from "CPU" to "AUTO"
+   - Save workflow
+
+**Why this matters:**
+- AUTO setting uses Mac Metal GPU acceleration (MPS)
+- CPU-only face analysis is extremely slow (100x+ slower)
+- Mac M4 Max with 36GB should process in 2-5 minutes, not 4 hours
+
+**Verification:**
+- Check ComfyUI console during execution
+- Should see Metal/MPS acceleration messages
+- Processing time should be minutes, not hours
+
+### Invalid Workflow UUID Error
+
+**Symptom:** "Invalid workflow against zod schema: Validation error: Invalid uuid at 'id'"
+
+**Root cause:** Workflow IDs were using simple strings instead of UUID format.
+
+**Solution:**
+1. **FIXED in latest workflows (2024-01-21)** - All workflows now use valid UUID format
+2. If using older workflows, reload the latest version from the repository
+
+**Technical details:**
+- Old format: `"id": "pulid-controlnet-tile-4x-v1"`
+- New format: `"id": "550e8400-e29b-41d4-a716-pulid-tile-v1"`
+- ComfyUI requires UUID format for workflow validation
+
 ### PuLID Model Loading Error
 
 **Error: "Missing key(s) in state_dict" for PulidModelLoader**

@@ -1,5 +1,5 @@
 {
-  "id": "pulid-ultimate-sdxl-001",
+  "id": "550e8400-e29b-41d4-a716-pulid-ultimate",
   "revision": 0,
   "last_node_id": 12,
   "last_link_id": 20,
@@ -109,7 +109,7 @@
       "properties": {
         "Node name for S&R": "PulidInsightFaceLoader"
       },
-      "widgets_values": ["CPU"],
+      "widgets_values": ["AUTO"],
       "color": "#322",
       "bgcolor": "#533"
     },
