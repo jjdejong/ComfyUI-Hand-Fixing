@@ -817,7 +817,7 @@
         "Node name for S&R": "PulidInsightFaceLoader"
       },
       "widgets_values": [
-        "AUTO"
+        "CPU"
       ],
       "color": "#322",
       "bgcolor": "#533"

@@ -688,25 +688,41 @@ Add an ImageScale node before UltimateSDUpscale to resize to dimensions that are
 
 **Symptom:** PuLID workflows take 4+ hours on Mac M4/M3/M2 instead of expected 2-5 minutes
 
-**Root cause:** InsightFace was set to CPU instead of AUTO, preventing use of Mac Metal Performance Shaders (MPS) acceleration.
+**Root cause:** InsightFace/ONNXRuntime not using Mac Metal/CoreML acceleration by default.
 
-**Solution:**
-1. **FIXED in latest workflows (2024-01-21)** - All PuLID workflows now use InsightFace with "AUTO" device setting
-2. If using older workflows, manually change InsightFace device:
-   - Open workflow in ComfyUI
-   - Find "Load InsightFace" node (node 4)
-   - Change device from "CPU" to "AUTO"
-   - Save workflow
+**Background:**
+- InsightFace node options: CPU, CUDA, ROCM (no Metal/MPS option in standard PuLID implementation)
+- Mac unified memory means CPU processes share memory with GPU, but doesn't automatically mean GPU acceleration
+- Default ONNXRuntime may not have CoreML execution provider enabled
 
-**Why this matters:**
-- AUTO setting uses Mac Metal GPU acceleration (MPS)
-- CPU-only face analysis is extremely slow (100x+ slower)
-- Mac M4 Max with 36GB should process in 2-5 minutes, not 4 hours
+**Potential solutions to investigate:**
 
-**Verification:**
-- Check ComfyUI console during execution
-- Should see Metal/MPS acceleration messages
-- Processing time should be minutes, not hours
+1. **Check ONNXRuntime CoreML support:**
+   - Ensure ONNXRuntime was installed with CoreML support: `pip install onnxruntime-coreml`
+   - Or reinstall with: `pip uninstall onnxruntime && pip install onnxruntime-coreml`
+
+2. **Verify ComfyUI PyTorch uses MPS:**
+   - Check if PyTorch is using MPS backend for Mac
+   - In Python: `import torch; print(torch.backends.mps.is_available())`
+   - Should return `True` on M-series Macs
+
+3. **Profile where time is spent:**
+   - Use ComfyUI's built-in profiling to identify the slow component
+   - Check console output for which nodes take longest
+   - InsightFace face analysis is a likely bottleneck
+
+4. **Alternative: Use Multi-ControlNet_Latent workflow:**
+   - Significantly faster (30 seconds vs hours)
+   - Uses latent upscaling instead of Ultimate SD Upscale
+   - Good for testing if the issue is specifically with the tiled upscaling
+
+**Expected behavior:**
+- Mac M4 Max with 36GB should process in 2-5 minutes for PuLID_ControlNet_Tile
+- If taking 4+ hours, something is preventing GPU acceleration
+
+**Workaround if issue persists:**
+- Use Multi-ControlNet_Latent workflow for faster iterations (30 seconds)
+- Or use PuLID_Ultimate_SD_Upscale without ControlNet Tile (simpler pipeline)
 
 ### Invalid Workflow UUID Error
 
