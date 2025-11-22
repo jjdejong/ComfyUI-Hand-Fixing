@@ -126,7 +126,7 @@
       "properties": {
         "Node name for S&R": "CLIPTextEncode"
       },
-      "widgets_values": ["photorealistic portrait, detailed face, natural skin texture, sharp focus, high quality, professional photography"],
+      "widgets_values": ["photorealistic portrait, highly detailed skin texture with visible pores, natural skin imperfections, realistic skin detail, sharp focus, professional photography, lifelike skin"],
       "color": "#232"
     },
     {
@@ -155,7 +155,7 @@
       "properties": {
         "Node name for S&R": "CLIPTextEncode"
       },
-      "widgets_values": ["blurry, low quality, cartoon, painting, illustration, plastic skin, smooth skin, bad anatomy, artifacts"],
+      "widgets_values": ["blurry, low quality, cartoon, painting, illustration, plastic skin, smooth skin, airbrushed skin, over-processed skin, porcelain skin, waxy skin, bad anatomy, artifacts, soft focus"],
       "color": "#339"
     },
     {
@@ -194,7 +194,7 @@
       "properties": {
         "Node name for S&R": "IPAdapterFaceID"
       },
-      "widgets_values": [0.8, 1.0, "linear", "concat", 0.0, 1.0],
+      "widgets_values": [0.6, 0.8, "linear", "concat", 0.0, 1.0],
       "color": "#322",
       "bgcolor": "#533"
     },
@@ -268,7 +268,7 @@
       "properties": {
         "Node name for S&R": "ControlNetApplyAdvanced"
       },
-      "widgets_values": [0.7, 0.0, 1.0],
+      "widgets_values": [0.45, 0.0, 1.0],
       "color": "#232",
       "bgcolor": "#353"
     },
@@ -376,7 +376,7 @@
       "properties": {
         "Node name for S&R": "KSampler"
       },
-      "widgets_values": [1234, "fixed", 30, 5.0, "dpmpp_2m_sde", "karras", 0.55],
+      "widgets_values": [1234, "fixed", 30, 6.5, "dpmpp_2m_sde", "karras", 0.6],
       "color": "#393"
     },
     {
@@ -446,10 +446,10 @@
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "Mac-Optimized Workflow with CoreML",
+      "title": "OPTIMIZED FOR FLUX→SDXL UPSCALING",
       "properties": {},
       "widgets_values": [
-        "**IPAdapter FaceID + ControlNet Tile + CoreML** - **MAC OPTIMIZED**\n\nThis workflow is specifically designed for Mac M-series (M1/M2/M3/M4) users:\n• **IPAdapter FaceID PLUS V2** - Identity preservation\n• **CoreML execution provider** - Mac GPU/Neural Engine acceleration\n• **ControlNet Tile** (strength 0.7) - Structural guidance\n• **Tiled VAE** - Memory efficient, tensor-error-free upscaling\n\n**Why CoreML for Mac:**\n• PuLID uses ONNXRuntime which has NO MPS support\n• IPAdapter FaceID supports CoreML execution provider\n• CoreML can use Mac Metal GPU + Neural Engine\n• Potentially 10-100x faster than CPU-only processing\n\n**Performance expectations:**\n• **PuLID on Mac M4 Max:** 4+ hours (CPU only)\n• **This workflow (if CoreML works):** 2-5 minutes target\n• **If CoreML falls back to CPU:** Similar to PuLID (4+ hours)\n\n**IPAdapter FaceID Settings (Node 6):**\nwidgets_values: [0.8, 1.0, \"linear\", \"concat\", 0.0, 1.0]\n\n• weight: 0.8 (overall IPAdapter influence, range 0-3, higher = stronger identity preservation)\n• weight_faceidv2: 1.0 (FaceID v2 model strength, range 0-5, default 1.0)\n• weight_type: \"linear\" (how weight is applied over denoising steps)\n  Options: linear, ease in, ease out, ease in-out, reverse in-out, weak input, weak output, weak middle, strong middle, style transfer, composition, strong style transfer\n• combine_embeds: \"concat\" (how facial embeddings are combined)\n  Options: concat, add, subtract, average, norm average\n• start_at: 0.0 (when IPAdapter starts influencing, 0.0 = from beginning)\n• end_at: 1.0 (when IPAdapter stops influencing, 1.0 = until end)\n\n**Node Inputs:**\n• model (MODEL) - from IPAdapterUnifiedLoaderFaceID\n• ipadapter (IPADAPTER) - from IPAdapterUnifiedLoaderFaceID\n• image (IMAGE) - reference face photo\n\n**Node Outputs:**\n• MODEL - modified model with facial conditioning applied\n\n**Other Parameters:**\n• ControlNet Tile strength: 0.7 (structural guidance to prevent hallucinations)\n• VAE tile size: 512px (memory efficient encoding/decoding)\n• Denoise: 0.55 (balance between detail and hallucinations)\n• Steps: 30, CFG: 5.0\n• Sampler: dpmpp_2m_sde (sharp output - SDE samplers essential)\n• Scheduler: karras\n\n**Requirements:**\n• ComfyUI_IPAdapter_plus custom node\n• Model: ip-adapter-faceid-plusv2_sdxl.bin\n• ControlNet: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n• InsightFace models (auto-download for face analysis)\n\n**Testing CoreML performance:**\n1. Run workflow and monitor ComfyUI console for CoreML messages\n2. Check processing time vs PuLID (should be much faster if working)\n3. If still taking hours, CoreML likely fell back to CPU\n4. Try reducing resolution to 512x512 to test\n\n**If CoreML doesn't accelerate:**\n• CoreML may not support this specific model architecture\n• Dynamic shapes may force CPU fallback\n• Consider Multi-ControlNet_Latent workflow (~30 seconds)\n• Or reduce image resolution for faster processing\n\n**Processing time:** Target 2-5 minutes (vs 4+ hours with PuLID CPU)"
+        "**IPAdapter FaceID + ControlNet Tile** - **FLUX→SDXL DETAIL GENERATION**\n\nThis workflow generates skin detail that Flux models don't create, using SDXL img2img upscaling.\n\n**CRITICAL: CoreML DOES NOT ACCELERATE on Mac (2+ hours processing)**\nCoreML falls back to CPU just like PuLID. For Mac users, use Multi-ControlNet_Latent (~30 seconds) instead.\n\n**IPAdapter FaceID Settings (Node 6):**\nwidgets_values: [0.6, 0.8, \"linear\", \"concat\", 0.0, 1.0]\n\n• weight: 0.6 (LOWER than default - prevents over-enhancement of facial features)\n  - Too high (1.0+) = distorted nose/mouth, unwanted hair transfer\n  - 0.6 = subtle face transfer, natural features\n• weight_faceidv2: 0.8 (LOWER than default - prevents feature distortion)\n  - Too high (2.0) = over-enhanced nose/mouth, sharp unwanted details\n  - 0.8 = balanced facial structure preservation\n• weight_type: \"linear\" | combine_embeds: \"concat\" | start_at: 0.0 | end_at: 1.0\n\n**FLUX→SDXL Critical Parameters:**\n\n1. **ControlNet Tile strength: 0.45** (MUCH LOWER than SDXL→SDXL)\n   - For SDXL→SDXL: use 0.7 (preserve existing detail)\n   - For Flux→SDXL: use 0.45 (allow SDXL to CREATE detail)\n   - Too high (0.7) = ringing artifacts, sharp edges, blocks detail generation\n   - 0.45 = structural guidance without constraining skin detail creation\n\n2. **Denoise: 0.6** (HIGHER than SDXL→SDXL)\n   - For SDXL→SDXL: use 0.42 (preserves existing skin detail)\n   - For Flux→SDXL: use 0.6+ (generates NEW skin detail)\n   - Flux images lack skin texture - need high denoise to force SDXL to create it\n   - 0.6 = strong enough to generate detail without excessive hallucinations\n\n3. **CFG: 6.5** (higher for detail generation)\n   - Stronger prompt adherence ensures skin detail follows \"natural skin texture\" prompt\n   - Helps SDXL generate realistic pores, texture, imperfections\n\n4. **Steps: 30** | **Sampler: dpmpp_2m_sde** (SDE essential for sharp detail) | **Scheduler: karras**\n\n5. **VAE tile size: 512px** (memory efficient, prevents tensor errors)\n\n**Why These Settings for Flux→SDXL:**\n- Flux generates smooth, detail-free skin (AI-perfect appearance)\n- SDXL excels at skin texture, pores, natural detail\n- Lower ControlNet = freedom to add detail Flux never had\n- Higher denoise = forces re-generation rather than preservation\n- Lower face weights = prevents feature distortion during detail generation\n\n**Test Results:**\nweight=1.0, weight_faceidv2=2.0, ControlNet 0.7, denoise 0.55:\n✗ Over-enhanced nose/mouth features\n✗ Unwanted hair transfer\n✗ Sharp edges with ringing artifacts  \n✗ Barely visible skin details (denoise too low for Flux input)\n\nweight=0.6, weight_faceidv2=0.8, ControlNet 0.45, denoise 0.6:\n✓ Natural facial features\n✓ Smooth edges without ringing\n✓ Visible skin texture and detail generation\n\n**Requirements:**\n• ComfyUI_IPAdapter_plus custom node\n• Model: ip-adapter-faceid-plusv2_sdxl.bin\n• ControlNet: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n• InsightFace models (auto-download for face analysis)\n\n**Performance Reality on Mac M4 Max:**\n• **Actual:** 2+ hours (CoreML falls back to CPU)\n• **Expected if CoreML worked:** 2-5 minutes (it doesn't)\n• **Recommended alternative:** Multi-ControlNet_Latent workflow (~30 seconds)\n\n**For Mac Users:**\nThis workflow is NOT viable on Mac due to 2+ hour processing time. CoreML execution provider does NOT accelerate InsightFace models. Use Multi-ControlNet_4x_Upscale_with_PuLID_SDXL.json instead for acceptable performance."
       ],
       "color": "#432",
       "bgcolor": "#653"
