@@ -1,8 +1,8 @@
 {
-  "id": "550e8400-e29b-41d4-a716-ipadapter-coreml",
+  "id": "2323ffcc-fbc6-4398-94cc-8852ca3bc856",
   "revision": 0,
   "last_node_id": 14,
-  "last_link_id": 25,
+  "last_link_id": 21,
   "nodes": [
     {
       "id": 1,
@@ -164,7 +164,7 @@
       "pos": [150, 0],
       "size": [315, 258],
       "flags": {},
-      "order": 7,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {
@@ -181,16 +181,6 @@
           "name": "image",
           "type": "IMAGE",
           "link": 6
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 11
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 12
         }
       ],
       "outputs": [
@@ -200,21 +190,16 @@
           "links": [13]
         },
         {
-          "name": "CONDITIONING+",
-          "type": "CONDITIONING",
-          "links": [14]
-        },
-        {
-          "name": "CONDITIONING-",
-          "type": "CONDITIONING",
-          "links": [15]
+          "name": "face_image",
+          "type": "IMAGE",
+          "links": null
         }
       ],
       "title": "6 | IPAdapter FaceID",
       "properties": {
         "Node name for S&R": "IPAdapterFaceID"
       },
-      "widgets_values": [0.8, 0.0, 1.0, "standard", 0.0, false],
+      "widgets_values": [0.8, 1.0, "linear", "concat", 0.0, 1.0, "V only", false],
       "color": "#322",
       "bgcolor": "#533"
     },
@@ -231,7 +216,7 @@
         {
           "name": "CONTROL_NET",
           "type": "CONTROL_NET",
-          "links": [16]
+          "links": [14]
         }
       ],
       "title": "7 | Load ControlNet Tile",
@@ -248,23 +233,23 @@
       "pos": [600, 80],
       "size": [315, 186],
       "flags": {},
-      "order": 8,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 14
+          "link": 11
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 15
+          "link": 12
         },
         {
           "name": "control_net",
           "type": "CONTROL_NET",
-          "link": 16
+          "link": 14
         },
         {
           "name": "image",
@@ -276,12 +261,12 @@
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "links": [17]
+          "links": [15]
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "links": [18]
+          "links": [16]
         }
       ],
       "title": "8 | Apply ControlNet Tile",
@@ -298,7 +283,7 @@
       "pos": [950, 0],
       "size": [315, 78],
       "flags": {},
-      "order": 9,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -316,7 +301,7 @@
         {
           "name": "LATENT",
           "type": "LATENT",
-          "links": [19]
+          "links": [17]
         }
       ],
       "title": "9 | VAE Encode Tiled",
@@ -332,20 +317,20 @@
       "pos": [950, 100],
       "size": [315, 82],
       "flags": {},
-      "order": 10,
+      "order": 9,
       "mode": 0,
       "inputs": [
         {
           "name": "samples",
           "type": "LATENT",
-          "link": 19
+          "link": 17
         }
       ],
       "outputs": [
         {
           "name": "LATENT",
           "type": "LATENT",
-          "links": [20]
+          "links": [18]
         }
       ],
       "title": "10 | Latent Upscale 4x",
@@ -361,7 +346,7 @@
       "pos": [950, 200],
       "size": [315, 262],
       "flags": {},
-      "order": 11,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {
@@ -372,24 +357,24 @@
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 17
+          "link": 15
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 18
+          "link": 16
         },
         {
           "name": "latent_image",
           "type": "LATENT",
-          "link": 20
+          "link": 18
         }
       ],
       "outputs": [
         {
           "name": "LATENT",
           "type": "LATENT",
-          "links": [21]
+          "links": [19]
         }
       ],
       "title": "11 | KSampler",
@@ -405,13 +390,13 @@
       "pos": [950, 480],
       "size": [315, 78],
       "flags": {},
-      "order": 12,
+      "order": 11,
       "mode": 0,
       "inputs": [
         {
           "name": "samples",
           "type": "LATENT",
-          "link": 21
+          "link": 19
         },
         {
           "name": "vae",
@@ -423,7 +408,7 @@
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [22]
+          "links": [20]
         }
       ],
       "title": "12 | VAE Decode Tiled",
@@ -439,13 +424,13 @@
       "pos": [1300, 0],
       "size": [600, 700],
       "flags": {},
-      "order": 13,
+      "order": 12,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 22
+          "link": 20
         }
       ],
       "outputs": [],
@@ -462,14 +447,14 @@
       "pos": [600, 300],
       "size": [600, 500],
       "flags": {},
-      "order": 14,
+      "order": 13,
       "mode": 0,
       "inputs": [],
       "outputs": [],
       "title": "Mac-Optimized Workflow with CoreML",
       "properties": {},
       "widgets_values": [
-        "**IPAdapter FaceID + ControlNet Tile + CoreML** - **MAC OPTIMIZED**\n\nThis workflow is specifically designed for Mac M-series (M1/M2/M3/M4) users:\n• **IPAdapter FaceID PLUS V2** - Identity preservation\n• **CoreML execution provider** - Mac GPU/Neural Engine acceleration\n• **ControlNet Tile** (strength 0.7) - Structural guidance\n• **Tiled VAE** - Memory efficient, tensor-error-free upscaling\n\n**Why CoreML for Mac:**\n• PuLID uses ONNXRuntime which has NO MPS support\n• IPAdapter FaceID supports CoreML execution provider\n• CoreML can use Mac Metal GPU + Neural Engine\n• Potentially 10-100x faster than CPU-only processing\n\n**Performance expectations:**\n• **PuLID on Mac M4 Max:** 4+ hours (CPU only)\n• **This workflow (if CoreML works):** Minutes instead of hours\n• **If CoreML falls back to CPU:** Similar to PuLID performance\n\n**Parameters:**\n• IPAdapter weight: 0.8 (strong identity preservation)\n• ControlNet Tile strength: 0.7 (structural guidance)\n• VAE tile size: 512px (memory efficient)\n• Denoise: 0.55, Steps: 30, CFG: 5.0\n• Sampler: dpmpp_2m_sde (sharp output)\n• Scheduler: karras\n\n**Requirements:**\n• ComfyUI_IPAdapter_plus custom node\n• Model: ip-adapter-faceid-plusv2_sdxl.bin\n• ControlNet: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n• InsightFace models (for face analysis)\n\n**Testing CoreML performance:**\n1. Run this workflow and check ComfyUI console\n2. Look for CoreML execution messages\n3. Monitor processing time\n4. If still taking hours, CoreML may have fallen back to CPU\n\n**If CoreML doesn't accelerate:**\n• CoreML may not support the specific model architecture\n• Dynamic shapes may force CPU fallback\n• Try reducing image resolution (512x512 vs 1024x1024)\n• Consider Multi-ControlNet_Latent workflow instead\n\n**Processing time:** Target 2-5 minutes (vs 4+ hours with PuLID CPU)"
+        "**IPAdapter FaceID + ControlNet Tile + CoreML** - **MAC OPTIMIZED**\n\nThis workflow is specifically designed for Mac M-series (M1/M2/M3/M4) users:\n• **IPAdapter FaceID PLUS V2** - Identity preservation\n• **CoreML execution provider** - Mac GPU/Neural Engine acceleration\n• **ControlNet Tile** (strength 0.7) - Structural guidance\n• **Tiled VAE** - Memory efficient, tensor-error-free upscaling\n\n**Why CoreML for Mac:**\n• PuLID uses ONNXRuntime which has NO MPS support\n• IPAdapter FaceID supports CoreML execution provider\n• CoreML can use Mac Metal GPU + Neural Engine\n• Potentially 10-100x faster than CPU-only processing\n\n**Performance expectations:**\n• **PuLID on Mac M4 Max:** 4+ hours (CPU only)\n• **This workflow (if CoreML works):** 2-5 minutes target\n• **If CoreML falls back to CPU:** Similar to PuLID (4+ hours)\n\n**IPAdapter FaceID Settings (Node 6):**\n• weight: 0.8 (overall IPAdapter influence: 0-3 range, 0.8 = strong identity)\n• weight_faceidv2: 1.0 (FaceID v2 model strength: 0-5 range, 1.0 = default)\n• weight_type: \"linear\" (options: linear, ease in, ease out, ease in-out, reverse in-out, weak input, weak output, weak middle, strong middle, style transfer, composition, strong style transfer)\n• combine_embeds: \"concat\" (options: concat, add, subtract, average, norm average)\n• start_at: 0.0 (when IPAdapter starts influencing: 0.0-1.0)\n• end_at: 1.0 (when IPAdapter stops influencing: 0.0-1.0)\n• embeds_scaling: \"V only\" (options: V only, K+V, K+V w/ C penalty, K+mean(V) w/ C penalty)\n• unfold_batch: false (batch processing setting)\n\n**Other Parameters:**\n• ControlNet Tile strength: 0.7 (structural guidance to prevent hallucinations)\n• VAE tile size: 512px (memory efficient encoding/decoding)\n• Denoise: 0.55 (balance between detail and hallucinations)\n• Steps: 30, CFG: 5.0\n• Sampler: dpmpp_2m_sde (sharp output - SDE samplers essential)\n• Scheduler: karras\n\n**Requirements:**\n• ComfyUI_IPAdapter_plus custom node\n• Model: ip-adapter-faceid-plusv2_sdxl.bin\n• ControlNet: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n• InsightFace models (auto-download for face analysis)\n\n**Testing CoreML performance:**\n1. Run workflow and monitor ComfyUI console for CoreML messages\n2. Check processing time vs PuLID (should be much faster if working)\n3. If still taking hours, CoreML likely fell back to CPU\n4. Try reducing resolution to 512x512 to test\n\n**If CoreML doesn't accelerate:**\n• CoreML may not support this specific model architecture\n• Dynamic shapes may force CPU fallback\n• Consider Multi-ControlNet_Latent workflow (~30 seconds)\n• Or reduce image resolution for faster processing\n\n**Processing time:** Target 2-5 minutes (vs 4+ hours with PuLID CPU)"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -486,18 +471,16 @@
     [8, 2, 0, 9, 0, "IMAGE"],
     [9, 3, 0, 6, 0, "MODEL"],
     [10, 3, 1, 6, 1, "IPADAPTER"],
-    [11, 4, 0, 6, 3, "CONDITIONING"],
-    [12, 5, 0, 6, 4, "CONDITIONING"],
+    [11, 4, 0, 8, 0, "CONDITIONING"],
+    [12, 5, 0, 8, 1, "CONDITIONING"],
     [13, 6, 0, 11, 0, "MODEL"],
-    [14, 6, 1, 8, 0, "CONDITIONING"],
-    [15, 6, 2, 8, 1, "CONDITIONING"],
-    [16, 7, 0, 8, 2, "CONTROL_NET"],
-    [17, 8, 0, 11, 1, "CONDITIONING"],
-    [18, 8, 1, 11, 2, "CONDITIONING"],
-    [19, 9, 0, 10, 0, "LATENT"],
-    [20, 10, 0, 11, 3, "LATENT"],
-    [21, 11, 0, 12, 0, "LATENT"],
-    [22, 12, 0, 13, 0, "IMAGE"]
+    [14, 7, 0, 8, 2, "CONTROL_NET"],
+    [15, 8, 0, 11, 1, "CONDITIONING"],
+    [16, 8, 1, 11, 2, "CONDITIONING"],
+    [17, 9, 0, 10, 0, "LATENT"],
+    [18, 10, 0, 11, 3, "LATENT"],
+    [19, 11, 0, 12, 0, "LATENT"],
+    [20, 12, 0, 13, 0, "IMAGE"]
   ],
   "groups": [],
   "config": {},
