@@ -560,7 +560,7 @@
           "slot_index": 0
         }
       ],
-      "title": "16 | First Pass - Refine with Face Identity",
+      "title": "16 | First Pass - Generate Initial Skin Detail + Face Identity",
       "properties": {
         "Node name for S&R": "KSampler"
       },
@@ -571,7 +571,7 @@
         4.5,
         "dpmpp_2m_sde",
         "karras",
-        0.4
+        0.48
       ],
       "color": "#393"
     },
@@ -716,7 +716,7 @@
         4.0,
         "dpmpp_2m_sde",
         "karras",
-        0.45,
+        0.52,
         "Linear",
         1024,
         1024,
@@ -830,10 +830,10 @@
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "FLUX DEV REFINER & 4X UPSCALE - ULTIMATE SD UPSCALE + CONTROLNET TILE",
+      "title": "FLUX DEV SKIN DETAIL GENERATOR - 4X UPSCALE + FACE IDENTITY",
       "properties": {},
       "widgets_values": [
-        "PURPOSE: Refine Flux Dev 1024x1024 images and upscale to 4K with realistic skin detail\nUSES ULTIMATE SD UPSCALE + CONTROLNET TILE - No shearing, works on Mac!\n\nFACE IDENTITY OPTIONS (Toggle one or the other):\n• PuLID (ENABLED): Nodes 3-7. Best for photorealism\n  - Node 6: First pass weight 0.75\n  - Node 7: Upscale pass weight 0.85 (higher for detail preservation)\n  \n• IP Adapter FaceID (DISABLED): Nodes 8-10, 22-23. Alternative option\n  - Enable nodes 8-10, 22-23 (mode=0)\n  - Disable nodes 3-7 (mode=4)\n\nWORKFLOW:\n1. First Pass: Refine 1024x1024 with face identity (denoise 0.4)\n2. ControlNet Tile: Apply to first pass output for structure preservation\n3. Ultimate SD Upscale: Tiled 4x upscaling with integrated refinement\n   - Divides into 1024x1024 tiles with 32px padding\n   - Each tile: 4x upscale → img2img with face identity + ControlNet (denoise 0.45)\n   - Linear blending for seamless result\n   - ControlNet prevents hallucinations at higher denoise!\n\nREQUIREMENTS:\n• CyberRealisticXL checkpoint\n• PuLID models OR IPAdapter FaceID models\n• 4x-UltraSharp.pth upscale model\n• Ultimate SD Upscale custom node\n• ControlNet Tile: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n\nKEY ADVANTAGES:\n✓ No shearing issues - tiled processing\n✓ ControlNet Tile prevents hallucinations\n✓ Can use HIGHER denoise (0.45+) safely!\n✓ Face identity applied to each tile\n✓ Better memory management\n✓ Mac compatible!\n\nULTIMATE SD UPSCALE SETTINGS:\n• Upscale: 4x\n• Steps: 40, CFG: 4.0\n• Denoise: 0.45 (can go higher thanks to ControlNet!)\n• Tile size: 1024x1024\n• Padding: 32px (prevents seams)\n• Mode: Linear blending\n• Force uniform tiles: true\n\nCONTROLNET TILE SETTINGS:\n• Strength: 0.7 (adjust 0.5-1.0 as needed)\n• Start: 0.0, End: 1.0 (full process)\n• Prevents hallucinations while allowing detail generation"
+        "PRIMARY OBJECTIVE: GENERATE missing skin detail (pores, texture, imperfections) in smooth Flux Dev 1024x1024 images\nPaired with face identity preservation via PuLID or IP Adapter FaceID\nUSES: Ultimate SD Upscale + ControlNet Tile - No shearing, Mac compatible!\n\nFACE IDENTITY OPTIONS (Toggle one or the other):\n• PuLID (ENABLED): Nodes 3-7. Best for photorealism\n  - Node 6: First pass weight 0.75\n  - Node 7: Upscale pass weight 0.85 (higher for detail preservation)\n  \n• IP Adapter FaceID (DISABLED): Nodes 8-10, 22-23. Alternative option\n  - Enable nodes 8-10, 22-23 (mode=0)\n  - Disable nodes 3-7 (mode=4)\n\nWORKFLOW - OPTIMIZED FOR DETAIL GENERATION:\n1. First Pass: BEGIN generating skin detail + face identity (denoise 0.48)\n   - Starts adding pore texture to smooth Flux image\n   - PuLID ensures face identity is maintained\n   \n2. ControlNet Tile: Lock structure from first pass\n   - Prevents hallucinations while allowing detail generation\n   - Strength 0.7 = balanced structure + creative detail\n   \n3. Ultimate SD Upscale: GENERATE detail at 4x scale (denoise 0.52)\n   - Divides into 1024x1024 tiles with 32px padding\n   - Each tile: 4x upscale → GENERATE pores/texture with ControlNet safety\n   - Higher denoise (0.52) generates MORE detail without hallucinations\n   - Linear blending for seamless 4096x4096 result\n\nREQUIREMENTS:\n• CyberRealisticXL checkpoint (realistic skin detail)\n• PuLID models OR IPAdapter FaceID models\n• 4x-UltraSharp.pth upscale model\n• Ultimate SD Upscale custom node\n• ControlNet Tile: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n\nDENOISE STRATEGY (Optimized for Flux smooth images):\n• First Pass: 0.48 (begins generating pore structure)\n• Upscale Pass: 0.52 (generates fine detail with ControlNet protection)\n• Can increase to 0.55-0.60 if you want even more detail!\n• ControlNet prevents hallucinations even at high denoise\n\nCONTROLNET TILE TUNING:\n• Strength 0.7: Balanced (current) - generates detail safely\n• Strength 0.6-0.65: More creative - use with denoise 0.55-0.60\n• Strength 0.75-0.8: Stricter - use if any hallucinations appear\n\nKEY ADVANTAGES:\n✓ GENERATES skin pores/texture in smooth Flux images\n✓ ControlNet Tile prevents hallucinations at high denoise (0.52+)\n✓ Face identity locked via PuLID/IPAdapter\n✓ No shearing - tiled processing\n✓ Mac compatible, memory efficient\n✓ Can increase denoise even higher for more detail!"
       ],
       "color": "#432",
       "bgcolor": "#653"
