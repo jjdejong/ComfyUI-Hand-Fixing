@@ -1,6 +1,6 @@
 {
-  "id": "flux-refine-ultimate-upscale-face-identity-v3",
-  "revision": 2,
+  "id": "a8f3c2e1-9b4d-4f7a-8e2c-5d6f7a8b9c0d",
+  "revision": 3,
   "last_node_id": 52,
   "last_link_id": 100,
   "nodes": [
@@ -17,7 +17,7 @@
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [1, 2, 70],
+          "links": [70],
           "slot_index": 0
         },
         {
@@ -844,7 +844,7 @@
       "title": "FLUX DEV SKIN DETAIL GENERATOR - 4X UPSCALE + FACE IDENTITY",
       "properties": {},
       "widgets_values": [
-        "PRIMARY OBJECTIVE: GENERATE missing skin detail (pores, texture, imperfections) in smooth Flux Dev 1024x1024 images\nPaired with face identity preservation via PuLID or IP Adapter FaceID\nUSES: Ultimate SD Upscale + ControlNet Tile - No shearing, Mac compatible!\n\nFACE IDENTITY OPTIONS (Toggle one or the other):\n• PuLID (ENABLED): Nodes 3-7. Best for photorealism\n  - Node 6: First pass weight 0.75\n  - Node 7: Upscale pass weight 0.85 (higher for detail preservation)\n  \n• IP Adapter FaceID (DISABLED): Nodes 8-10, 22-23. Alternative option\n  - Enable nodes 8-10, 22-23 (mode=0)\n  - Disable nodes 3-7 (mode=4)\n\nWORKFLOW - IMG2IMG REFINEMENT FOR DETAIL GENERATION:\n1. Load & Encode Flux Source: VAEEncode the smooth 1024x1024 Flux image\n   - Flux image is encoded to latent space\n   - Ready for img2img refinement (NOT txt2img generation!)\n   \n2. First Pass IMG2IMG: Refine Flux source + generate detail (denoise 0.48)\n   - Takes encoded Flux latent as input\n   - PuLID face identity applied to model\n   - Denoise 0.48 allows model to ADD missing pore texture\n   - Output: 1024x1024 with initial skin detail\n   \n3. ControlNet Tile: Lock structure from refined first pass\n   - Prevents hallucinations while allowing detail generation\n   - Strength 0.7 = balanced structure + creative detail\n   \n4. Ultimate SD Upscale: GENERATE fine detail at 4x scale (denoise 0.52)\n   - Divides into 1024x1024 tiles with 32px padding\n   - Each tile: 4x upscale → GENERATE pores/texture with ControlNet safety\n   - Higher denoise (0.52) generates MORE detail without hallucinations\n   - Linear blending for seamless 4096x4096 result\n\nREQUIREMENTS:\n• CyberRealisticXL checkpoint (realistic skin detail)\n• PuLID models OR IPAdapter FaceID models\n• 4x-UltraSharp.pth upscale model\n• Ultimate SD Upscale custom node\n• ControlNet Tile: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n\nDENOISE STRATEGY (Optimized for Flux smooth images):\n• First Pass: 0.48 (begins generating pore structure)\n• Upscale Pass: 0.52 (generates fine detail with ControlNet protection)\n• Can increase to 0.55-0.60 if you want even more detail!\n• ControlNet prevents hallucinations even at high denoise\n\nCONTROLNET TILE TUNING:\n• Strength 0.7: Balanced (current) - generates detail safely\n• Strength 0.6-0.65: More creative - use with denoise 0.55-0.60\n• Strength 0.75-0.8: Stricter - use if any hallucinations appear\n\nKEY ADVANTAGES:\n✓ GENERATES skin pores/texture in smooth Flux images\n✓ ControlNet Tile prevents hallucinations at high denoise (0.52+)\n✓ Face identity locked via PuLID/IPAdapter\n✓ No shearing - tiled processing\n✓ Mac compatible, memory efficient\n✓ Can increase denoise even higher for more detail!"
+        "PRIMARY OBJECTIVE: GENERATE missing skin detail (pores, texture, imperfections) in smooth Flux Dev 1024x1024 images\nPaired with face identity preservation via PuLID or IP Adapter FaceID\nUSES: Ultimate SD Upscale + ControlNet Tile - No shearing, Mac compatible!\n\nIMPORTANT INPUTS:\n• Node 1: Load Flux Dev source image (1024x1024) - the smooth image to refine\n• Node 28: Load face reference - the face identity to apply (can be same or different person)\n\nFACE IDENTITY OPTIONS (Toggle one or the other):\n• PuLID (ENABLED): Nodes 3-7, 28. Best for photorealism\n  - Node 28: Load face reference image\n  - Node 6: First pass weight 0.75\n  - Node 7: Upscale pass weight 0.85 (higher for detail preservation)\n  \n• IP Adapter FaceID (DISABLED): Nodes 8-10, 22-23. Alternative option\n  - Enable nodes 8-10, 22-23 (mode=0)\n  - Disable nodes 3-7, 28 (mode=4)\n  - Use Node 23 for face reference instead of Node 28\n\nWORKFLOW - IMG2IMG REFINEMENT FOR DETAIL GENERATION:\n1. Load & Encode Flux Source: VAEEncode the smooth 1024x1024 Flux image\n   - Flux image is encoded to latent space\n   - Ready for img2img refinement (NOT txt2img generation!)\n   \n2. First Pass IMG2IMG: Refine Flux source + generate detail (denoise 0.48)\n   - Takes encoded Flux latent as input\n   - PuLID face identity applied to model\n   - Denoise 0.48 allows model to ADD missing pore texture\n   - Output: 1024x1024 with initial skin detail\n   \n3. ControlNet Tile: Lock structure from refined first pass\n   - Prevents hallucinations while allowing detail generation\n   - Strength 0.7 = balanced structure + creative detail\n   \n4. Ultimate SD Upscale: GENERATE fine detail at 4x scale (denoise 0.52)\n   - Divides into 1024x1024 tiles with 32px padding\n   - Each tile: 4x upscale → GENERATE pores/texture with ControlNet safety\n   - Higher denoise (0.52) generates MORE detail without hallucinations\n   - Linear blending for seamless 4096x4096 result\n\nREQUIREMENTS:\n• CyberRealisticXL checkpoint (realistic skin detail)\n• PuLID models OR IPAdapter FaceID models\n• 4x-UltraSharp.pth upscale model\n• Ultimate SD Upscale custom node\n• ControlNet Tile: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n\nDENOISE STRATEGY (Optimized for Flux smooth images):\n• First Pass: 0.48 (begins generating pore structure)\n• Upscale Pass: 0.52 (generates fine detail with ControlNet protection)\n• Can increase to 0.55-0.60 if you want even more detail!\n• ControlNet prevents hallucinations even at high denoise\n\nCONTROLNET TILE TUNING:\n• Strength 0.7: Balanced (current) - generates detail safely\n• Strength 0.6-0.65: More creative - use with denoise 0.55-0.60\n• Strength 0.75-0.8: Stricter - use if any hallucinations appear\n\nKEY ADVANTAGES:\n✓ GENERATES skin pores/texture in smooth Flux images\n✓ ControlNet Tile prevents hallucinations at high denoise (0.52+)\n✓ Face identity locked via PuLID/IPAdapter\n✓ No shearing - tiled processing\n✓ Mac compatible, memory efficient\n✓ Can increase denoise even higher for more detail!"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -943,11 +943,41 @@
       "widgets_values": [0.7, 0.0, 1.0],
       "color": "#2a363b",
       "bgcolor": "#3f5159"
+    },
+    {
+      "id": 28,
+      "type": "LoadImage",
+      "pos": [-800, 350],
+      "size": [315, 315],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [1, 2],
+          "slot_index": 0
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "28 | Load Face Reference for Identity (PuLID)",
+      "properties": {
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": ["face_reference.png", "image"],
+      "color": "#322",
+      "bgcolor": "#533"
     }
   ],
   "links": [
-    [1, 1, 0, 6, 4, "IMAGE"],
-    [2, 1, 0, 7, 4, "IMAGE"],
+    [1, 28, 0, 6, 4, "IMAGE"],
+    [2, 28, 0, 7, 4, "IMAGE"],
     [3, 2, 0, 6, 0, "MODEL"],
     [4, 2, 0, 7, 0, "MODEL"],
     [5, 2, 1, 11, 0, "CLIP"],
