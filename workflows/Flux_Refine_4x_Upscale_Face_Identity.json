@@ -312,7 +312,7 @@
         {
           "name": "MODEL",
           "type": "MODEL",
-          "links": [55],
+          "links": null,
           "slot_index": 0
         },
         {
@@ -358,7 +358,7 @@
         {
           "name": "MODEL",
           "type": "MODEL",
-          "links": [58],
+          "links": null,
           "slot_index": 0
         },
         {
@@ -974,10 +974,8 @@
     [52, 8, 1, 9, 1, "IPADAPTER"],
     [53, 8, 1, 10, 1, "IPADAPTER"],
     [54, 23, 0, 9, 2, "IMAGE"],
-    [55, 9, 0, 16, 0, "MODEL"],
     [56, 2, 0, 10, 0, "MODEL"],
     [57, 23, 0, 10, 2, "IMAGE"],
-    [58, 10, 0, 20, 1, "MODEL"],
     [59, 26, 0, 27, 2, "CONTROL_NET"],
     [60, 17, 0, 27, 3, "IMAGE"],
     [61, 27, 0, 20, 2, "CONDITIONING"],
