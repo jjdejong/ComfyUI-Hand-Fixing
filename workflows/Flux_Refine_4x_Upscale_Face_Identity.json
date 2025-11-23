@@ -1,8 +1,8 @@
 {
-  "id": "flux-refine-ultimate-upscale-face-identity-v2",
-  "revision": 1,
-  "last_node_id": 50,
-  "last_link_id": 95,
+  "id": "flux-refine-ultimate-upscale-face-identity-v3",
+  "revision": 2,
+  "last_node_id": 52,
+  "last_link_id": 100,
   "nodes": [
     {
       "id": 1,
@@ -599,7 +599,7 @@
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [25, 26],
+          "links": [25, 26, 60],
           "slot_index": 0
         }
       ],
@@ -634,7 +634,7 @@
     {
       "id": 19,
       "type": "UpscaleModelLoader",
-      "pos": [850, 300],
+      "pos": [500, 300],
       "size": [315, 58],
       "flags": {},
       "order": 6,
@@ -659,10 +659,10 @@
     {
       "id": 20,
       "type": "UltimateSDUpscale",
-      "pos": [850, 400],
+      "pos": [850, 600],
       "size": [315, 614],
       "flags": {},
-      "order": 22,
+      "order": 24,
       "mode": 0,
       "inputs": [
         {
@@ -678,12 +678,12 @@
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 21
+          "link": 61
         },
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 22
+          "link": 62
         },
         {
           "name": "vae",
@@ -704,7 +704,7 @@
           "slot_index": 0
         }
       ],
-      "title": "20 | Ultimate SD Upscale 4x with Face Identity",
+      "title": "20 | Ultimate SD Upscale 4x with Face Identity + ControlNet Tile",
       "properties": {
         "Node name for S&R": "UltimateSDUpscale"
       },
@@ -716,7 +716,7 @@
         4.0,
         "dpmpp_2m_sde",
         "karras",
-        0.35,
+        0.45,
         "Linear",
         1024,
         1024,
@@ -735,10 +735,10 @@
     {
       "id": 21,
       "type": "SaveImage",
-      "pos": [1200, 400],
+      "pos": [1200, 600],
       "size": [600, 550],
       "flags": {},
-      "order": 23,
+      "order": 25,
       "mode": 0,
       "inputs": [
         {
@@ -824,16 +824,16 @@
       "id": 24,
       "type": "Note",
       "pos": [-800, -400],
-      "size": [700, 350],
+      "size": [700, 380],
       "flags": {},
       "order": 9,
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "FLUX DEV REFINER & 4X UPSCALE - ULTIMATE SD UPSCALE",
+      "title": "FLUX DEV REFINER & 4X UPSCALE - ULTIMATE SD UPSCALE + CONTROLNET TILE",
       "properties": {},
       "widgets_values": [
-        "PURPOSE: Refine Flux Dev 1024x1024 images and upscale to 4K with realistic skin detail\nUSES ULTIMATE SD UPSCALE - No shearing issues, works on Mac!\n\nFACE IDENTITY OPTIONS (Toggle one or the other):\n• PuLID (ENABLED): Nodes 3-7. Best for photorealism\n  - Node 6: First pass weight 0.75\n  - Node 7: Upscale pass weight 0.85 (higher for detail preservation)\n  \n• IP Adapter FaceID (DISABLED): Nodes 8-10, 22-23. Alternative option\n  - Enable nodes 8-10, 22-23 (mode=0)\n  - Disable nodes 3-7 (mode=4)\n\nWORKFLOW:\n1. First Pass: Refine 1024x1024 with face identity (denoise 0.4)\n2. Ultimate SD Upscale: Tiled 4x upscaling with integrated refinement\n   - Divides into 1024x1024 tiles with 32px padding\n   - Each tile: 4x upscale → img2img with face identity (denoise 0.35)\n   - Linear blending for seamless result\n   - NO SHEARING - works perfectly on Mac!\n\nREQUIREMENTS:\n• CyberRealisticXL checkpoint\n• PuLID models OR IPAdapter FaceID models\n• 4x-UltraSharp.pth upscale model\n• Ultimate SD Upscale custom node\n\nKEY ADVANTAGES:\n✓ No shearing issues - tiled processing\n✓ Integrated upscale + refinement\n✓ Face identity applied to each tile\n✓ Lower denoise (0.35) = more stable\n✓ Better memory management\n✓ Mac compatible!\n\nULTIMATE SD UPSCALE SETTINGS:\n• Upscale: 4x\n• Steps: 40, CFG: 4.0\n• Denoise: 0.35 (generates detail without destroying identity)\n• Tile size: 1024x1024\n• Padding: 32px (prevents seams)\n• Mode: Linear blending\n• Force uniform tiles: true"
+        "PURPOSE: Refine Flux Dev 1024x1024 images and upscale to 4K with realistic skin detail\nUSES ULTIMATE SD UPSCALE + CONTROLNET TILE - No shearing, works on Mac!\n\nFACE IDENTITY OPTIONS (Toggle one or the other):\n• PuLID (ENABLED): Nodes 3-7. Best for photorealism\n  - Node 6: First pass weight 0.75\n  - Node 7: Upscale pass weight 0.85 (higher for detail preservation)\n  \n• IP Adapter FaceID (DISABLED): Nodes 8-10, 22-23. Alternative option\n  - Enable nodes 8-10, 22-23 (mode=0)\n  - Disable nodes 3-7 (mode=4)\n\nWORKFLOW:\n1. First Pass: Refine 1024x1024 with face identity (denoise 0.4)\n2. ControlNet Tile: Apply to first pass output for structure preservation\n3. Ultimate SD Upscale: Tiled 4x upscaling with integrated refinement\n   - Divides into 1024x1024 tiles with 32px padding\n   - Each tile: 4x upscale → img2img with face identity + ControlNet (denoise 0.45)\n   - Linear blending for seamless result\n   - ControlNet prevents hallucinations at higher denoise!\n\nREQUIREMENTS:\n• CyberRealisticXL checkpoint\n• PuLID models OR IPAdapter FaceID models\n• 4x-UltraSharp.pth upscale model\n• Ultimate SD Upscale custom node\n• ControlNet Tile: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n\nKEY ADVANTAGES:\n✓ No shearing issues - tiled processing\n✓ ControlNet Tile prevents hallucinations\n✓ Can use HIGHER denoise (0.45+) safely!\n✓ Face identity applied to each tile\n✓ Better memory management\n✓ Mac compatible!\n\nULTIMATE SD UPSCALE SETTINGS:\n• Upscale: 4x\n• Steps: 40, CFG: 4.0\n• Denoise: 0.45 (can go higher thanks to ControlNet!)\n• Tile size: 1024x1024\n• Padding: 32px (prevents seams)\n• Mode: Linear blending\n• Force uniform tiles: true\n\nCONTROLNET TILE SETTINGS:\n• Strength: 0.7 (adjust 0.5-1.0 as needed)\n• Start: 0.0, End: 1.0 (full process)\n• Prevents hallucinations while allowing detail generation"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -842,19 +842,96 @@
       "id": 25,
       "type": "Note",
       "pos": [-400, 2040],
-      "size": [520, 200],
+      "size": [520, 240],
       "flags": {},
       "order": 10,
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "Why Ultimate SD Upscale is Better",
+      "title": "Why ControlNet Tile is Critical",
       "properties": {},
       "widgets_values": [
-        "ULTIMATE SD UPSCALE vs SIMPLE UPSCALE:\n\nSimple upscale approach (causes shearing on Mac):\n1. Upscale entire 4K image at once\n2. Then refine the whole thing\n❌ Mac displays shearing between row groups\n❌ Memory intensive\n❌ Inconsistent quality\n\nUltimate SD Upscale (works great on Mac):\n1. Divide into 1024x1024 tiles\n2. Upscale each tile individually\n3. Refine each tile with face identity\n4. Blend tiles seamlessly\n✓ No shearing - independent tile processing\n✓ Better memory management\n✓ Consistent quality across image\n✓ Lower denoise = more stable\n✓ Face identity preserved in each tile\n\nThis is why your existing workflows use this approach!\nIntegrating upscale WITH refinement = better results."
+        "CONTROLNET TILE - PREVENTS HALLUCINATIONS:\n\nWithout ControlNet Tile:\n• Higher denoise (0.5+) causes hallucinations\n• Face/body structure can drift\n• New unwanted details appear\n• Identity can shift\n\nWith ControlNet Tile (strength 0.7):\n✓ Maintains structural coherence from source\n✓ Safe to use denoise 0.45-0.6!\n✓ Generates detail WITHOUT hallucinations\n✓ Face identity stays locked\n✓ Body proportions preserved\n\nHow it works:\n1. First pass output (1024x1024) is the control image\n2. ControlNet Tile conditions each upscaled tile\n3. Each tile references source structure\n4. Detail is added, not invented\n\nADJUST STRENGTH:\n• 0.5-0.6: More creative freedom (higher denoise)\n• 0.7: Balanced (recommended)\n• 0.8-1.0: Strict preservation (lower denoise needed)\n\nYou can now safely increase denoise to 0.5-0.6 for more skin detail\nwithout worrying about hallucinations!"
       ],
       "color": "#322",
       "bgcolor": "#533"
+    },
+    {
+      "id": 26,
+      "type": "ControlNetLoader",
+      "pos": [500, 400],
+      "size": [315, 58],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CONTROL_NET",
+          "type": "CONTROL_NET",
+          "links": [59],
+          "slot_index": 0
+        }
+      ],
+      "title": "26 | Load ControlNet Tile",
+      "properties": {
+        "Node name for S&R": "ControlNetLoader"
+      },
+      "widgets_values": ["SDXL/TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors"],
+      "color": "#2a363b",
+      "bgcolor": "#3f5159"
+    },
+    {
+      "id": 27,
+      "type": "ControlNetApplyAdvanced",
+      "pos": [500, 500],
+      "size": [315, 186],
+      "flags": {},
+      "order": 22,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 21
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 22
+        },
+        {
+          "name": "control_net",
+          "type": "CONTROL_NET",
+          "link": 59
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 60
+        }
+      ],
+      "outputs": [
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "links": [61],
+          "slot_index": 0
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "links": [62],
+          "slot_index": 1
+        }
+      ],
+      "title": "27 | Apply ControlNet Tile (Prevent Hallucinations)",
+      "properties": {
+        "Node name for S&R": "ControlNetApplyAdvanced"
+      },
+      "widgets_values": [0.7, 0.0, 1.0],
+      "color": "#2a363b",
+      "bgcolor": "#3f5159"
     }
   ],
   "links": [
@@ -878,8 +955,8 @@
     [18, 7, 0, 20, 1, "MODEL"],
     [19, 11, 0, 16, 1, "CONDITIONING"],
     [20, 12, 0, 16, 2, "CONDITIONING"],
-    [21, 13, 0, 20, 2, "CONDITIONING"],
-    [22, 14, 0, 20, 3, "CONDITIONING"],
+    [21, 13, 0, 27, 0, "CONDITIONING"],
+    [22, 14, 0, 27, 1, "CONDITIONING"],
     [23, 15, 0, 16, 3, "LATENT"],
     [24, 16, 0, 17, 0, "LATENT"],
     [25, 17, 0, 18, 0, "IMAGE"],
@@ -894,7 +971,11 @@
     [55, 9, 0, 16, 0, "MODEL"],
     [56, 22, 0, 10, 0, "MODEL"],
     [57, 23, 0, 10, 2, "IMAGE"],
-    [58, 10, 0, 20, 1, "MODEL"]
+    [58, 10, 0, 20, 1, "MODEL"],
+    [59, 26, 0, 27, 2, "CONTROL_NET"],
+    [60, 17, 0, 27, 3, "IMAGE"],
+    [61, 27, 0, 20, 2, "CONDITIONING"],
+    [62, 27, 1, 20, 3, "CONDITIONING"]
   ],
   "groups": [],
   "config": {},
