@@ -1,0 +1,493 @@
+{
+  "id": "flux-camera-lighting-control",
+  "revision": 1,
+  "last_node_id": 50,
+  "last_link_id": 60,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "UNETLoader",
+      "pos": [-800, -200],
+      "size": [320, 82],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [1],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "UNETLoader"
+      },
+      "widgets_values": ["flux1-dev-Q4_K_S.gguf"],
+      "title": "Flux Dev Model (GGUF for Mac)"
+    },
+    {
+      "id": 2,
+      "type": "DualCLIPLoader",
+      "pos": [-800, -80],
+      "size": [320, 106],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [2],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "DualCLIPLoader"
+      },
+      "widgets_values": ["t5xxl_fp16.safetensors", "clip_l.safetensors", "flux"],
+      "title": "CLIP Loader"
+    },
+    {
+      "id": 3,
+      "type": "VAELoader",
+      "pos": [-800, 80],
+      "size": [320, 60],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [3, 4],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAELoader"
+      },
+      "widgets_values": ["ae.safetensors"],
+      "title": "VAE Loader"
+    },
+    {
+      "id": 10,
+      "type": "PrimitiveStringMultiline",
+      "pos": [-800, 200],
+      "size": [520, 180],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [10],
+          "slot_index": 0
+        }
+      ],
+      "title": "Base Subject Prompt",
+      "properties": {
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": ["a red cube on a pedestal, photorealistic, 8k, detailed"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 11,
+      "type": "PrimitiveString",
+      "pos": [-800, 430],
+      "size": [520, 100],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [11],
+          "slot_index": 0
+        }
+      ],
+      "title": "Camera Position (Select One)",
+      "properties": {
+        "Node name for S&R": "PrimitiveString"
+      },
+      "widgets_values": ["viewed from front center"],
+      "color": "#234",
+      "bgcolor": "#356"
+    },
+    {
+      "id": 12,
+      "type": "PrimitiveString",
+      "pos": [-800, 580],
+      "size": [520, 100],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [12],
+          "slot_index": 0
+        }
+      ],
+      "title": "Lighting Direction (Select One)",
+      "properties": {
+        "Node name for S&R": "PrimitiveString"
+      },
+      "widgets_values": ["lit from front top-left, dramatic lighting, strong shadows"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 20,
+      "type": "StringConcatenate",
+      "pos": [-200, 300],
+      "size": [300, 166],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string_a",
+          "type": "STRING",
+          "link": 10,
+          "widget": {"name": "string_a"}
+        },
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "link": 11,
+          "widget": {"name": "string_b"}
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [20],
+          "slot_index": 0
+        }
+      ],
+      "title": "Merge Subject + Camera",
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": ["", "", ", "],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 21,
+      "type": "StringConcatenate",
+      "pos": [-200, 520],
+      "size": [300, 166],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string_a",
+          "type": "STRING",
+          "link": 20,
+          "widget": {"name": "string_a"}
+        },
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "link": 12,
+          "widget": {"name": "string_b"}
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [21],
+          "slot_index": 0
+        }
+      ],
+      "title": "Add Lighting Direction",
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": ["", "", ", "],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 30,
+      "type": "CLIPTextEncode",
+      "pos": [180, 280],
+      "size": [400, 200],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 21,
+          "widget": {"name": "text"}
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [30],
+          "slot_index": 0
+        }
+      ],
+      "title": "Positive Prompt",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [""]
+    },
+    {
+      "id": 31,
+      "type": "CLIPTextEncode",
+      "pos": [180, 530],
+      "size": [400, 200],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 2
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [31],
+          "slot_index": 0
+        }
+      ],
+      "title": "Negative Prompt",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": ["blurry, low quality, distorted, bad anatomy, oversaturated"]
+    },
+    {
+      "id": 40,
+      "type": "EmptyLatentImage",
+      "pos": [180, -100],
+      "size": [320, 106],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [40],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [1024, 1024, 1]
+    },
+    {
+      "id": 41,
+      "type": "KSampler",
+      "pos": [680, 100],
+      "size": [320, 474],
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 30
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 31
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 40
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [41],
+          "slot_index": 0
+        }
+      ],
+      "title": "Flux KSampler (Mac Compatible)",
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        123456789,
+        "randomize",
+        20,
+        1.0,
+        "euler",
+        "simple",
+        1.0
+      ]
+    },
+    {
+      "id": 50,
+      "type": "VAEDecode",
+      "pos": [1080, 200],
+      "size": [210, 46],
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 41
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 3
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [50],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 51,
+      "type": "SaveImage",
+      "pos": [1360, 100],
+      "size": [600, 500],
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 50
+        }
+      ],
+      "outputs": [],
+      "properties": {},
+      "widgets_values": ["Flux_Camera_Lighting"]
+    },
+    {
+      "id": 60,
+      "type": "Note",
+      "pos": [-800, 730],
+      "size": [1240, 600],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "properties": {
+        "text": ""
+      },
+      "widgets_values": [
+        "FLUX DEV CAMERA & LIGHTING CONTROL WORKFLOW\nOptimized for Apple Silicon\n\n⚠️ IMPORTANT LIMITATION:\nFlux Dev has NO dedicated lighting direction ControlNet. This workflow uses PROMPT-BASED control,\nwhich is the best available method as of 2024.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📷 CAMERA POSITION PRESETS (Copy & Paste into 'Camera Position' node):\n\n┌─ BASIC POSITIONS (6-sided cube)\n│  Front:   \"viewed from front center\"\n│  Back:    \"viewed from behind, back view\"\n│  Left:    \"viewed from left side\"\n│  Right:   \"viewed from right side\"\n│  Top:     \"viewed from above, top-down view, bird's eye view\"\n│  Bottom:  \"viewed from below, worm's eye view, low angle\"\n│\n├─ DIAGONAL POSITIONS (corners)\n│  Front Top-Left:      \"viewed from front top-left angle\"\n│  Front Top-Right:     \"viewed from front top-right angle\"\n│  Front Bottom-Left:   \"viewed from front bottom-left, low angle from left\"\n│  Front Bottom-Right:  \"viewed from front bottom-right, low angle from right\"\n│  Back Top-Left:       \"viewed from back top-left angle, elevated rear view\"\n│  Back Top-Right:      \"viewed from back top-right angle, elevated rear view\"\n│  Back Bottom-Left:    \"viewed from back bottom-left, low rear angle from left\"\n│  Back Bottom-Right:   \"viewed from back bottom-right, low rear angle from right\"\n│\n└─ SPECIALTY ANGLES\n   Extreme Close-up:     \"extreme close-up, macro view\"\n   Wide Angle:           \"wide angle view, expansive perspective\"\n   Dutch Angle:          \"dutch angle, tilted perspective\"\n   3/4 View:             \"three-quarter view from front-right\"\n   Profile:              \"perfect side profile view from right\"\n   Isometric:            \"isometric view, game asset style\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n💡 LIGHTING DIRECTION PRESETS (Copy & Paste into 'Lighting Direction' node):\n\n┌─ BASIC LIGHTING (6 directions)\n│  Front:   \"lit from front, flat even lighting, minimal shadows\"\n│  Back:    \"backlit, rim lighting, silhouette effect, dramatic backlighting\"\n│  Left:    \"lit from left side, side lighting, half in shadow\"\n│  Right:   \"lit from right side, side lighting, half in shadow\"\n│  Top:     \"lit from above, overhead lighting, strong vertical shadows\"\n│  Bottom:  \"lit from below, underlighting, dramatic upward shadows, horror lighting\"\n│\n├─ DIAGONAL LIGHTING (8 cube corners)\n│  Front Top-Left:      \"lit from front top-left, 3/4 lighting, soft shadows to bottom-right\"\n│  Front Top-Right:     \"lit from front top-right, 3/4 lighting, soft shadows to bottom-left\"\n│  Front Bottom-Left:   \"lit from front bottom-left, low angle light, upward shadows\"\n│  Front Bottom-Right:  \"lit from front bottom-right, low angle light, upward shadows\"\n│  Back Top-Left:       \"lit from back top-left, rim light from upper-left, dramatic edge glow\"\n│  Back Top-Right:      \"lit from back top-right, rim light from upper-right, dramatic edge glow\"\n│  Back Bottom-Left:    \"lit from back bottom-left, low backlight, subtle rim on left edge\"\n│  Back Bottom-Right:   \"lit from back bottom-right, low backlight, subtle rim on right edge\"\n│\n└─ ARTISTIC LIGHTING STYLES\n   Rembrandt:     \"lit from front top-left, dramatic lighting, strong shadows to bottom-right, chiaroscuro\"\n   Split:         \"split lighting from hard left, one half lit one half shadow, dramatic contrast\"\n   Butterfly:     \"butterfly lighting from directly above-front, shadow under nose, glamour lighting\"\n   Loop:          \"loop lighting from front-right at 45°, small shadow under nose to left\"\n   Golden Hour:   \"warm golden hour lighting from low right, soft warm glow, long shadows\"\n   Studio:        \"bright even studio lighting from front, minimal shadows, commercial look\"\n   Cinematic:     \"cinematic lighting from back-left, rim light with blue fill, teal and orange\"\n   Natural:       \"soft natural window light from left, gentle falloff, photographic\"\n   Hard:          \"hard direct lighting from right, sharp crisp shadows, high contrast\"\n   Soft:          \"soft diffused lighting from all around, minimal shadows, even exposure\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🔧 TECHNICAL SETTINGS:\n\nModel: flux1-dev-Q4_K_S.gguf (GGUF quantized for Mac compatibility)\nResolution: 1024x1024 (Flux native resolution)\nSteps: 20 (good balance for Flux)\nCFG: 1.0 (Flux uses guidance distillation, keep at 1.0)\nSampler: euler + simple scheduler (best for Flux on Mac)\nDenoise: 1.0 (full generation)\n\n⚙️ APPLE SILICON OPTIMIZATION:\n✓ Uses GGUF quantized model (70% faster loading)\n✓ Euler sampler (best MPS compatibility)\n✓ Simple scheduler (no karras issues)\n✓ Standard nodes (no XLabs MPS crashes)\n\nExpected VRAM: ~8-12GB (works on M1/M2/M3 16GB+)\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📝 USAGE INSTRUCTIONS:\n\n1. Set your subject in 'Base Subject Prompt'\n2. Choose a CAMERA position from the presets above (copy entire string)\n3. Choose a LIGHTING direction from the presets above (copy entire string)\n4. Click Queue Prompt\n5. Experiment with combinations!\n\nEXAMPLE COMBINATIONS:\n• Camera: \"viewed from front top-left angle\"\n  Light: \"lit from back top-right, rim light from upper-right, dramatic edge glow\"\n  → Dramatic rim-lit portrait\n\n• Camera: \"viewed from right side\"\n  Light: \"lit from front top-left, 3/4 lighting, soft shadows to bottom-right\"\n  → Classic product photography\n\n• Camera: \"viewed from below, worm's eye view, low angle\"\n  Light: \"lit from above, overhead lighting, strong vertical shadows\"\n  → Dramatic hero shot\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🚀 ADVANCED: Adding Depth ControlNet (Optional)\n\nTo add true spatial control:\n1. Download: black-forest-labs/FLUX.1-Depth-dev\n2. Load with ControlNetLoader node\n3. Generate depth map from reference image\n4. Apply between CLIP and KSampler\n5. Conditioning scale: 0.5-0.7\n\nThis adds geometric control on top of prompt-based camera/lighting.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [1, 1, 0, 41, 0, "MODEL"],
+    [2, 2, 0, 30, 0, "CLIP"],
+    [2, 2, 0, 31, 0, "CLIP"],
+    [3, 3, 0, 50, 1, "VAE"],
+    [4, 3, 0, 50, 1, "VAE"],
+    [10, 10, 0, 20, 0, "STRING"],
+    [11, 11, 0, 20, 1, "STRING"],
+    [12, 12, 0, 21, 1, "STRING"],
+    [20, 20, 0, 21, 0, "STRING"],
+    [21, 21, 0, 30, 1, "STRING"],
+    [30, 30, 0, 41, 1, "CONDITIONING"],
+    [31, 31, 0, 41, 2, "CONDITIONING"],
+    [40, 40, 0, 41, 3, "LATENT"],
+    [41, 41, 0, 50, 0, "LATENT"],
+    [50, 50, 0, 51, 0, "IMAGE"]
+  ],
+  "groups": [
+    {
+      "title": "Model Loaders",
+      "bounding": [-820, -250, 360, 420],
+      "color": "#3f789e",
+      "font_size": 24
+    },
+    {
+      "title": "Camera & Lighting Control",
+      "bounding": [-820, 170, 560, 560],
+      "color": "#8A8A00",
+      "font_size": 24
+    },
+    {
+      "title": "Prompt Assembly",
+      "bounding": [-230, 250, 340, 480],
+      "color": "#88AA88",
+      "font_size": 24
+    },
+    {
+      "title": "Generation",
+      "bounding": [150, -150, 880, 780],
+      "color": "#A87A3A",
+      "font_size": 24
+    },
+    {
+      "title": "Output",
+      "bounding": [1050, 50, 940, 600],
+      "color": "#8A5082",
+      "font_size": 24
+    }
+  ],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.8,
+      "offset": [600, 300]
+    }
+  },
+  "version": 0.4
+}
