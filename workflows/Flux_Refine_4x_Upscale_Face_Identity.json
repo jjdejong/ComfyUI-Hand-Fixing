@@ -1,8 +1,8 @@
 {
-  "id": "flux-refine-4x-upscale-face-identity-v1",
-  "revision": 0,
-  "last_node_id": 45,
-  "last_link_id": 85,
+  "id": "flux-refine-ultimate-upscale-face-identity-v2",
+  "revision": 1,
+  "last_node_id": 50,
+  "last_link_id": 95,
   "nodes": [
     {
       "id": 1,
@@ -17,7 +17,7 @@
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [1, 2, 3],
+          "links": [1, 2],
           "slot_index": 0
         },
         {
@@ -46,13 +46,13 @@
         {
           "name": "MODEL",
           "type": "MODEL",
-          "links": [5, 6],
+          "links": [3, 4],
           "slot_index": 0
         },
         {
           "name": "CLIP",
           "type": "CLIP",
-          "links": [7, 8],
+          "links": [5, 6, 7, 8],
           "slot_index": 1
         },
         {
@@ -82,7 +82,7 @@
         {
           "name": "PULID",
           "type": "PULID",
-          "links": [11],
+          "links": [11, 12],
           "slot_index": 0
         }
       ],
@@ -107,7 +107,7 @@
         {
           "name": "FACEANALYSIS",
           "type": "FACEANALYSIS",
-          "links": [12],
+          "links": [13, 14],
           "slot_index": 0
         }
       ],
@@ -132,7 +132,7 @@
         {
           "name": "EVA_CLIP",
           "type": "EVA_CLIP",
-          "links": [13],
+          "links": [15, 16],
           "slot_index": 0
         }
       ],
@@ -156,7 +156,7 @@
         {
           "name": "model",
           "type": "MODEL",
-          "link": 5
+          "link": 3
         },
         {
           "name": "pulid",
@@ -166,12 +166,12 @@
         {
           "name": "eva_clip",
           "type": "EVA_CLIP",
-          "link": 13
+          "link": 15
         },
         {
           "name": "face_analysis",
           "type": "FACEANALYSIS",
-          "link": 12
+          "link": 13
         },
         {
           "name": "image",
@@ -183,73 +183,46 @@
         {
           "name": "MODEL",
           "type": "MODEL",
-          "links": [14],
+          "links": [17],
           "slot_index": 0
         }
       ],
-      "title": "6 | Apply PuLID (ENABLED - Disable for IPAdapter)",
+      "title": "6 | Apply PuLID - First Pass (ENABLED)",
       "properties": {
         "Node name for S&R": "ApplyPulid"
       },
-      "widgets_values": ["fidelity", 0.8, 0.0, 1.0],
+      "widgets_values": ["fidelity", 0.75, 0.0, 1.0],
       "color": "#322",
       "bgcolor": "#533"
     },
     {
       "id": 7,
-      "type": "IPAdapterUnifiedLoaderFaceID",
-      "pos": [-400, 650],
-      "size": [315, 78],
+      "type": "ApplyPulid",
+      "pos": [-400, 630],
+      "size": [315, 266],
       "flags": {},
       "order": 11,
-      "mode": 4,
+      "mode": 0,
       "inputs": [
         {
           "name": "model",
           "type": "MODEL",
-          "link": 6
-        }
-      ],
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [15],
-          "slot_index": 0
+          "link": 4
         },
         {
-          "name": "ipadapter",
-          "type": "IPADAPTER",
-          "links": [16],
-          "slot_index": 1
-        }
-      ],
-      "title": "7 | IPAdapter FaceID Loader (DISABLED - Enable if not using PuLID)",
-      "properties": {
-        "Node name for S&R": "IPAdapterUnifiedLoaderFaceID"
-      },
-      "widgets_values": ["FACEID PLUS V2", 0.6, "CPU"],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
-      "id": 8,
-      "type": "IPAdapterFaceID",
-      "pos": [-400, 800],
-      "size": [315, 418],
-      "flags": {},
-      "order": 12,
-      "mode": 4,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 15
+          "name": "pulid",
+          "type": "PULID",
+          "link": 12
         },
         {
-          "name": "ipadapter",
-          "type": "IPADAPTER",
+          "name": "eva_clip",
+          "type": "EVA_CLIP",
           "link": 16
+        },
+        {
+          "name": "face_analysis",
+          "type": "FACEANALYSIS",
+          "link": 14
         },
         {
           "name": "image",
@@ -261,7 +234,85 @@
         {
           "name": "MODEL",
           "type": "MODEL",
-          "links": [17],
+          "links": [18],
+          "slot_index": 0
+        }
+      ],
+      "title": "7 | Apply PuLID - Upscale Pass (ENABLED)",
+      "properties": {
+        "Node name for S&R": "ApplyPulid"
+      },
+      "widgets_values": ["fidelity", 0.85, 0.0, 1.0],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 8,
+      "type": "IPAdapterUnifiedLoaderFaceID",
+      "pos": [-400, 970],
+      "size": [315, 78],
+      "flags": {},
+      "order": 12,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 50
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [51],
+          "slot_index": 0
+        },
+        {
+          "name": "ipadapter",
+          "type": "IPADAPTER",
+          "links": [52, 53],
+          "slot_index": 1
+        }
+      ],
+      "title": "8 | IPAdapter FaceID Loader (DISABLED - Alternative)",
+      "properties": {
+        "Node name for S&R": "IPAdapterUnifiedLoaderFaceID"
+      },
+      "widgets_values": ["FACEID PLUS V2", 0.6, "CPU"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 9,
+      "type": "IPAdapterFaceID",
+      "pos": [-400, 1100],
+      "size": [315, 418],
+      "flags": {},
+      "order": 13,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 51
+        },
+        {
+          "name": "ipadapter",
+          "type": "IPADAPTER",
+          "link": 52
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 54
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [55],
           "slot_index": 0
         },
         {
@@ -270,7 +321,53 @@
           "links": null
         }
       ],
-      "title": "8 | Apply IPAdapter FaceID (DISABLED - Enable if not using PuLID)",
+      "title": "9 | Apply IPAdapter FaceID - First Pass (DISABLED)",
+      "properties": {
+        "Node name for S&R": "IPAdapterFaceID"
+      },
+      "widgets_values": [0.9, 1.0, "linear", "concat", 0.0, 1.0, "V only"],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 10,
+      "type": "IPAdapterFaceID",
+      "pos": [-400, 1570],
+      "size": [315, 418],
+      "flags": {},
+      "order": 14,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 56
+        },
+        {
+          "name": "ipadapter",
+          "type": "IPADAPTER",
+          "link": 53
+        },
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 57
+        }
+      ],
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [58],
+          "slot_index": 0
+        },
+        {
+          "name": "face_image",
+          "type": "IMAGE",
+          "links": null
+        }
+      ],
+      "title": "10 | Apply IPAdapter FaceID - Upscale Pass (DISABLED)",
       "properties": {
         "Node name for S&R": "IPAdapterFaceID"
       },
@@ -279,12 +376,74 @@
       "bgcolor": "#653"
     },
     {
-      "id": 9,
+      "id": 11,
       "type": "CLIPTextEncode",
       "pos": [50, 0],
       "size": [400, 200],
       "flags": {},
-      "order": 13,
+      "order": 15,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [19],
+          "slot_index": 0
+        }
+      ],
+      "title": "11 | First Pass Positive Prompt",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": ["masterpiece, best quality, photorealistic, professional photography, natural skin texture, visible pores, skin detail, realistic skin, facial detail, natural skin moisture, dewy skin, moist lips, glossy lips, detailed hair strands, sharp focus, same person, consistent identity"],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 12,
+      "type": "CLIPTextEncode",
+      "pos": [50, 250],
+      "size": [400, 200],
+      "flags": {},
+      "order": 16,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 6
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [20],
+          "slot_index": 0
+        }
+      ],
+      "title": "12 | First Pass Negative Prompt",
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": ["smooth skin, airbrushed, perfect skin, beauty filter, poreless, polished skin, flat skin, plastic skin, blurry, low quality, worst quality"],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 13,
+      "type": "CLIPTextEncode",
+      "pos": [50, 500],
+      "size": [400, 200],
+      "flags": {},
+      "order": 17,
       "mode": 0,
       "inputs": [
         {
@@ -297,25 +456,25 @@
         {
           "name": "CONDITIONING",
           "type": "CONDITIONING",
-          "links": [18, 19],
+          "links": [21],
           "slot_index": 0
         }
       ],
-      "title": "9 | Positive Prompt - Skin Detail Enhancement",
+      "title": "13 | Upscale Pass Positive - Enhanced Detail",
       "properties": {
         "Node name for S&R": "CLIPTextEncode"
       },
-      "widgets_values": ["masterpiece, best quality, photorealistic, ultra high resolution, 8k uhd, professional photography, natural skin texture, visible pores, skin detail, subtle skin imperfections, realistic skin, individual pore detail, facial detail, natural skin moisture, dewy skin, moist lips, glossy lips, detailed hair strands, individual hair texture, refined fabric texture, sharp focus, enhanced clarity, same person, consistent identity, facial consistency, preserved features"],
+      "widgets_values": ["masterpiece, best quality, photorealistic, ultra high resolution, 8k uhd, professional photography, natural skin texture, visible pores, skin pore detail, individual pore detail, subtle skin imperfections, realistic skin detail, authentic skin texture, facial detail, face texture, cheek texture, body skin detail, natural skin moisture, dewy skin, skin sheen, moisture highlights, moist lips, glossy lips, lip sheen, detailed hair strands, individual hair texture, natural hair detail, hair strand clarity, refined fabric texture, sharp focus, enhanced clarity, photographic quality, same person, consistent identity, facial consistency, preserved features"],
       "color": "#232",
       "bgcolor": "#353"
     },
     {
-      "id": 10,
+      "id": 14,
       "type": "CLIPTextEncode",
-      "pos": [50, 250],
+      "pos": [50, 750],
       "size": [400, 200],
       "flags": {},
-      "order": 14,
+      "order": 18,
       "mode": 0,
       "inputs": [
         {
@@ -328,70 +487,59 @@
         {
           "name": "CONDITIONING",
           "type": "CONDITIONING",
-          "links": [20, 21],
-          "slot_index": 0
-        }
-      ],
-      "title": "10 | Negative Prompt - Avoid Smoothing",
-      "properties": {
-        "Node name for S&R": "CLIPTextEncode"
-      },
-      "widgets_values": ["smooth skin, airbrushed, perfect skin, beauty filter, poreless, polished skin, flat skin, plastic skin, featureless skin, simplified skin, lack of skin detail, dry lips, matte lips, flat lips, chalky lips, dull lips, dry skin, matte skin, blurry, low quality, worst quality, low resolution, blurry hair, soft hair, merged hair strands, filtered, over-processed, smoothed detail"],
-      "color": "#322",
-      "bgcolor": "#533"
-    },
-    {
-      "id": 11,
-      "type": "VAEEncode",
-      "pos": [50, 500],
-      "size": [210, 46],
-      "flags": {},
-      "order": 15,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "pixels",
-          "type": "IMAGE",
-          "link": 3
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 9
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
           "links": [22],
           "slot_index": 0
         }
       ],
-      "title": "11 | Encode Source Image",
+      "title": "14 | Upscale Pass Negative - Avoid Smoothing",
       "properties": {
-        "Node name for S&R": "VAEEncode"
+        "Node name for S&R": "CLIPTextEncode"
       },
-      "widgets_values": []
+      "widgets_values": ["smooth skin, airbrushed, perfect skin, beauty filter, poreless, polished skin, flat skin, plastic skin, featureless skin, simplified skin, lack of skin detail, dry lips, matte lips, flat lips, dry skin, matte skin, blurry hair, soft hair, merged hair strands, filtered, over-processed, blurry, smoothed detail, low quality, worst quality, low resolution"],
+      "color": "#322",
+      "bgcolor": "#533"
     },
     {
-      "id": 12,
-      "type": "KSampler",
+      "id": 15,
+      "type": "EmptyLatentImage",
       "pos": [500, 0],
+      "size": [315, 106],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [23],
+          "slot_index": 0
+        }
+      ],
+      "title": "15 | Empty Latent (1024x1024)",
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [1024, 1024, 1]
+    },
+    {
+      "id": 16,
+      "type": "KSampler",
+      "pos": [850, 0],
       "size": [315, 262],
       "flags": {},
-      "order": 16,
+      "order": 19,
       "mode": 0,
       "inputs": [
         {
           "name": "model",
           "type": "MODEL",
-          "link": 14
+          "link": 17
         },
         {
           "name": "positive",
           "type": "CONDITIONING",
-          "link": 18
+          "link": 19
         },
         {
           "name": "negative",
@@ -401,150 +549,91 @@
         {
           "name": "latent_image",
           "type": "LATENT",
-          "link": 22
+          "link": 23
         }
       ],
       "outputs": [
         {
           "name": "LATENT",
           "type": "LATENT",
-          "links": [23],
+          "links": [24],
           "slot_index": 0
         }
       ],
-      "title": "12 | First Pass - Refine & Add Initial Detail",
+      "title": "16 | First Pass - Refine with Face Identity",
       "properties": {
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
         123456789,
         "randomize",
-        25,
+        30,
         4.5,
         "dpmpp_2m_sde",
         "karras",
-        0.45
+        0.4
       ],
       "color": "#393"
     },
     {
-      "id": 13,
+      "id": 17,
       "type": "VAEDecode",
-      "pos": [850, 0],
+      "pos": [1200, 0],
       "size": [210, 46],
       "flags": {},
-      "order": 17,
+      "order": 20,
       "mode": 0,
       "inputs": [
         {
           "name": "samples",
           "type": "LATENT",
-          "link": 23
+          "link": 24
         },
         {
           "name": "vae",
           "type": "VAE",
-          "link": 10
+          "link": 9
         }
       ],
       "outputs": [
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [24, 25],
+          "links": [25, 26],
           "slot_index": 0
         }
       ],
-      "title": "13 | Decode Refined Image",
+      "title": "17 | Decode First Pass",
       "properties": {
         "Node name for S&R": "VAEDecode"
       },
       "widgets_values": []
     },
     {
-      "id": 14,
+      "id": 18,
       "type": "PreviewImage",
-      "pos": [1100, 0],
+      "pos": [1450, 0],
       "size": [500, 400],
       "flags": {},
-      "order": 18,
+      "order": 21,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 24
+          "link": 25
         }
       ],
       "outputs": [],
-      "title": "14 | Preview First Pass Result",
+      "title": "18 | Preview First Pass Result",
       "properties": {
         "Node name for S&R": "PreviewImage"
       },
       "widgets_values": []
     },
     {
-      "id": 15,
+      "id": 19,
       "type": "UpscaleModelLoader",
-      "pos": [850, 100],
-      "size": [315, 58],
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "UPSCALE_MODEL",
-          "type": "UPSCALE_MODEL",
-          "links": [26],
-          "slot_index": 0
-        }
-      ],
-      "title": "15 | Load 4x Upscale Model",
-      "properties": {
-        "Node name for S&R": "UpscaleModelLoader"
-      },
-      "widgets_values": ["4x-UltraSharp.pth"],
-      "color": "#232",
-      "bgcolor": "#353"
-    },
-    {
-      "id": 16,
-      "type": "ImageUpscaleWithModel",
-      "pos": [850, 200],
-      "size": [315, 46],
-      "flags": {},
-      "order": 19,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "upscale_model",
-          "type": "UPSCALE_MODEL",
-          "link": 26
-        },
-        {
-          "name": "image",
-          "type": "IMAGE",
-          "link": 25
-        }
-      ],
-      "outputs": [
-        {
-          "name": "IMAGE",
-          "type": "IMAGE",
-          "links": [27, 28],
-          "slot_index": 0
-        }
-      ],
-      "title": "16 | 4x Upscale (1024 → 4096)",
-      "properties": {
-        "Node name for S&R": "ImageUpscaleWithModel"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 17,
-      "type": "ControlNetLoader",
       "pos": [850, 300],
       "size": [315, 58],
       "flags": {},
@@ -553,120 +642,133 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "CONTROL_NET",
-          "type": "CONTROL_NET",
-          "links": [29],
+          "name": "UPSCALE_MODEL",
+          "type": "UPSCALE_MODEL",
+          "links": [27],
           "slot_index": 0
         }
       ],
-      "title": "17 | Load ControlNet Tile",
+      "title": "19 | Load 4x Upscale Model",
       "properties": {
-        "Node name for S&R": "ControlNetLoader"
+        "Node name for S&R": "UpscaleModelLoader"
       },
-      "widgets_values": ["SDXL/TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors"],
-      "color": "#2a363b",
-      "bgcolor": "#3f5159"
+      "widgets_values": ["4x-UltraSharp.pth"],
+      "color": "#232",
+      "bgcolor": "#353"
     },
     {
-      "id": 18,
-      "type": "ControlNetApplyAdvanced",
+      "id": 20,
+      "type": "UltimateSDUpscale",
       "pos": [850, 400],
-      "size": [315, 186],
+      "size": [315, 614],
       "flags": {},
-      "order": 20,
+      "order": 22,
       "mode": 0,
       "inputs": [
         {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 19
+          "name": "image",
+          "type": "IMAGE",
+          "link": 26
         },
         {
-          "name": "negative",
+          "name": "model",
+          "type": "MODEL",
+          "link": 18
+        },
+        {
+          "name": "positive",
           "type": "CONDITIONING",
           "link": 21
         },
         {
-          "name": "control_net",
-          "type": "CONTROL_NET",
-          "link": 29
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 22
         },
         {
-          "name": "image",
-          "type": "IMAGE",
+          "name": "vae",
+          "type": "VAE",
+          "link": 10
+        },
+        {
+          "name": "upscale_model",
+          "type": "UPSCALE_MODEL",
           "link": 27
         }
       ],
       "outputs": [
         {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "links": [30],
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [28],
           "slot_index": 0
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "links": [31],
-          "slot_index": 1
         }
       ],
-      "title": "18 | Apply ControlNet Tile (Prevent Hallucinations)",
+      "title": "20 | Ultimate SD Upscale 4x with Face Identity",
       "properties": {
-        "Node name for S&R": "ControlNetApplyAdvanced"
+        "Node name for S&R": "UltimateSDUpscale"
       },
-      "widgets_values": [0.75, 0.0, 1.0],
-      "color": "#2a363b",
-      "bgcolor": "#3f5159"
+      "widgets_values": [
+        4,
+        987654321,
+        "randomize",
+        40,
+        4.0,
+        "dpmpp_2m_sde",
+        "karras",
+        0.35,
+        "Linear",
+        1024,
+        1024,
+        32,
+        32,
+        "None",
+        1,
+        64,
+        8,
+        16,
+        true,
+        false
+      ],
+      "color": "#393"
     },
     {
-      "id": 19,
-      "type": "VAEEncodeTiled",
+      "id": 21,
+      "type": "SaveImage",
       "pos": [1200, 400],
-      "size": [270, 150],
+      "size": [600, 550],
       "flags": {},
-      "order": 21,
+      "order": 23,
       "mode": 0,
       "inputs": [
         {
-          "name": "pixels",
+          "name": "images",
           "type": "IMAGE",
           "link": 28
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 32
         }
       ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [33],
-          "slot_index": 0
-        }
-      ],
-      "title": "19 | Encode Upscaled (Tiled)",
+      "outputs": [],
+      "title": "21 | Save Final 4K Image",
       "properties": {
-        "Node name for S&R": "VAEEncodeTiled"
+        "Node name for S&R": "SaveImage"
       },
-      "widgets_values": [1024, 128, 64, 8]
+      "widgets_values": ["Flux_Refine_4x_UltimateUpscale_FaceID"],
+      "color": "#666"
     },
     {
-      "id": 20,
+      "id": 22,
       "type": "CheckpointLoaderSimple",
       "pos": [-800, 550],
       "size": [315, 98],
       "flags": {},
       "order": 7,
-      "mode": 0,
+      "mode": 4,
       "inputs": [],
       "outputs": [
         {
           "name": "MODEL",
           "type": "MODEL",
-          "links": [34],
+          "links": [50, 56],
           "slot_index": 0
         },
         {
@@ -677,141 +779,61 @@
         {
           "name": "VAE",
           "type": "VAE",
-          "links": [32, 35],
-          "slot_index": 2
+          "links": null
         }
       ],
-      "title": "20 | Reload Model for Second Pass (Clean)",
+      "title": "22 | Checkpoint for IPAdapter (DISABLED)",
       "properties": {
         "Node name for S&R": "CheckpointLoaderSimple"
       },
       "widgets_values": ["cyberrealisticXL_v70_fp32.safetensors"],
-      "color": "#369"
+      "color": "#432",
+      "bgcolor": "#653"
     },
     {
-      "id": 21,
-      "type": "KSampler",
-      "pos": [1500, 400],
-      "size": [315, 262],
+      "id": 23,
+      "type": "LoadImage",
+      "pos": [-800, 700],
+      "size": [315, 315],
       "flags": {},
-      "order": 22,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "model",
-          "type": "MODEL",
-          "link": 34
-        },
-        {
-          "name": "positive",
-          "type": "CONDITIONING",
-          "link": 30
-        },
-        {
-          "name": "negative",
-          "type": "CONDITIONING",
-          "link": 31
-        },
-        {
-          "name": "latent_image",
-          "type": "LATENT",
-          "link": 33
-        }
-      ],
-      "outputs": [
-        {
-          "name": "LATENT",
-          "type": "LATENT",
-          "links": [36],
-          "slot_index": 0
-        }
-      ],
-      "title": "21 | Second Pass - Generate Missing Skin Detail (High Denoise)",
-      "properties": {
-        "Node name for S&R": "KSampler"
-      },
-      "widgets_values": [
-        987654321,
-        "randomize",
-        35,
-        4.0,
-        "dpmpp_2m_sde",
-        "karras",
-        0.55
-      ],
-      "color": "#393"
-    },
-    {
-      "id": 22,
-      "type": "VAEDecodeTiled",
-      "pos": [1850, 400],
-      "size": [270, 150],
-      "flags": {},
-      "order": 23,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "samples",
-          "type": "LATENT",
-          "link": 36
-        },
-        {
-          "name": "vae",
-          "type": "VAE",
-          "link": 35
-        }
-      ],
+      "order": 8,
+      "mode": 4,
+      "inputs": [],
       "outputs": [
         {
           "name": "IMAGE",
           "type": "IMAGE",
-          "links": [37],
+          "links": [54, 57],
           "slot_index": 0
-        }
-      ],
-      "title": "22 | Decode Final (Tiled)",
-      "properties": {
-        "Node name for S&R": "VAEDecodeTiled"
-      },
-      "widgets_values": [1024, 128, 64, 8]
-    },
-    {
-      "id": 23,
-      "type": "SaveImage",
-      "pos": [2150, 400],
-      "size": [600, 550],
-      "flags": {},
-      "order": 24,
-      "mode": 0,
-      "inputs": [
+        },
         {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 37
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
         }
       ],
-      "outputs": [],
-      "title": "23 | Save Final 4K Image",
+      "title": "23 | Load Image for IPAdapter (DISABLED)",
       "properties": {
-        "Node name for S&R": "SaveImage"
+        "Node name for S&R": "LoadImage"
       },
-      "widgets_values": ["Flux_Refine_4x_FaceID"],
-      "color": "#666"
+      "widgets_values": ["example.png", "image"],
+      "color": "#432",
+      "bgcolor": "#653"
     },
     {
       "id": 24,
       "type": "Note",
-      "pos": [-800, -300],
-      "size": [700, 250],
+      "pos": [-800, -400],
+      "size": [700, 350],
       "flags": {},
-      "order": 8,
+      "order": 9,
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "FLUX DEV REFINER & 4X UPSCALE WITH FACE IDENTITY",
+      "title": "FLUX DEV REFINER & 4X UPSCALE - ULTIMATE SD UPSCALE",
       "properties": {},
       "widgets_values": [
-        "PURPOSE: Refine Flux Dev 1024x1024 images and upscale to 4K with realistic skin detail\n\nFACE IDENTITY OPTIONS:\n• PuLID (ENABLED): Nodes 3-6. Best for photorealism and fidelity mode\n• IP Adapter FaceID (DISABLED): Nodes 7-8. Alternative option - enable if PuLID issues\n  → To switch: Set node 6 to mode=4 (disable) and nodes 7-8 to mode=0 (enable)\n\nWORKFLOW:\n1. Load 1024x1024 Flux Dev image\n2. First Pass: Refine with face identity (denoise 0.45)\n3. 4x Upscale: 1024 → 4096 using 4x-UltraSharp\n4. Second Pass: ControlNet Tile + high denoise (0.55) to generate missing skin detail\n\nREQUIREMENTS:\n• CyberRealisticXL checkpoint\n• PuLID models OR IPAdapter FaceID models\n• ControlNet Tile: TTPLANET_Controlnet_Tile_realistic_v2_fp16.safetensors\n• 4x-UltraSharp.pth upscale model\n\nKEY SETTINGS:\n• ControlNet Tile Strength: 0.75 (prevents hallucinations at high denoise)\n• Second Pass Denoise: 0.55 (generates detail without losing identity)\n• Tiled VAE: 1024px tiles for 4K processing"
+        "PURPOSE: Refine Flux Dev 1024x1024 images and upscale to 4K with realistic skin detail\nUSES ULTIMATE SD UPSCALE - No shearing issues, works on Mac!\n\nFACE IDENTITY OPTIONS (Toggle one or the other):\n• PuLID (ENABLED): Nodes 3-7. Best for photorealism\n  - Node 6: First pass weight 0.75\n  - Node 7: Upscale pass weight 0.85 (higher for detail preservation)\n  \n• IP Adapter FaceID (DISABLED): Nodes 8-10, 22-23. Alternative option\n  - Enable nodes 8-10, 22-23 (mode=0)\n  - Disable nodes 3-7 (mode=4)\n\nWORKFLOW:\n1. First Pass: Refine 1024x1024 with face identity (denoise 0.4)\n2. Ultimate SD Upscale: Tiled 4x upscaling with integrated refinement\n   - Divides into 1024x1024 tiles with 32px padding\n   - Each tile: 4x upscale → img2img with face identity (denoise 0.35)\n   - Linear blending for seamless result\n   - NO SHEARING - works perfectly on Mac!\n\nREQUIREMENTS:\n• CyberRealisticXL checkpoint\n• PuLID models OR IPAdapter FaceID models\n• 4x-UltraSharp.pth upscale model\n• Ultimate SD Upscale custom node\n\nKEY ADVANTAGES:\n✓ No shearing issues - tiled processing\n✓ Integrated upscale + refinement\n✓ Face identity applied to each tile\n✓ Lower denoise (0.35) = more stable\n✓ Better memory management\n✓ Mac compatible!\n\nULTIMATE SD UPSCALE SETTINGS:\n• Upscale: 4x\n• Steps: 40, CFG: 4.0\n• Denoise: 0.35 (generates detail without destroying identity)\n• Tile size: 1024x1024\n• Padding: 32px (prevents seams)\n• Mode: Linear blending\n• Force uniform tiles: true"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -819,17 +841,17 @@
     {
       "id": 25,
       "type": "Note",
-      "pos": [-400, 1270],
-      "size": [520, 180],
+      "pos": [-400, 2040],
+      "size": [520, 200],
       "flags": {},
-      "order": 9,
+      "order": 10,
       "mode": 0,
       "inputs": [],
       "outputs": [],
-      "title": "PuLID vs IP Adapter FaceID - Which to Use?",
+      "title": "Why Ultimate SD Upscale is Better",
       "properties": {},
       "widgets_values": [
-        "PULID (Nodes 3-6) - ENABLED BY DEFAULT:\n✓ Better for photorealism and maintaining exact facial features\n✓ 'fidelity' mode preserves identity strongly\n✓ Weight 0.8 recommended for skin detail workflows\n✓ Requires: pulid_v1.1.safetensors in ComfyUI/models/pulid/\n\nIP ADAPTER FACEID (Nodes 7-8) - DISABLED BY DEFAULT:\n✓ More artistic flexibility with weight curves\n✓ FaceID Plus V2 offers good detail preservation\n✓ Can combine multiple face embeddings\n✓ Requires: IP-Adapter-FaceID models in ComfyUI/models/ipadapter/\n\nTO SWITCH: Disable one branch (mode=4) and enable the other (mode=0)\nDO NOT enable both simultaneously - they will conflict!"
+        "ULTIMATE SD UPSCALE vs SIMPLE UPSCALE:\n\nSimple upscale approach (causes shearing on Mac):\n1. Upscale entire 4K image at once\n2. Then refine the whole thing\n❌ Mac displays shearing between row groups\n❌ Memory intensive\n❌ Inconsistent quality\n\nUltimate SD Upscale (works great on Mac):\n1. Divide into 1024x1024 tiles\n2. Upscale each tile individually\n3. Refine each tile with face identity\n4. Blend tiles seamlessly\n✓ No shearing - independent tile processing\n✓ Better memory management\n✓ Consistent quality across image\n✓ Lower denoise = more stable\n✓ Face identity preserved in each tile\n\nThis is why your existing workflows use this approach!\nIntegrating upscale WITH refinement = better results."
       ],
       "color": "#322",
       "bgcolor": "#533"
@@ -837,48 +859,49 @@
   ],
   "links": [
     [1, 1, 0, 6, 4, "IMAGE"],
-    [2, 1, 0, 8, 2, "IMAGE"],
-    [3, 1, 0, 11, 0, "IMAGE"],
-    [5, 2, 0, 6, 0, "MODEL"],
-    [6, 2, 0, 7, 0, "MODEL"],
-    [7, 2, 1, 9, 0, "CLIP"],
-    [8, 2, 1, 10, 0, "CLIP"],
-    [9, 2, 2, 11, 1, "VAE"],
-    [10, 2, 2, 13, 1, "VAE"],
+    [2, 1, 0, 7, 4, "IMAGE"],
+    [3, 2, 0, 6, 0, "MODEL"],
+    [4, 2, 0, 7, 0, "MODEL"],
+    [5, 2, 1, 11, 0, "CLIP"],
+    [6, 2, 1, 12, 0, "CLIP"],
+    [7, 2, 1, 13, 0, "CLIP"],
+    [8, 2, 1, 14, 0, "CLIP"],
+    [9, 2, 2, 17, 1, "VAE"],
+    [10, 2, 2, 20, 4, "VAE"],
     [11, 3, 0, 6, 1, "PULID"],
-    [12, 4, 0, 6, 3, "FACEANALYSIS"],
-    [13, 5, 0, 6, 2, "EVA_CLIP"],
-    [14, 6, 0, 12, 0, "MODEL"],
-    [15, 7, 0, 8, 0, "MODEL"],
-    [16, 7, 1, 8, 1, "IPADAPTER"],
-    [17, 8, 0, 12, 0, "MODEL"],
-    [18, 9, 0, 12, 1, "CONDITIONING"],
-    [19, 9, 0, 18, 0, "CONDITIONING"],
-    [20, 10, 0, 12, 2, "CONDITIONING"],
-    [21, 10, 0, 18, 1, "CONDITIONING"],
-    [22, 11, 0, 12, 3, "LATENT"],
-    [23, 12, 0, 13, 0, "LATENT"],
-    [24, 13, 0, 14, 0, "IMAGE"],
-    [25, 13, 0, 16, 1, "IMAGE"],
-    [26, 15, 0, 16, 0, "UPSCALE_MODEL"],
-    [27, 16, 0, 18, 3, "IMAGE"],
-    [28, 16, 0, 19, 0, "IMAGE"],
-    [29, 17, 0, 18, 2, "CONTROL_NET"],
-    [30, 18, 0, 21, 1, "CONDITIONING"],
-    [31, 18, 1, 21, 2, "CONDITIONING"],
-    [32, 20, 2, 19, 1, "VAE"],
-    [33, 19, 0, 21, 3, "LATENT"],
-    [34, 20, 0, 21, 0, "MODEL"],
-    [35, 20, 2, 22, 1, "VAE"],
-    [36, 21, 0, 22, 0, "LATENT"],
-    [37, 22, 0, 23, 0, "IMAGE"]
+    [12, 3, 0, 7, 1, "PULID"],
+    [13, 4, 0, 6, 3, "FACEANALYSIS"],
+    [14, 4, 0, 7, 3, "FACEANALYSIS"],
+    [15, 5, 0, 6, 2, "EVA_CLIP"],
+    [16, 5, 0, 7, 2, "EVA_CLIP"],
+    [17, 6, 0, 16, 0, "MODEL"],
+    [18, 7, 0, 20, 1, "MODEL"],
+    [19, 11, 0, 16, 1, "CONDITIONING"],
+    [20, 12, 0, 16, 2, "CONDITIONING"],
+    [21, 13, 0, 20, 2, "CONDITIONING"],
+    [22, 14, 0, 20, 3, "CONDITIONING"],
+    [23, 15, 0, 16, 3, "LATENT"],
+    [24, 16, 0, 17, 0, "LATENT"],
+    [25, 17, 0, 18, 0, "IMAGE"],
+    [26, 17, 0, 20, 0, "IMAGE"],
+    [27, 19, 0, 20, 5, "UPSCALE_MODEL"],
+    [28, 20, 0, 21, 0, "IMAGE"],
+    [50, 22, 0, 8, 0, "MODEL"],
+    [51, 8, 0, 9, 0, "MODEL"],
+    [52, 8, 1, 9, 1, "IPADAPTER"],
+    [53, 8, 1, 10, 1, "IPADAPTER"],
+    [54, 23, 0, 9, 2, "IMAGE"],
+    [55, 9, 0, 16, 0, "MODEL"],
+    [56, 22, 0, 10, 0, "MODEL"],
+    [57, 23, 0, 10, 2, "IMAGE"],
+    [58, 10, 0, 20, 1, "MODEL"]
   ],
   "groups": [],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.75,
-      "offset": [900, 400]
+      "scale": 0.7,
+      "offset": [1000, 500]
     }
   },
   "version": 0.4
