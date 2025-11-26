@@ -1,8 +1,8 @@
 {
   "id": "flux-camera-lighting-control",
-  "revision": 1,
-  "last_node_id": 50,
-  "last_link_id": 60,
+  "revision": 2,
+  "last_node_id": 55,
+  "last_link_id": 65,
   "nodes": [
     {
       "id": 1,
@@ -48,7 +48,7 @@
         "Node name for S&R": "DualCLIPLoader"
       },
       "widgets_values": ["t5xxl_fp16.safetensors", "clip_l.safetensors", "flux"],
-      "title": "CLIP Loader"
+      "title": "Dual CLIP Loader (T5-XXL + CLIP-L)"
     },
     {
       "id": 3,
@@ -63,7 +63,7 @@
         {
           "name": "VAE",
           "type": "VAE",
-          "links": [3, 4],
+          "links": [3],
           "slot_index": 0
         }
       ],
@@ -90,11 +90,11 @@
           "slot_index": 0
         }
       ],
-      "title": "Base Subject Prompt",
+      "title": "Subject Description (T5-XXL)",
       "properties": {
         "Node name for S&R": "PrimitiveStringMultiline"
       },
-      "widgets_values": ["a red cube on a pedestal, photorealistic, 8k, detailed"],
+      "widgets_values": ["a red cube on a pedestal in the center of the frame"],
       "color": "#232",
       "bgcolor": "#353"
     },
@@ -115,7 +115,7 @@
           "slot_index": 0
         }
       ],
-      "title": "Camera Position (Select One)",
+      "title": "Camera Position (T5-XXL Spatial)",
       "properties": {
         "Node name for S&R": "PrimitiveString"
       },
@@ -140,13 +140,38 @@
           "slot_index": 0
         }
       ],
-      "title": "Lighting Direction (Select One)",
+      "title": "Lighting Direction (T5-XXL Spatial)",
       "properties": {
         "Node name for S&R": "PrimitiveString"
       },
-      "widgets_values": ["lit from front top-left, dramatic lighting, strong shadows"],
+      "widgets_values": ["lit from front top-left"],
       "color": "#432",
       "bgcolor": "#653"
+    },
+    {
+      "id": 13,
+      "type": "PrimitiveString",
+      "pos": [-800, 730],
+      "size": [520, 100],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [13],
+          "slot_index": 0
+        }
+      ],
+      "title": "Style & Quality (CLIP-L Aesthetic)",
+      "properties": {
+        "Node name for S&R": "PrimitiveString"
+      },
+      "widgets_values": ["photorealistic, 8k, detailed, professional photography, dramatic lighting, high contrast"],
+      "color": "#323",
+      "bgcolor": "#535"
     },
     {
       "id": 20,
@@ -154,7 +179,7 @@
       "pos": [-200, 300],
       "size": [300, 166],
       "flags": {},
-      "order": 6,
+      "order": 7,
       "mode": 0,
       "inputs": [
         {
@@ -192,7 +217,7 @@
       "pos": [-200, 520],
       "size": [300, 166],
       "flags": {},
-      "order": 7,
+      "order": 8,
       "mode": 0,
       "inputs": [
         {
@@ -225,12 +250,50 @@
       "bgcolor": "#353"
     },
     {
+      "id": 22,
+      "type": "StringConcatenate",
+      "pos": [-200, 740],
+      "size": [300, 166],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "string_a",
+          "type": "STRING",
+          "link": 21,
+          "widget": {"name": "string_a"}
+        },
+        {
+          "name": "string_b",
+          "type": "STRING",
+          "link": 13,
+          "widget": {"name": "string_b"}
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [22],
+          "slot_index": 0
+        }
+      ],
+      "title": "Add Style & Quality",
+      "properties": {
+        "Node name for S&R": "StringConcatenate"
+      },
+      "widgets_values": ["", "", ", "],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
       "id": 30,
       "type": "CLIPTextEncode",
-      "pos": [180, 280],
+      "pos": [180, 380],
       "size": [400, 200],
       "flags": {},
-      "order": 8,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {
@@ -241,7 +304,7 @@
         {
           "name": "text",
           "type": "STRING",
-          "link": 21,
+          "link": 22,
           "widget": {"name": "text"}
         }
       ],
@@ -253,40 +316,13 @@
           "slot_index": 0
         }
       ],
-      "title": "Positive Prompt",
+      "title": "Flux Prompt Encoding (Dual CLIP)",
       "properties": {
         "Node name for S&R": "CLIPTextEncode"
       },
-      "widgets_values": [""]
-    },
-    {
-      "id": 31,
-      "type": "CLIPTextEncode",
-      "pos": [180, 530],
-      "size": [400, 200],
-      "flags": {},
-      "order": 9,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "clip",
-          "type": "CLIP",
-          "link": 2
-        }
-      ],
-      "outputs": [
-        {
-          "name": "CONDITIONING",
-          "type": "CONDITIONING",
-          "links": [31],
-          "slot_index": 0
-        }
-      ],
-      "title": "Negative Prompt",
-      "properties": {
-        "Node name for S&R": "CLIPTextEncode"
-      },
-      "widgets_values": ["blurry, low quality, distorted, bad anatomy, oversaturated"]
+      "widgets_values": [""],
+      "color": "#232",
+      "bgcolor": "#353"
     },
     {
       "id": 40,
@@ -294,7 +330,7 @@
       "pos": [180, -100],
       "size": [320, 106],
       "flags": {},
-      "order": 10,
+      "order": 0,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -313,8 +349,8 @@
     {
       "id": 41,
       "type": "KSampler",
-      "pos": [680, 100],
-      "size": [320, 474],
+      "pos": [680, 200],
+      "size": [320, 262],
       "flags": {},
       "order": 11,
       "mode": 0,
@@ -332,7 +368,7 @@
         {
           "name": "negative",
           "type": "CONDITIONING",
-          "link": 31
+          "link": null
         },
         {
           "name": "latent_image",
@@ -348,7 +384,7 @@
           "slot_index": 0
         }
       ],
-      "title": "Flux KSampler (Mac Compatible)",
+      "title": "Flux KSampler (No Negative Prompt)",
       "properties": {
         "Node name for S&R": "KSampler"
       },
@@ -360,12 +396,14 @@
         "euler",
         "simple",
         1.0
-      ]
+      ],
+      "color": "#323",
+      "bgcolor": "#535"
     },
     {
       "id": 50,
       "type": "VAEDecode",
-      "pos": [1080, 200],
+      "pos": [1080, 250],
       "size": [210, 46],
       "flags": {},
       "order": 12,
@@ -397,7 +435,7 @@
     {
       "id": 51,
       "type": "SaveImage",
-      "pos": [1360, 100],
+      "pos": [1360, 150],
       "size": [600, 500],
       "flags": {},
       "order": 13,
@@ -416,8 +454,8 @@
     {
       "id": 60,
       "type": "Note",
-      "pos": [-800, 730],
-      "size": [1240, 600],
+      "pos": [-800, 880],
+      "size": [2800, 850],
       "flags": {},
       "order": 0,
       "mode": 0,
@@ -427,7 +465,7 @@
         "text": ""
       },
       "widgets_values": [
-        "FLUX DEV CAMERA & LIGHTING CONTROL WORKFLOW\nOptimized for Apple Silicon\n\n⚠️ IMPORTANT LIMITATION:\nFlux Dev has NO dedicated lighting direction ControlNet. This workflow uses PROMPT-BASED control,\nwhich is the best available method as of 2024.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📷 CAMERA POSITION PRESETS (Copy & Paste into 'Camera Position' node):\n\n┌─ BASIC POSITIONS (6-sided cube)\n│  Front:   \"viewed from front center\"\n│  Back:    \"viewed from behind, back view\"\n│  Left:    \"viewed from left side\"\n│  Right:   \"viewed from right side\"\n│  Top:     \"viewed from above, top-down view, bird's eye view\"\n│  Bottom:  \"viewed from below, worm's eye view, low angle\"\n│\n├─ DIAGONAL POSITIONS (corners)\n│  Front Top-Left:      \"viewed from front top-left angle\"\n│  Front Top-Right:     \"viewed from front top-right angle\"\n│  Front Bottom-Left:   \"viewed from front bottom-left, low angle from left\"\n│  Front Bottom-Right:  \"viewed from front bottom-right, low angle from right\"\n│  Back Top-Left:       \"viewed from back top-left angle, elevated rear view\"\n│  Back Top-Right:      \"viewed from back top-right angle, elevated rear view\"\n│  Back Bottom-Left:    \"viewed from back bottom-left, low rear angle from left\"\n│  Back Bottom-Right:   \"viewed from back bottom-right, low rear angle from right\"\n│\n└─ SPECIALTY ANGLES\n   Extreme Close-up:     \"extreme close-up, macro view\"\n   Wide Angle:           \"wide angle view, expansive perspective\"\n   Dutch Angle:          \"dutch angle, tilted perspective\"\n   3/4 View:             \"three-quarter view from front-right\"\n   Profile:              \"perfect side profile view from right\"\n   Isometric:            \"isometric view, game asset style\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n💡 LIGHTING DIRECTION PRESETS (Copy & Paste into 'Lighting Direction' node):\n\n┌─ BASIC LIGHTING (6 directions)\n│  Front:   \"lit from front, flat even lighting, minimal shadows\"\n│  Back:    \"backlit, rim lighting, silhouette effect, dramatic backlighting\"\n│  Left:    \"lit from left side, side lighting, half in shadow\"\n│  Right:   \"lit from right side, side lighting, half in shadow\"\n│  Top:     \"lit from above, overhead lighting, strong vertical shadows\"\n│  Bottom:  \"lit from below, underlighting, dramatic upward shadows, horror lighting\"\n│\n├─ DIAGONAL LIGHTING (8 cube corners)\n│  Front Top-Left:      \"lit from front top-left, 3/4 lighting, soft shadows to bottom-right\"\n│  Front Top-Right:     \"lit from front top-right, 3/4 lighting, soft shadows to bottom-left\"\n│  Front Bottom-Left:   \"lit from front bottom-left, low angle light, upward shadows\"\n│  Front Bottom-Right:  \"lit from front bottom-right, low angle light, upward shadows\"\n│  Back Top-Left:       \"lit from back top-left, rim light from upper-left, dramatic edge glow\"\n│  Back Top-Right:      \"lit from back top-right, rim light from upper-right, dramatic edge glow\"\n│  Back Bottom-Left:    \"lit from back bottom-left, low backlight, subtle rim on left edge\"\n│  Back Bottom-Right:   \"lit from back bottom-right, low backlight, subtle rim on right edge\"\n│\n└─ ARTISTIC LIGHTING STYLES\n   Rembrandt:     \"lit from front top-left, dramatic lighting, strong shadows to bottom-right, chiaroscuro\"\n   Split:         \"split lighting from hard left, one half lit one half shadow, dramatic contrast\"\n   Butterfly:     \"butterfly lighting from directly above-front, shadow under nose, glamour lighting\"\n   Loop:          \"loop lighting from front-right at 45°, small shadow under nose to left\"\n   Golden Hour:   \"warm golden hour lighting from low right, soft warm glow, long shadows\"\n   Studio:        \"bright even studio lighting from front, minimal shadows, commercial look\"\n   Cinematic:     \"cinematic lighting from back-left, rim light with blue fill, teal and orange\"\n   Natural:       \"soft natural window light from left, gentle falloff, photographic\"\n   Hard:          \"hard direct lighting from right, sharp crisp shadows, high contrast\"\n   Soft:          \"soft diffused lighting from all around, minimal shadows, even exposure\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🔧 TECHNICAL SETTINGS:\n\nModel: flux1-dev-Q4_K_S.gguf (GGUF quantized for Mac compatibility)\nResolution: 1024x1024 (Flux native resolution)\nSteps: 20 (good balance for Flux)\nCFG: 1.0 (Flux uses guidance distillation, keep at 1.0)\nSampler: euler + simple scheduler (best for Flux on Mac)\nDenoise: 1.0 (full generation)\n\n⚙️ APPLE SILICON OPTIMIZATION:\n✓ Uses GGUF quantized model (70% faster loading)\n✓ Euler sampler (best MPS compatibility)\n✓ Simple scheduler (no karras issues)\n✓ Standard nodes (no XLabs MPS crashes)\n\nExpected VRAM: ~8-12GB (works on M1/M2/M3 16GB+)\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📝 USAGE INSTRUCTIONS:\n\n1. Set your subject in 'Base Subject Prompt'\n2. Choose a CAMERA position from the presets above (copy entire string)\n3. Choose a LIGHTING direction from the presets above (copy entire string)\n4. Click Queue Prompt\n5. Experiment with combinations!\n\nEXAMPLE COMBINATIONS:\n• Camera: \"viewed from front top-left angle\"\n  Light: \"lit from back top-right, rim light from upper-right, dramatic edge glow\"\n  → Dramatic rim-lit portrait\n\n• Camera: \"viewed from right side\"\n  Light: \"lit from front top-left, 3/4 lighting, soft shadows to bottom-right\"\n  → Classic product photography\n\n• Camera: \"viewed from below, worm's eye view, low angle\"\n  Light: \"lit from above, overhead lighting, strong vertical shadows\"\n  → Dramatic hero shot\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🚀 ADVANCED: Adding Depth ControlNet (Optional)\n\nTo add true spatial control:\n1. Download: black-forest-labs/FLUX.1-Depth-dev\n2. Load with ControlNetLoader node\n3. Generate depth map from reference image\n4. Apply between CLIP and KSampler\n5. Conditioning scale: 0.5-0.7\n\nThis adds geometric control on top of prompt-based camera/lighting.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        "FLUX DEV CAMERA & LIGHTING CONTROL WORKFLOW (REVISED)\nOptimized Dual CLIP Prompt Structure\n\n⚠️ IMPORTANT CHANGES IN THIS VERSION:\n\n1. ❌ REMOVED NEGATIVE PROMPT - Flux Dev uses guidance distillation and does NOT use negative prompts\n   • Negative prompts are ignored by Flux\n   • CFG is kept at 1.0 (guidance distillation built into model)\n   • To avoid something, describe what you WANT instead\n\n2. ✅ PROPER DUAL CLIP STRUCTURE - Prompts are now organized by encoder type\n   • Subject + Camera + Lighting → T5-XXL (semantic/spatial understanding)\n   • Style + Quality + Aesthetics → CLIP-L (visual style)\n   • Prompts are concatenated in optimal order for Flux\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🧠 FLUX'S DUAL CLIP SYSTEM EXPLAINED:\n\nFlux uses TWO text encoders that process your prompt differently:\n\n┌─ T5-XXL (Google's T5 Transformer)\n│  Purpose: Semantic understanding, spatial relationships, natural language\n│  Best for:\n│    • Subject descriptions: \"a red cube on a pedestal\"\n│    • Camera positions: \"viewed from front top-left angle\"\n│    • Lighting directions: \"lit from back top-right\"\n│    • Object relationships: \"cube in center of frame\"\n│    • Spatial descriptors: \"in the foreground\", \"behind the subject\"\n│  \n│  Examples:\n│    ✅ \"woman standing in doorway\"\n│    ✅ \"viewed from below looking up\"\n│    ✅ \"backlit from behind\"\n│    ✅ \"light source above and to the left\"\n│\n└─ CLIP-L (OpenAI CLIP)\n   Purpose: Visual style, aesthetics, artistic direction\n   Best for:\n     • Visual quality: \"photorealistic\", \"8k\", \"detailed\", \"sharp focus\"\n     • Artistic style: \"cinematic\", \"dramatic\", \"moody\"\n     • Lighting quality: \"dramatic lighting\", \"soft shadows\", \"high contrast\"\n     • Technical: \"professional photography\", \"bokeh\", \"shallow depth of field\"\n     • Mood: \"atmospheric\", \"ethereal\", \"gritty\"\n   \n   Examples:\n     ✅ \"photorealistic, 8k, ultra detailed\"\n     ✅ \"cinematic, dramatic lighting\"\n     ✅ \"professional photography, sharp focus\"\n     ✅ \"high contrast, moody atmosphere\"\n\n⚡ How DualCLIPLoader Works:\n   • Both encoders process the SAME prompt text\n   • T5-XXL focuses on semantic/spatial words\n   • CLIP-L focuses on style/aesthetic words\n   • Flux combines both embeddings for generation\n   • Order matters: Semantic first (T5 priority), Style last (CLIP priority)\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n📝 OPTIMAL PROMPT STRUCTURE:\n\nThis workflow concatenates prompts in the optimal order:\n\n1️⃣ SUBJECT DESCRIPTION (T5-XXL node - Green)\n   What: Describe the main subject and objects\n   Examples:\n     • \"a red cube on a marble pedestal\"\n     • \"a woman's face with long dark hair\"\n     • \"modern building with glass facade\"\n     • \"sports car in desert landscape\"\n\n2️⃣ CAMERA POSITION (T5-XXL node - Blue)\n   Where: Spatial position of viewer/camera\n   Copy ONE preset from below:\n   \n   Basic Positions:\n     • \"viewed from front center\"\n     • \"viewed from behind, back view\"\n     • \"viewed from left side\"\n     • \"viewed from right side\"\n     • \"viewed from above, top-down view, bird's eye view\"\n     • \"viewed from below, worm's eye view, low angle\"\n   \n   Diagonal Positions:\n     • \"viewed from front top-left angle\"\n     • \"viewed from front top-right angle\"\n     • \"viewed from back top-left angle, elevated rear view\"\n     • \"viewed from back top-right angle, elevated rear view\"\n     • \"viewed from front bottom-left, low angle from left\"\n   \n   Specialty Angles:\n     • \"extreme close-up, macro view\"\n     • \"wide angle view, expansive perspective\"\n     • \"three-quarter view from front-right\"\n     • \"isometric view, game asset style\"\n\n3️⃣ LIGHTING DIRECTION (T5-XXL node - Orange)\n   Where: Spatial position of light source\n   Copy ONE preset:\n   \n   Basic Directions (Position only, no quality words):\n     • \"lit from front\"\n     • \"backlit, lit from behind\"\n     • \"lit from left side\"\n     • \"lit from right side\"\n     • \"lit from above\"\n     • \"lit from below\"\n   \n   Diagonal Directions:\n     • \"lit from front top-left\"\n     • \"lit from front top-right\"\n     • \"lit from back top-left\"\n     • \"lit from back top-right, rim light from upper-right\"\n     • \"lit from front bottom-left\"\n   \n   ⚠️ Note: Put directional info HERE, style/quality in next section\n\n4️⃣ STYLE & QUALITY (CLIP-L node - Purple)\n   How: Visual aesthetics and quality descriptors\n   Copy/customize:\n   \n   Quality Descriptors:\n     • \"photorealistic, 8k, ultra detailed, sharp focus\"\n     • \"professional photography, high resolution\"\n     • \"cinema quality, film grain, anamorphic\"\n   \n   Lighting Quality (not direction):\n     • \"dramatic lighting, high contrast, strong shadows\"\n     • \"soft diffused lighting, gentle shadows, even exposure\"\n     • \"cinematic lighting, moody atmosphere\"\n     • \"natural lighting, realistic shadows\"\n     • \"studio lighting, minimal shadows, clean\"\n     • \"golden hour lighting, warm glow\"\n     • \"rim lighting, edge glow, dramatic highlights\"\n   \n   Artistic Style:\n     • \"cinematic, dramatic, atmospheric\"\n     • \"clean, minimal, modern\"\n     • \"gritty, textured, raw\"\n     • \"ethereal, dreamy, soft\"\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n💡 EXAMPLE COMPLETE PROMPTS:\n\n**Portrait Photography:**\nSubject:     \"a woman's face with natural skin texture and detailed features\"\nCamera:      \"viewed from front center\"\nLighting:    \"lit from front top-left\"\nStyle:       \"photorealistic, 8k, dramatic lighting, soft shadows, professional photography\"\n→ Result: Classic portrait with Rembrandt-style lighting\n\n**Product Shot:**\nSubject:     \"luxury watch on marble surface in center of frame\"\nCamera:      \"three-quarter view from front-right\"\nLighting:    \"lit from front, light from above\"\nStyle:       \"photorealistic, professional photography, studio lighting, clean, minimal shadows, 8k\"\n→ Result: Commercial product photography\n\n**Epic Character:**\nSubject:     \"cyberpunk character in neon-lit alley\"\nCamera:      \"viewed from below, low angle\"\nLighting:    \"backlit from behind\"\nStyle:       \"cinematic, dramatic lighting, rim lighting, high contrast, moody atmosphere, film quality\"\n→ Result: Dramatic hero shot with rim lighting\n\n**Architectural:**\nSubject:     \"modern building exterior with glass and concrete\"\nCamera:      \"viewed from front top-right angle\"\nLighting:    \"lit from right side\"\nStyle:       \"photorealistic, golden hour lighting, warm glow, professional architectural photography, 8k\"\n→ Result: Architectural sunset shot\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🔧 TECHNICAL SETTINGS:\n\nModel: flux1-dev-Q4_K_S.gguf (GGUF quantized for Mac)\nResolution: 1024×1024 (Flux native)\nSteps: 20 (15-25 range)\nCFG: 1.0 (MUST stay at 1.0 for Flux - guidance distillation)\nSampler: euler (best for Flux)\nScheduler: simple (best MPS compatibility)\nDenoise: 1.0 (full generation)\n\n⚠️ CRITICAL: CFG must be 1.0 for Flux Dev\n   • Flux uses guidance distillation (built into model)\n   • CFG > 1.0 will produce worse results\n   • No negative prompt needed or used\n\n⚙️ APPLE SILICON OPTIMIZATION:\n✓ Uses GGUF quantized model (70% faster loading)\n✓ Euler sampler (best MPS compatibility)\n✓ Simple scheduler (no karras issues)\n✓ Standard nodes (no XLabs MPS crashes)\n✓ Expected VRAM: ~8-12GB (works on M1/M2/M3 16GB+)\n✓ Generation time: ~45-90s\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🎯 HOW TO USE:\n\n1. Set SUBJECT in \"Subject Description\" node (green)\n2. Choose CAMERA POSITION from presets above (blue node)\n3. Choose LIGHTING DIRECTION from presets above (orange node)\n4. Set STYLE & QUALITY descriptors (purple node)\n5. Click Queue Prompt\n6. Experiment with combinations!\n\n💡 Tips:\n• Start simple, add complexity gradually\n• T5 nodes (green/blue/orange): Be literal and spatial\n• CLIP node (purple): Be descriptive about aesthetics\n• Order matters: semantic → spatial → style\n• Don't repeat words across nodes\n• Flux understands natural language well\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n❓ WHY NO NEGATIVE PROMPT?\n\nFlux Dev uses \"guidance distillation\" - negative guidance is baked into the model during training.\n\n**Instead of negative prompts, be specific about what you WANT:**\n\n❌ Bad (trying to use negative): \"lit from front\" + negative: \"dark, underexposed\"\n✅ Good (describe what you want): \"lit from front, bright, well-exposed, clear lighting\"\n\n❌ Bad: \"woman\" + negative: \"blurry, low quality\"\n✅ Good: \"woman with sharp features, clear details, high quality, crisp focus\"\n\n❌ Bad: \"cube\" + negative: \"flat lighting\"\n✅ Good: \"cube with dramatic shadows, high contrast lighting, defined edges\"\n\n**Key principle:** Describe the desired result, not what to avoid.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n🚀 COMPARED TO SDXL WORKFLOW:\n\n| Feature | Flux (This) | SDXL (VIDIT-FAID) |\n|---------|-------------|-------------------|\n| Lighting Control | ⚠️ Prompt-based | ✅ ControlNet (depth) |\n| Precision | ⭐⭐⭐ Good | ⭐⭐⭐⭐⭐ Excellent |\n| Speed | ⭐⭐⭐⭐ Fast (45-90s) | ⭐⭐⭐ Slower (60-120s) |\n| Ease of Use | ⭐⭐⭐⭐⭐ Very Easy | ⭐⭐⭐ Medium |\n| Consistency | ⭐⭐⭐ Good | ⭐⭐⭐⭐⭐ Excellent |\n| No Negative Prompts | ✅ Guidance distillation | ❌ Traditional CFG |\n\n**Use Flux when:** Fast iteration, easy prompting, no depth maps\n**Use SDXL when:** Precise lighting control, depth maps available\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
       ],
       "color": "#432",
       "bgcolor": "#653"
@@ -436,16 +474,15 @@
   "links": [
     [1, 1, 0, 41, 0, "MODEL"],
     [2, 2, 0, 30, 0, "CLIP"],
-    [2, 2, 0, 31, 0, "CLIP"],
     [3, 3, 0, 50, 1, "VAE"],
-    [4, 3, 0, 50, 1, "VAE"],
     [10, 10, 0, 20, 0, "STRING"],
     [11, 11, 0, 20, 1, "STRING"],
     [12, 12, 0, 21, 1, "STRING"],
+    [13, 13, 0, 22, 1, "STRING"],
     [20, 20, 0, 21, 0, "STRING"],
-    [21, 21, 0, 30, 1, "STRING"],
+    [21, 21, 0, 22, 0, "STRING"],
+    [22, 22, 0, 30, 1, "STRING"],
     [30, 30, 0, 41, 1, "CONDITIONING"],
-    [31, 31, 0, 41, 2, "CONDITIONING"],
     [40, 40, 0, 41, 3, "LATENT"],
     [41, 41, 0, 50, 0, "LATENT"],
     [50, 50, 0, 51, 0, "IMAGE"]
@@ -458,26 +495,26 @@
       "font_size": 24
     },
     {
-      "title": "Camera & Lighting Control",
-      "bounding": [-820, 170, 560, 560],
+      "title": "T5-XXL: Semantic & Spatial (Subject, Camera, Lighting Direction)",
+      "bounding": [-820, 170, 560, 680],
       "color": "#8A8A00",
       "font_size": 24
     },
     {
-      "title": "Prompt Assembly",
-      "bounding": [-230, 250, 340, 480],
+      "title": "Prompt Assembly (Optimal Order)",
+      "bounding": [-230, 250, 340, 710],
       "color": "#88AA88",
       "font_size": 24
     },
     {
-      "title": "Generation",
-      "bounding": [150, -150, 880, 780],
+      "title": "Flux Generation (No Negative Prompt)",
+      "bounding": [150, -150, 880, 660],
       "color": "#A87A3A",
       "font_size": 24
     },
     {
       "title": "Output",
-      "bounding": [1050, 50, 940, 600],
+      "bounding": [1050, 100, 940, 550],
       "color": "#8A5082",
       "font_size": 24
     }
@@ -485,8 +522,8 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.8,
-      "offset": [600, 300]
+      "scale": 0.7,
+      "offset": [700, 250]
     }
   },
   "version": 0.4
